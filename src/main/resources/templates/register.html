@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:color="http://www.w3.org/1999/xhtml">
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
@@ -58,27 +58,18 @@
     </style>
 </head>
 <body>
-<script th:inline="javascript">
-    $(document).ready(function() { console.log('jQuery is working'); });
-    /*<![CDATA[*/
-    $(document).ready(function() {
-        var error = /*[[${error}]]*/ 'default';
-        if (error !== 'default' && error !== null) {
-            alert(error);
-        }
-    });
-    /*]]>*/
-</script>
 <div class="login-container">
     <h2>Register</h2>
-    <form action="/register" method="post">
+    <form th:object="${utente}" th:action="@{/register}" method="post">
         <label for="email">Email:</label>
-        <input type="text" id="email" name="email" required>
+        <div style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="${utente.email}">Email esistente</div>
+        <input type="text" id="email" th:field="${utente.email}" required>
         <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
+        <div style="color: red" th:if="${#fields.hasErrors('username')}" th:errors="${utente.username}">Username non disponibile</div>
+        <input type="text" id="username" th:field="${utente.username}" required/>
 
         <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
+        <input type="password" id="password" th:field="${utente.password}" required>
         <label for="passwordConf">Conferma Password:</label>
         <input type="password" id="passwordConf" name="passwordConf" required>
 

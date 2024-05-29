@@ -21,6 +21,13 @@ public record RegisterValidation(UtenteService utenteService) implements Constra
                     .addConstraintViolation();
             return false;
         }
+        if(utenteService.getByUsername(u.getUsername()) != null) {
+            constraintValidatorContext.disableDefaultConstraintViolation();
+            constraintValidatorContext.buildConstraintViolationWithTemplate("Username già esistente")
+                    .addPropertyNode("username")
+                    .addConstraintViolation();
+            return false;
+        }
         return true;
     }
 

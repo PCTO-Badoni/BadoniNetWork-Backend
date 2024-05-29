@@ -6,11 +6,16 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+@RequestMapping("/register")
 @Controller
 public class RegistrationController {
     @Autowired
@@ -19,17 +24,21 @@ public class RegistrationController {
     private PasswordEncoder passwordEncoder;
 
 
-    @PostMapping("/register")
-    public String createUser(@Valid @ModelAttribute Utente utente, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-        if (bindingResult.hasErrors()) {
-            String error = bindingResult.getFieldError().getDefaultMessage();
-            redirectAttributes.addFlashAttribute("error", error);
-            return "redirect:/register";
+
+    @GetMapping
+    public String register(Model model) {
+        model.addAttribute("utente", new Utente());
+        return "register";
+    }
+
+    @PostMapping
+    public String createUser(@ModelAttribute("utente") @Valid Utente utente, Errors errors) {
+        if(errors.hasErrors()) {
+            return "register";
+        } else {
+            utente.setPassword(passwordEncoder.encode(utente.getPassword()));
+            utenteRepository.save(utente);
+            return "redirect:/login";
         }
-        utente.setPassword(passwordEncoder.encode(utente.getPassword()));
-        utente.setRole("USER");
-        System.out.println(utente.toString());
-        utenteRepository.save(utente);
-        return "redirect:/user/home";
     }
 }

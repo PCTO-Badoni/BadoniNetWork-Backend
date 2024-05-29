@@ -37,22 +37,6 @@ public class UtenteService implements UserDetailsService {
         }
     }
 
-    public Utente getByEmail(@PathVariable String email) {
-        Optional<Utente> utente = utenteRepository.findByEmail(email);
-        if (utente.isPresent()) {
-            return utente.get();
-        } else {
-            throw new UsernameNotFoundException(email);
-        }
-    }
-
-    private String[] getRoles(Utente user) {
-        if (user.getRole() == null) {
-            return new String[]{"USER"};
-        }
-        return user.getRole().split(",");
-    }
-
     public Utente getByUsername(@PathVariable String username) {
         Optional<Utente> utente = utenteRepository.findByUsername(username);
         if (utente.isPresent()) {
@@ -62,5 +46,21 @@ public class UtenteService implements UserDetailsService {
             System.out.println("nono esiste");
             return null;
         }
+    }
+
+    public Utente getByEmail(@PathVariable String email) {
+        Optional<Utente> utente = utenteRepository.findByEmail(email);
+        if (utente.isPresent()) {
+            return utente.get();
+        } else {
+            return null;
+        }
+    }
+
+    private String[] getRoles(Utente user) {
+        if (user.getRole() == null) {
+            return new String[]{"USER"};
+        }
+        return user.getRole().split(",");
     }
 }
