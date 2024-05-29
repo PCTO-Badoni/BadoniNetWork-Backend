@@ -1,16 +1,8 @@
 package dp.esempi.security.model;
 
-import dp.esempi.security.validation.emailEsistente;
-import dp.esempi.security.validation.usernameNotFound;
+import dp.esempi.security.validation.UtenteValido;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
 
 
 @Getter
@@ -19,11 +11,11 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name="utenti")
-@emailEsistente
+@UtenteValido
 public class Utente {
 
     @Id
-    @usernameNotFound
+
     private String username;
     private String email;
     private String password;

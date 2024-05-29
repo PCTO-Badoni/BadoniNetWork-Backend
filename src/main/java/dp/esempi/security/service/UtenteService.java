@@ -3,6 +3,7 @@ package dp.esempi.security.service;
 import dp.esempi.security.model.Utente;
 import dp.esempi.security.repository.UtenteRepository;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.User;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UtenteService implements UserDetailsService {
     @Autowired
     private UtenteRepository utenteRepository;
@@ -37,24 +39,14 @@ public class UtenteService implements UserDetailsService {
         }
     }
 
-    public Utente getByUsername(@PathVariable String username) {
-        Optional<Utente> utente = utenteRepository.findByUsername(username);
-        if (utente.isPresent()) {
-            System.out.println("sisi esiste");
-            return utente.get();
-        } else {
-            System.out.println("nono esiste");
-            return null;
-        }
+    public Optional<Utente> getByUsername(String username) {
+        return utenteRepository.findByUsername(username);
+
     }
 
-    public Utente getByEmail(@PathVariable String email) {
-        Optional<Utente> utente = utenteRepository.findByEmail(email);
-        if (utente.isPresent()) {
-            return utente.get();
-        } else {
-            return null;
-        }
+    public Optional<Utente> getByEmail(String email) {
+        return utenteRepository.findByEmail(email);
+
     }
 
     private String[] getRoles(Utente user) {
