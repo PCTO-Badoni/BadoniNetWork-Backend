@@ -49,8 +49,10 @@ public class MainController {
         return "message";
     }
 
-    @GetMapping("/register/deny-request")
-    public String denyRequest() {
+    @GetMapping("/register/deny-request/{email}")
+    public String denyRequest(@PathVariable String email) throws MessagingException, IOException {
+        Map<String, Object> templateModel = new HashMap<>();
+        emailService.sendHtmlMessage(email, "Accettazione account", templateModel, "request-deny-template");
         return "message";
     }
 
