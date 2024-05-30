@@ -69,19 +69,37 @@
 <div class="login-container">
     <h2>Register</h2>
     <form th:object="${utente}" th:action="@{/register}" method="post">
-        <label for="email">Email:</label>
+        <label for="student-email">Email:</label>
         <div style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="${utente.email}">Email esistente</div>
-        <input type="text" id="email" th:field="${utente.email}" required>
-        <label for="username">Username:</label>
+        <input type="text" id="student-email" th:field="${utente.email}" required>
+        <label for="student-username">Username:</label>
         <div style="color: red" th:if="${#fields.hasErrors('username')}" th:errors="${utente.username}">Username non disponibile</div>
-        <input type="text" id="username" th:field="${utente.username}" required/>
+        <input type="text" id="student-username" th:field="${utente.username}" required/>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" th:field="${utente.password}" required>
-        <label for="passwordConf">Conferma Password:</label>
-        <input type="password" id="passwordConf" name="passwordConf" required>
+        <label for="student-password">Password:</label>
+        <input type="password" id="student-password" th:field="${utente.password}" required>
+        <label for="student-passwordConf">Conferma Password:</label>
+        <input type="password" id="student-passwordConf" name="passwordConf" required>
 
         <button type="submit" class="button">Register</button>
+    </form>
+    <form action="/login" method="get">
+        <button class="button" id="student-loginButton">Login</button>
+    </form>
+</div>
+<div class="login-container">
+    <h2>Register</h2>
+    <form action="/register/send-email" method="post">
+        <label for="ragione-sociale">Ragione sociale:</label>
+        <input type="text" name="ragione_sociale" id="ragione-sociale" required>
+        <label for="company-email">Email:</label>
+        <input type="text" name="email" id="company-email" required>
+        <label for="telefono">Telefono:</label>
+        <input type="text" name="telefono" id="telefono" required>
+        <label for="indirizzo">Indirizzo:</label>
+        <input type="text" name="indirizzo" id="indirizzo" required>
+
+        <button type="submit" class="button" id="company-registerButton">Register</button>
     </form>
     <form action="/login" method="get">
         <button class="button" id="loginButton">Login</button>

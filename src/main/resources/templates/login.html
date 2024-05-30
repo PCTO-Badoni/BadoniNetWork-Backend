@@ -78,9 +78,6 @@
         }
     });
     /*]]>*/
-    document.getElementById('registerButton').addEventListener('click', function() {
-        window.location.href = '/register';
-    });
 </script>
 <div class="login-container">
     <h2>Login</h2>
@@ -93,9 +90,9 @@
 
         <button type="submit" class="button">Login</button>
     </form>
-    <form action="/register" method="get">
+    <a href="/register">
         <button class="button" id="registerButton">Register</button>
-    </form>
+    </a>
 </div>
 </body>
 </html>
