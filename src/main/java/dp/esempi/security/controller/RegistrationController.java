@@ -34,6 +34,10 @@ public class RegistrationController {
     @PostMapping
     public String createUser(@ModelAttribute("utente") @Valid Utente utente, Errors errors) {
         if(errors.hasErrors()) {
+            System.out.println(errors.getAllErrors());
+            System.out.println(utente.getUsername());
+            System.out.println(utente.getEmail());
+            System.out.println(utente.getPassword());
             return "register";
         } else {
             utente.setPassword(passwordEncoder.encode(utente.getPassword()));

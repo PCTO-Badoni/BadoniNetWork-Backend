@@ -38,6 +38,14 @@ public class RegisterValidation implements ConstraintValidator<UtenteValido, Ute
                     .addConstraintViolation();
             valido=false;
         }
+        System.out.println(u.getEmail());
+        if(!u.getEmail().endsWith("@iisbadoni.edu.it")) {
+            constraintValidatorContext.disableDefaultConstraintViolation();
+            constraintValidatorContext.buildConstraintViolationWithTemplate("Email non valida")
+                    .addPropertyNode("email")
+                    .addConstraintViolation();
+            valido=false;
+        }
         utenteFind=holder.utenteRepository.findByUsername(u.getUsername());
         if(!utenteFind.isEmpty()) {
             constraintValidatorContext.disableDefaultConstraintViolation();
