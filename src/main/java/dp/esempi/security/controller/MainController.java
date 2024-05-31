@@ -48,7 +48,7 @@ public class MainController {
         emailService.sendHtmlMessage(email, "Accettazione account", templateModel, "request-response-template");
         return "message";
     }
-
+  
     @GetMapping("/admin/deny-request/{email}")
     public String denyRequest(@PathVariable String email) throws MessagingException, IOException {
         Map<String, Object> templateModel = new HashMap<>();
