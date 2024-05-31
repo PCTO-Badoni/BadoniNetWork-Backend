@@ -6,20 +6,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-
+@SuppressWarnings("unused")
 @Controller
 public class MainController {
+
     @Autowired
     private EmailService emailService;
-
+    
     Random random = new Random();
 
     @GetMapping("/")
@@ -52,27 +50,8 @@ public class MainController {
     @GetMapping("/admin/deny-request/{email}")
     public String denyRequest(@PathVariable String email) throws MessagingException, IOException {
         Map<String, Object> templateModel = new HashMap<>();
-        emailService.sendHtmlMessage("srmndr06p13e507g@iisbadoni.edu.it", "Richiesta account Badoni NetWork", templateModel, "account-request-template");
+        emailService.sendHtmlMessage(email, "Richiesta account Badoni NetWork", templateModel, "account-request-template");
         return "message";
-    }
-
-    @GetMapping("/register/request-sent")
-    public String sentRequest() {
-        return "requestsent";
-    }
-
-    @PostMapping("/register/send-email")
-    public RedirectView sendEmail(@RequestParam String ragione_sociale, @RequestParam String email, @RequestParam String telefono, @RequestParam String indirizzo) throws MessagingException, IOException {
-
-        Map<String, Object> templateModel = new HashMap<>();
-        templateModel.put("ragione_sociale", ragione_sociale);
-        templateModel.put("email", email);
-        templateModel.put("telefono", telefono);
-        templateModel.put("indirizzo", indirizzo);
-        templateModel.put("id", email);
-
-        emailService.sendHtmlMessage("srmndr06p13e507g@iisbadoni.edu.it", "Richiesta account Badoni NetWork", templateModel, "account-request-template");
-        return new RedirectView("/register/request-sent");
     }
 }
 
