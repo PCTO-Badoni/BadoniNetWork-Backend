@@ -88,10 +88,6 @@ INSERT INTO `utenti` (`username`, `password`, `cognome`, `nome`, `citta`, `dataN
 	('admin', '{bcrypt}$2y$10$Qs4vrW1.Bsjvp58utRsiEOuOCvqrbJau/rr1GJD2L8IAjNyMfddj6', 'Amministratore', 'Sito', 'Lecco', '1970-04-10', 'admin@gmail.com', 'ADMIN'),
 	('federico', '{bcrypt}$2y$10$Qs4vrW1.Bsjvp58utRsiEOuOCvqrbJau/rr1GJD2L8IAjNyMfddj6', 'Neri', 'Federico', 'Milano', '2009-04-17', 'email@it', 'USER'),
 	('luca', '{bcrypt}$2y$10$Qs4vrW1.Bsjvp58utRsiEOuOCvqrbJau/rr1GJD2L8IAjNyMfddj6', 'Rossi', 'Luca', 'Milano', '1995-12-05', 'email@it', 'USER'),
-	('luca2', '{bcrypt}$2a$10$6GBth9mFVAjhiG79rXEaQeF0tHpd2zM4uIZnXzJss1GeMgBZUl2WG', NULL, NULL, NULL, NULL, 'asasa', NULL),
-	('luca4', '{bcrypt}$2a$10$1tr3WCYymahAVvsIZDgrTeFG4au1INjC0SG5fczli/IWwI1I/3Erm', NULL, NULL, NULL, NULL, 'eeee', NULL),
-	('luca5', '{bcrypt}$2a$10$ydmic1iDW30S8i1O20QMY.KT1uyq5AmmS9Cnh8NzD1WF5xuM00w5C', NULL, NULL, NULL, NULL, 'asas', NULL),
-	('luca8', '{bcrypt}$2a$10$lgGEBaUtXG6XEA9Tyw4yc.DtW.JtoDr/ibheEBbcwW9X9JdZM7L56', NULL, NULL, NULL, NULL, 'aa', NULL),
 	('marco', '{bcrypt}$2y$10$Qs4vrW1.Bsjvp58utRsiEOuOCvqrbJau/rr1GJD2L8IAjNyMfddj6', 'D\'Amato', 'marco', 'Lecco', '2010-04-03', 'email@it', 'USER'),
 	('paolo', '{bcrypt}$2y$10$Qs4vrW1.Bsjvp58utRsiEOuOCvqrbJau/rr1GJD2L8IAjNyMfddj6', 'Bianchi', 'Paolo', 'Lecco', '2019-04-03', 'email@it', 'USER');
 

@@ -4,6 +4,7 @@ import dp.esempi.security.model.Utente;
 import dp.esempi.security.repository.UtenteRepository;
 import dp.esempi.security.service.EmailService;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,10 +37,6 @@ public class RegistrationController {
     @PostMapping
     public String createUser(@ModelAttribute("utente") @Valid Utente utente, Errors errors) {
         if(errors.hasErrors()) {
-            System.out.println(errors.getAllErrors());
-            System.out.println(utente.getUsername());
-            System.out.println(utente.getEmail());
-            System.out.println(utente.getPassword());
             return "register";
         } else {
             utente.setPassword(passwordEncoder.encode(utente.getPassword()));
@@ -50,12 +47,22 @@ public class RegistrationController {
     }
 
     @GetMapping("/request-sent")
-    public String sentRequest() {
+    public String sentRequest(HttpSession session) {
+        if(session.getAttribute("requestSent") == null) {
+            return "redirect:/register";
+        }
+
+        session.removeAttribute("requestSent");
         return "requestsent";
     }
 
+    @GetMapping("/send-email")
+    public String redirectSendMail(){
+        return "redirect:/register";
+    }
+
     @PostMapping("/send-email")
-    public RedirectView sendEmail(@RequestParam String ragione_sociale, @RequestParam String email, @RequestParam String telefono, @RequestParam String indirizzo) throws MessagingException, IOException {
+    public String sendEmail(HttpSession session, @RequestParam String ragione_sociale, @RequestParam String email, @RequestParam String telefono, @RequestParam String indirizzo) throws MessagingException, IOException {
 
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("ragione_sociale", ragione_sociale);
@@ -64,7 +71,9 @@ public class RegistrationController {
         templateModel.put("indirizzo", indirizzo);
         templateModel.put("id", email);
 
+        session.setAttribute("requestSent", true);
+
         emailService.sendHtmlMessage("cfrgnn06m28e507h@iisbadoni.edu.it", "Richiesta account Badoni NetWork", templateModel, "account-request-template");
-        return new RedirectView("/register/request-sent");
+        return "redirect:/register/request-sent";
     }
 }
