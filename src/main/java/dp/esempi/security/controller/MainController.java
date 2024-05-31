@@ -52,7 +52,7 @@ public class MainController {
     @GetMapping("/admin/deny-request/{email}")
     public String denyRequest(@PathVariable String email) throws MessagingException, IOException {
         Map<String, Object> templateModel = new HashMap<>();
-        emailService.sendHtmlMessage("srmndr06p13e507g@iisbadoni.edu.it", "Risposta account Badoni NetWork", templateModel, "account-request-template");
+        emailService.sendHtmlMessage("vssptr05a13d416z@iisbadoni.edu.it", "Risposta account Badoni NetWork", templateModel, "request-deny-template");
         return "message";
     }
 
@@ -71,7 +71,7 @@ public class MainController {
         templateModel.put("indirizzo", indirizzo);
         templateModel.put("id", email);
 
-        emailService.sendHtmlMessage("srmndr06p13e507g@iisbadoni.edu.it", "Richiesta account Badoni NetWork", templateModel, "account-request-template");
+        emailService.sendHtmlMessage("vssptr05a13d416z@iisbadoni.edu.it", "Richiesta account Badoni NetWork", templateModel, "account-request-template");
         return new RedirectView("/register/request-sent");
     }
 }

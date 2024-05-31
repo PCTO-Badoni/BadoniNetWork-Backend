@@ -77,39 +77,10 @@
                 <div style="color: red" th:if="${#fields.hasErrors('username')}" th:errors="${utente.username}">Username non disponibile</div>
                 <input type="text" id="student-username" th:field="${utente.username}" required/>
 
-
-        #loginButton {
-            margin-top: 10px;
-        }
-    </style>
-    <script>
-        $(document).ready(function() {
-            $("form").on("submit", function(event) {
-                var password = $("#student-password").val();
-                var confirmPassword = $("#student-passwordConf").val();
-
-                var regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
-                if (password !== confirmPassword) {
-                    event.preventDefault();
-                    alert("Le password non corrispondono");
-                    event.preventDefault();
-                    alert("La password deve contenere almeno 8 caratteri, almeno un numero, almeno una lettera, almeno un carattere non alfanumerico e almeno una maiuscola");
-                }
-            });
-        });
-    </script>
-</head>
-<body>
-<div class="login-container">
-    <h2>Register</h2>
-    <form th:object="${utente}" th:action="@{/register}" method="post">
-        <label for="student-email">Email:</label>
-        <div style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="${utente.email}">Email non valida</div>
-        <input type="text" id="student-email" th:field="${utente.email}" required>
-        <label for="student-username">Username:</label>
-        <div style="color: red" th:if="${#fields.hasErrors('username')}" th:errors="${utente.username}">Username non disponibile</div>
-        <input type="text" id="student-username" th:field="${utente.username}" required/>
+                <label for="student-password">Password:</label>
+                <input type="password" id="student-password" th:field="${utente.password}" required>
+                <label for="student-passwordConf">Conferma Password:</label>
+                <input type="password" id="student-passwordConf" name="passwordConf" required>
 
                 <button type="submit" class="button">Register</button>
             </form>
