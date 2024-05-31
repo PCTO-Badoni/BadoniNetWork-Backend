@@ -106,7 +106,7 @@
                                                         <tbody>
                                                         <tr>
                                                             <td align="left" class="esd-block-text">
-                                                                <p style="display: inline; margin: 0;">Regione Sociale:&nbsp;</p><span th:text="${regione_sociale}" style="color: black; display: inline;"></span>
+                                                                <p style="display: inline; margin: 0;">Ragione Sociale:&nbsp;</p><span th:text="${ragione_sociale}" style="color: black; display: inline;"></span>
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -145,9 +145,9 @@
                                                         <tbody>
                                                         <tr>
                                                             <td align="center" class="esd-block-button es-p10t es-p10b">
-                                                                                        <span class="es-button-border" style="border-radius: 30px; background: #13d00e; display: block;">
-                                                                                            <a th:href="@{'http://localhost:8080/register/accept-request/' + ${id}}" class="es-button" target="_blank" style="padding: 10px 20px; font-size: 24px; border-radius: 30px; background: #13d00e; display: block; mso-border-alt: 10px solid #13d00e; color: white; text-decoration: none;">Accetta</a>
-                                                                                        </span>
+                                                                <span class="es-button-border" style="border-radius: 30px; background: #13d00e; display: block;">
+                                                                    <a th:href="@{'http://localhost:8080/admin/accept-request/' + ${id}}" class="es-button" target="_blank" style="padding: 10px 20px; font-size: 24px; border-radius: 30px; background: #13d00e; display: block; mso-border-alt: 10px solid #13d00e; color: white; text-decoration: none;">Accetta</a>
+                                                                </span>
                                                             </td>
                                                         </tr>
                                                         </tbody>
@@ -165,9 +165,9 @@
                                                         <tbody>
                                                         <tr>
                                                             <td align="center" class="esd-block-button es-p10t es-p10b">
-                                                                                        <span class="es-button-border" style="border-radius: 30px; background: #cc0000; display: block;">
-                                                                                            <a href="http://localhost:8080/register/deny-request" class="es-button" target="_blank" style="font-size: 24px; border-radius: 30px; background: #cc0000; padding: 10px 20px; display: block; mso-border-alt: 10px solid #cc0000; color: white; text-decoration: none;">Rifiuta</a>
-                                                                                        </span>
+                                                                <span class="es-button-border" style="border-radius: 30px; background: #cc0000; display: block;">
+                                                                    <a href="http://localhost:8080/register/deny-request" class="es-button" target="_blank" style="font-size: 24px; border-radius: 30px; background: #cc0000; padding: 10px 20px; display: block; mso-border-alt: 10px solid #cc0000; color: white; text-decoration: none;">Rifiuta</a>
+                                                                </span>
                                                             </td>
                                                         </tr>
                                                         </tbody>
