@@ -15,7 +15,6 @@ public class Azienda {
 
     @Id
 
-    @Column(name="ragione sociale")
     private String ragione_sociale;
     private String email;
     private String telefono;

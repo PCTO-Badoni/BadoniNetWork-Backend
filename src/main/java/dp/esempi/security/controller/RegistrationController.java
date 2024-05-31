@@ -92,6 +92,6 @@ public class RegistrationController {
 
         session.setAttribute("requestSent", true);
 
-        emailService.sendHtmlMessage("cfrgnn06m28e507h@iisbadoni.edu.it", "Richiesta account Badoni NetWork", templateModel, "account-request-template");
+        emailService.sendHtmlMessage("srmndr06p13e507g@iisbadoni.edu.it", "Richiesta account Badoni NetWork", templateModel, "account-request-template");
     }
 }
