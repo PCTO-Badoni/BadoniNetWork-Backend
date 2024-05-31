@@ -51,23 +51,14 @@ public class RegistrationController {
         }
     }
 
-    @GetMapping("/request-sent")
-    public String sentRequest(HttpSession session) {
-        if (session.getAttribute("requestSent") == null) {
-            return "redirect:/register";
-        }
-
-        session.removeAttribute("requestSent");
-        return "requestsent";
+    //Intercetta una richiesta alla pagina e la reindirizza alla pagina di register
+    @GetMapping("/send-email")
+    public String redirectSendMail() {
+        return "redirect:/register";
     }
 
     @PostMapping("/send-email")
     public String sendEmail(HttpSession session, @RequestParam String ragione_sociale, @RequestParam String email, @RequestParam String telefono, @RequestParam String indirizzo) throws MessagingException, IOException {
-        if (session.getAttribute("sendEmail") == null) {
-            return "redirect:/register";
-        }
-
-        session.removeAttribute("sendEmail");
 
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("ragione_sociale", ragione_sociale);
@@ -81,5 +72,15 @@ public class RegistrationController {
         session.setAttribute("requestSent", true);
         
         return "redirect:/register/request-sent";
+    }
+
+    @GetMapping("/request-sent")
+    public String sentRequest(HttpSession session) {
+        if (session.getAttribute("requestSent") == null) {
+            return "redirect:/register";
+        }
+
+        session.removeAttribute("requestSent");
+        return "requestsent";
     }
 }
