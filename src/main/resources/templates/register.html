@@ -91,10 +91,12 @@
 
         <div class="login-container">
             <h2>Register</h2>
-            <form th:action="@{/register/azienda}" method="post">
-                <label for="ragione-sociale">Ragione sociale:</label>
-                <input type="text" name="ragione_sociale" id="ragione-sociale" required>
+            <form th:object="${company}" th:action="@{/register/azienda}" method="post">
+                <label for="ragionesociale">Ragione sociale:</label>
+                <div style="color: red" th:if="${#fields.hasErrors('ragionesociale')}" th:errors="${company.ragionesociale}">Ragione Sociale non disponibile</div>
+                <input type="text" name="ragionesociale" id="ragionesociale" required>
                 <label for="company-email">Email:</label>
+                <div style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="${company.email}">Email esistente</div>
                 <input type="text" name="email" id="company-email" required>
                 <label for="telefono">Telefono:</label>
                 <input type="text" name="telefono" id="telefono" required>

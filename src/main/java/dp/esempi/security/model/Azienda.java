@@ -1,6 +1,6 @@
 package dp.esempi.security.model;
 
-import dp.esempi.security.validation.UtenteValido;
+import dp.esempi.security.validation.AziendaValida;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,11 +11,12 @@ import lombok.*;
 @NoArgsConstructor
 @Entity
 @Table(name="aziende_waiting")
+@AziendaValida
 public class Azienda {
 
     @Id
 
-    private String ragione_sociale;
+    private String ragionesociale;
     private String email;
     private String telefono;
     private String indirizzo;
@@ -25,7 +26,7 @@ public class Azienda {
     @Override
     public String toString() {
         return "Utente{" +
-                "ragione sociale='" + ragione_sociale + '\'' +
+                "ragione sociale='" + ragionesociale + '\'' +
                 ", email='" + email + '\'' +
                 ", telefono='" + telefono + '\'' +
                 ", indirizzo='" + indirizzo + '\'' +

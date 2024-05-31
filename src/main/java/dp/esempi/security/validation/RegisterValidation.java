@@ -15,7 +15,8 @@ public class RegisterValidation implements ConstraintValidator<UtenteValido, Ute
 
     private static final RegisterValidation holder=new RegisterValidation();
     private UtenteRepository utenteRepository;
-    @Bean
+
+    @Bean(name = "user_validator")
     public static RegisterValidation bean(UtenteRepository utenteRepository) {
         holder.utenteRepository=utenteRepository;
         return holder;

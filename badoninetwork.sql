@@ -20,7 +20,7 @@ USE `badoninetwork`;
 
 -- Dump della struttura di tabella badoninetwork.aziende_waiting
 CREATE TABLE IF NOT EXISTS `aziende_waiting` (
-  `ragione_sociale` varchar(30) NOT NULL,
+  `ragionesociale` varchar(30) NOT NULL,
   `email` varchar(256) NOT NULL,
   `telefono` varchar(30) DEFAULT NULL,
   `indirizzo` varchar(30) DEFAULT NULL,
@@ -28,12 +28,12 @@ CREATE TABLE IF NOT EXISTS `aziende_waiting` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- Dump dei dati della tabella badoninetwork.aziende_waiting: ~1 rows (circa)
-INSERT INTO `aziende_waiting` (`ragione_sociale`, `email`, `telefono`, `indirizzo`, `ruolo`) VALUES
+INSERT INTO `aziende_waiting` (`ragionesociale`, `email`, `telefono`, `indirizzo`, `ruolo`) VALUES
 	('aaa', 'soandrea136@gmail.com', '3342260991', 'via valassina 140', 'USER');
 	
 -- Dump della struttura di tabella badoninetwork.aziende_approved
 CREATE TABLE IF NOT EXISTS `aziende_approved` (
-  `ragione_sociale` varchar(30) NOT NULL,
+  `ragionesociale` varchar(30) NOT NULL,
   `email` varchar(256) NOT NULL,
   `telefono` varchar(30) DEFAULT NULL,
   `indirizzo` varchar(30) DEFAULT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `aziende_approved` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- Dump dei dati della tabella badoninetwork.aziende_approved: ~775 rows (circa)
-INSERT INTO `aziende_approved` (`ragione_sociale`, `email`, `telefono`, `indirizzo`, `password`) VALUES
+INSERT INTO `aziende_approved` (`ragionesociale`, `email`, `telefono`, `indirizzo`, `password`) VALUES
 	('ZEST GAMING SRL', 'amministrazione@zest-gaming.com', '0341 222011', 'VIA ROMA 32/F , PESCATE 23855', NULL),
 	('ZELANDO di Lorenzo Longatelli', 'amministrazione@zelando.com', '0341 254974', 'VICOLO DELLA TORRE 15 , LECCO 23900', NULL),
 	('YETOPEN SRL', 'amministrazione@yetopen.com', '0341 220205', 'C.SO MARTIRI DELLA LIBERAZIONE 114, LECCO 23900', NULL),

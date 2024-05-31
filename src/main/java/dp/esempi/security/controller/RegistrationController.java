@@ -40,7 +40,7 @@ public class RegistrationController {
     }
 
     @PostMapping("/azienda")
-    public String createCompany(HttpSession session, @ModelAttribute("company") Azienda azienda, Errors errors) throws MessagingException, IOException {
+    public String createCompany(HttpSession session, @ModelAttribute("company") @Valid Azienda azienda, @ModelAttribute("utente") Utente utente, Errors errors) throws MessagingException, IOException {
         if(errors.hasErrors()) {
             return "register";
         } else {
@@ -49,18 +49,28 @@ public class RegistrationController {
 
             //Controlli
 
+            //! 1) verificare la ragione sociale e l'email se esistono all'interno del database sia waiting che approved
+
+            //? 2) SE NON ESISTE invio la mail alla segreteria per l'approvazione
+            //? 2) SE ESITE 
+                // 2.2 SE ESISTE NEL WAITING mostro un messaggio per dire che la richiesta è già stata fatta
+                // 2.2 SE ESISTE NEL APPROVED dire che l'account è già presente e reindirizzarlo alla login
+                
+            //! 3) NELLA LOGIN
+
+            //? 4) SE HA UNA PASSWORD SETTATA lo faccio accedere normalmente
+            //? 4) SE NON HA UN PASSWORD SETTATA lo porto alla pagina per inserire il codice e proseguire con l'inserimento dati
+
             //Se non ha mai fatto un registrazione => invia email
-            sendEmail(session,azienda.getRagione_sociale(),azienda.getEmail(),azienda.getTelefono(),azienda.getIndirizzo());
+            sendEmail(session,azienda.getRagionesociale(),azienda.getEmail(),azienda.getTelefono(),azienda.getIndirizzo());
             return "redirect:/register/request-sent";
 
             //passaggio di tabella
-
-
         }
     }
 
     @PostMapping("/utente")
-    public String createUser(@ModelAttribute("utente") @Valid Utente utente, Errors errors) {
+    public String createUser(@ModelAttribute("utente") @Valid Utente utente, @ModelAttribute("company") Azienda azienda, Errors errors) {
         if(errors.hasErrors()) {
             return "register";
         } else {
@@ -81,10 +91,10 @@ public class RegistrationController {
         return "requestsent";
     }
 
-    private void sendEmail(HttpSession session, String ragione_sociale, String email, String telefono,String indirizzo) throws MessagingException, IOException {
+    private void sendEmail(HttpSession session, String ragionesociale, String email, String telefono,String indirizzo) throws MessagingException, IOException {
 
         Map<String, Object> templateModel = new HashMap<>();
-        templateModel.put("ragione_sociale", ragione_sociale);
+        templateModel.put("ragionesociale", ragionesociale);
         templateModel.put("email", email);
         templateModel.put("telefono", telefono);
         templateModel.put("indirizzo", indirizzo);
