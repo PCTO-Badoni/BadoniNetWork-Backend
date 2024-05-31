@@ -19,8 +19,6 @@ public class UtenteService implements UserDetailsService {
     @Autowired
     private UtenteRepository utenteRepository;
 
-
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Utente> utente = utenteRepository.findByUsername(username);

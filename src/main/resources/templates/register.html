@@ -69,7 +69,7 @@
     <body>
         <div class="login-container">
             <h2>Register</h2>
-            <form th:object="${utente}" th:action="@{/register}" method="post">
+            <form th:object="${utente}" th:action="@{/register/utente}" method="post">
                 <label for="student-email">Email:</label>
                 <div style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="${utente.email}">Email esistente</div>
                 <input type="text" id="student-email" th:field="${utente.email}" required>
@@ -91,7 +91,7 @@
 
         <div class="login-container">
             <h2>Register</h2>
-            <form th:action="@{/register/send-email}" method="post">
+            <form th:action="@{/register/azienda}" method="post">
                 <label for="ragione-sociale">Ragione sociale:</label>
                 <input type="text" name="ragione_sociale" id="ragione-sociale" required>
                 <label for="company-email">Email:</label>
