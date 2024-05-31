@@ -17,12 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/login")
 @Controller
 public class LoginController {
-    @Autowired
-    private UtenteService utenteService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-
+    
     @GetMapping
     public String login(){
         return "login";

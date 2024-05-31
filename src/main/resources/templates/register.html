@@ -1,109 +1,140 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:color="http://www.w3.org/1999/xhtml">
-<head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-
-        .login-container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            text-align: center;
-            color: #333;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-        }
-
-        input {
-            button:hover {
-                background-color: #45a049;
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Login</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f4;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
             }
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            box-sizing: border-box;
-        }
 
-        button {
-            background-color: #4caf50;
-            color: #fff;
-            padding: 10px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            width: 100%;
-        }
+            .login-container {
+                background-color: #fff;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
 
-        button:hover > :not(:hover) {
-            opacity: 0.5;
-        }
+            h2 {
+                text-align: center;
+                color: #333;
+            }
+
+            label {
+                display: block;
+                margin-bottom: 8px;
+                color: #333;
+            }
+
+            input {
+                button:hover {
+                    background-color: #45a049;
+                }
+                width: 100%;
+                padding: 10px;
+                margin-bottom: 10px;
+                box-sizing: border-box;
+            }
+
+            button {
+                background-color: #4caf50;
+                color: #fff;
+                padding: 10px;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                width: 100%;
+            }
+
+            button:hover > :not(:hover) {
+                opacity: 0.5;
+            }
+
+            #loginButton {
+                margin-top: 10px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="login-container">
+            <h2>Register</h2>
+            <form th:object="${utente}" th:action="@{/register}" method="post">
+                <label for="student-email">Email:</label>
+                <div style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="${utente.email}">Email esistente</div>
+                <input type="text" id="student-email" th:field="${utente.email}" required>
+                <label for="student-username">Username:</label>
+                <div style="color: red" th:if="${#fields.hasErrors('username')}" th:errors="${utente.username}">Username non disponibile</div>
+                <input type="text" id="student-username" th:field="${utente.username}" required/>
+
 
         #loginButton {
             margin-top: 10px;
         }
     </style>
+    <script>
+        $(document).ready(function() {
+            $("form").on("submit", function(event) {
+                var password = $("#student-password").val();
+                var confirmPassword = $("#student-passwordConf").val();
+
+                var regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+                if (password !== confirmPassword) {
+                    event.preventDefault();
+                    alert("Le password non corrispondono");
+                    event.preventDefault();
+                    alert("La password deve contenere almeno 8 caratteri, almeno un numero, almeno una lettera, almeno un carattere non alfanumerico e almeno una maiuscola");
+                }
+            });
+        });
+    </script>
 </head>
 <body>
 <div class="login-container">
     <h2>Register</h2>
     <form th:object="${utente}" th:action="@{/register}" method="post">
         <label for="student-email">Email:</label>
-        <div style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="${utente.email}">Email esistente</div>
+        <div style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="${utente.email}">Email non valida</div>
         <input type="text" id="student-email" th:field="${utente.email}" required>
         <label for="student-username">Username:</label>
         <div style="color: red" th:if="${#fields.hasErrors('username')}" th:errors="${utente.username}">Username non disponibile</div>
         <input type="text" id="student-username" th:field="${utente.username}" required/>
 
-        <label for="student-password">Password:</label>
-        <input type="password" id="student-password" th:field="${utente.password}" required>
-        <label for="student-passwordConf">Conferma Password:</label>
-        <input type="password" id="student-passwordConf" name="passwordConf" required>
+                <button type="submit" class="button">Register</button>
+            </form>
+            <form action="/login" method="get">
+                <button class="button" id="student-loginButton">Login</button>
+            </form>
+        </div>
 
-        <button type="submit" class="button">Register</button>
-    </form>
-    <form action="/login" method="get">
-        <button class="button" id="student-loginButton">Login</button>
-    </form>
-</div>
-<div class="login-container">
-    <h2>Register</h2>
-    <form action="/register/send-email" method="post">
-        <label for="ragione-sociale">Ragione sociale:</label>
-        <input type="text" name="ragione_sociale" id="ragione-sociale" required>
-        <label for="company-email">Email:</label>
-        <input type="text" name="email" id="company-email" required>
-        <label for="telefono">Telefono:</label>
-        <input type="text" name="telefono" id="telefono" required>
-        <label for="indirizzo">Indirizzo:</label>
-        <input type="text" name="indirizzo" id="indirizzo" required>
+        <div class="login-container">
+            <h2>Register</h2>
+            <form th:action="@{/register/send-email}" method="post">
+                <label for="ragione-sociale">Ragione sociale:</label>
+                <input type="text" name="ragione_sociale" id="ragione-sociale" required>
+                <label for="company-email">Email:</label>
+                <input type="text" name="email" id="company-email" required>
+                <label for="telefono">Telefono:</label>
+                <input type="text" name="telefono" id="telefono" required>
+                <label for="indirizzo">Indirizzo:</label>
+                <input type="text" name="indirizzo" id="indirizzo" required>
 
-        <button type="submit" class="button" id="company-registerButton">Register</button>
-    </form>
-    <form action="/login" method="get">
-        <button class="button" id="loginButton">Login</button>
-    </form>
-</div>
-</body>
+                <button type="submit" class="button" id="company-registerButton">Register</button>
+            </form>
+            <form action="/login" method="get">
+                <button class="button" id="loginButton">Login</button>
+            </form>
+        </div>
+    </body>
 </html>

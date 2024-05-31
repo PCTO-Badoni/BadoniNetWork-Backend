@@ -1,6 +1,5 @@
 package dp.esempi.security.validation;
 
-import dp.esempi.security.model.Utente;
 import dp.esempi.security.service.UtenteService;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
