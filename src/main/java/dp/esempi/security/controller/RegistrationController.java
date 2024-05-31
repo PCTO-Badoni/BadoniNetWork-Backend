@@ -2,16 +2,20 @@ package dp.esempi.security.controller;
 
 import dp.esempi.security.model.Utente;
 import dp.esempi.security.repository.UtenteRepository;
+import dp.esempi.security.service.EmailService;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @RequestMapping("/register")
 @Controller
@@ -20,8 +24,8 @@ public class RegistrationController {
     private UtenteRepository utenteRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-
+    @Autowired
+    private EmailService emailService;
 
     @GetMapping
     public String register(Model model) {
@@ -43,5 +47,24 @@ public class RegistrationController {
             utenteRepository.save(utente);
             return "redirect:/login";
         }
+    }
+
+    @GetMapping("/request-sent")
+    public String sentRequest() {
+        return "requestsent";
+    }
+
+    @PostMapping("/send-email")
+    public RedirectView sendEmail(@RequestParam String ragione_sociale, @RequestParam String email, @RequestParam String telefono, @RequestParam String indirizzo) throws MessagingException, IOException {
+
+        Map<String, Object> templateModel = new HashMap<>();
+        templateModel.put("ragione_sociale", ragione_sociale);
+        templateModel.put("email", email);
+        templateModel.put("telefono", telefono);
+        templateModel.put("indirizzo", indirizzo);
+        templateModel.put("id", email);
+
+        emailService.sendHtmlMessage("vssptr05a13d416z@iisbadoni.edu.it", "Richiesta account Badoni NetWork", templateModel, "account-request-template");
+        return new RedirectView("/register/request-sent");
     }
 }

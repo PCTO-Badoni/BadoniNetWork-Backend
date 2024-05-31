@@ -55,24 +55,5 @@ public class MainController {
         emailService.sendHtmlMessage("vssptr05a13d416z@iisbadoni.edu.it", "Risposta account Badoni NetWork", templateModel, "request-deny-template");
         return "message";
     }
-
-    @GetMapping("/register/request-sent")
-    public String sentRequest() {
-        return "requestsent";
-    }
-
-    @PostMapping("/register/send-email")
-    public RedirectView sendEmail(@RequestParam String ragione_sociale, @RequestParam String email, @RequestParam String telefono, @RequestParam String indirizzo) throws MessagingException, IOException {
-
-        Map<String, Object> templateModel = new HashMap<>();
-        templateModel.put("ragione_sociale", ragione_sociale);
-        templateModel.put("email", email);
-        templateModel.put("telefono", telefono);
-        templateModel.put("indirizzo", indirizzo);
-        templateModel.put("id", email);
-
-        emailService.sendHtmlMessage("vssptr05a13d416z@iisbadoni.edu.it", "Richiesta account Badoni NetWork", templateModel, "account-request-template");
-        return new RedirectView("/register/request-sent");
-    }
 }
 
