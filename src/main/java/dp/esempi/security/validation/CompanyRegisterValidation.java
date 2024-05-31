@@ -1,7 +1,8 @@
 package dp.esempi.security.validation;
 
+import dp.esempi.security.model.Azienda;
 import dp.esempi.security.model.Utente;
-import dp.esempi.security.repository.UtenteRepository;
+import dp.esempi.security.repository.AziendaRepository;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.context.annotation.Bean;
@@ -12,43 +13,42 @@ import java.util.Optional;
 @SuppressWarnings("unused")
 @Configuration
 @Component
-public class RegisterValidation implements ConstraintValidator<UtenteValido, Utente>{
+public class CompanyRegisterValidation implements ConstraintValidator<AziendaValida, Azienda>{
 
-    private static final RegisterValidation holder=new RegisterValidation();
-    private UtenteRepository utenteRepository;
+    private static final CompanyRegisterValidation holder= new CompanyRegisterValidation();
+    private AziendaRepository aziendaRepository;
 
-    @Bean(name = "user_validator")
-    public static RegisterValidation bean(UtenteRepository utenteRepository) {
-        holder.utenteRepository=utenteRepository;
+    @Bean(name = "company_validator")
+    public static CompanyRegisterValidation bean(AziendaRepository aziendaRepository) {
+        holder.aziendaRepository=aziendaRepository;
         return holder;
     }
 
     @Override
-    public void initialize(UtenteValido constraintAnnotation) {
+    public void initialize(AziendaValida constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
     }
 
     @Override
-    public boolean isValid(Utente u, ConstraintValidatorContext constraintValidatorContext) {
+    public boolean isValid(Azienda u, ConstraintValidatorContext constraintValidatorContext) {
         boolean valido=true;
-        Optional<Utente> utenteFind=holder.utenteRepository.findByEmail(u.getEmail());
-        if(!utenteFind.isEmpty()) {
+        Optional<Azienda> aziendaFind=holder.aziendaRepository.findByEmail(u.getEmail());
+        if(!aziendaFind.isEmpty()) {
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate("Email già esistente")
                     .addPropertyNode("email")
                     .addConstraintViolation();
             valido=false;
         }
-        utenteFind=holder.utenteRepository.findByUsername(u.getUsername());
-        if(!utenteFind.isEmpty()) {
+
+        aziendaFind=holder.aziendaRepository.findByragionesociale(u.getRagionesociale());
+        if(!aziendaFind.isEmpty()) {
             constraintValidatorContext.disableDefaultConstraintViolation();
-            constraintValidatorContext.buildConstraintViolationWithTemplate("Username già esistente")
-                    .addPropertyNode("username")
+            constraintValidatorContext.buildConstraintViolationWithTemplate("Ragione Sociale già esistente")
+                    .addPropertyNode("ragionesociale")
                     .addConstraintViolation();
             return false;
         }
-
-        System.out.println("Utente valido");
         return valido;
     }
 

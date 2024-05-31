@@ -1,6 +1,7 @@
 package dp.esempi.security.service;
 
 import dp.esempi.security.model.Azienda;
+import dp.esempi.security.model.Utente;
 import dp.esempi.security.repository.AziendaRepository;
 import dp.esempi.security.repository.UtenteRepository;
 
@@ -30,12 +31,16 @@ public class AziendaService implements UserDetailsService {
         if(azienda.isPresent()) {
             var company = azienda.get();
             return User.builder()
-                    .username(company.getRagione_sociale())
+                    .username(company.getRagionesociale())
                     .roles(getRoles(company))
                     .build();
         } else {
             throw new UsernameNotFoundException(username);
         }
+    }
+
+    public Optional<Azienda> getBySocialRagion(String ragionesociale) {
+        return aziendaRepository.findByragionesociale(ragionesociale);
     }
 
     public Optional<Azienda> getByEmail(String email) {
