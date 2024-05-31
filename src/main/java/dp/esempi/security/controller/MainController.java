@@ -4,20 +4,20 @@ import dp.esempi.security.service.EmailService;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-
-@CrossOrigin
-@RestController
+@SuppressWarnings("unused")
+@Controller
 public class MainController {
+
     @Autowired
     private EmailService emailService;
-
+    
     Random random = new Random();
 
     @GetMapping("/")
@@ -46,11 +46,11 @@ public class MainController {
         emailService.sendHtmlMessage(email, "Accettazione account", templateModel, "request-response-template");
         return "message";
     }
-  
+
     @GetMapping("/admin/deny-request/{email}")
     public String denyRequest(@PathVariable String email) throws MessagingException, IOException {
         Map<String, Object> templateModel = new HashMap<>();
-        emailService.sendHtmlMessage("vssptr05a13d416z@iisbadoni.edu.it", "Risposta account Badoni NetWork", templateModel, "request-deny-template");
+        emailService.sendHtmlMessage(email, "Richiesta account Badoni NetWork", templateModel, "account-request-template");
         return "message";
     }
 }

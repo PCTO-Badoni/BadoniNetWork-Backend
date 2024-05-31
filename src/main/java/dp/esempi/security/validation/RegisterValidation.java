@@ -8,7 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
-
+@SuppressWarnings("unused")
+@Configuration
 @Component
 public class RegisterValidation implements ConstraintValidator<UtenteValido, Utente>{
 
