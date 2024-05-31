@@ -24,8 +24,8 @@ public class MainController {
 
     @GetMapping("/")
     public String index(){
-            return "login";
-        }
+        return "index";
+    }
 
     @GetMapping("/admin/home")
     public String admin(){
@@ -37,7 +37,7 @@ public class MainController {
         return "user";
     }
 
-    @GetMapping("/register/accept-request/{email}")
+    @GetMapping("/admin/accept-request/{email}")
     public String acceptRequest(@PathVariable String email) throws MessagingException, IOException {
 
         int randomNumber = random.nextInt(1000000);
@@ -49,8 +49,10 @@ public class MainController {
         return "message";
     }
 
-    @GetMapping("/register/deny-request")
-    public String denyRequest() {
+    @GetMapping("/admin/deny-request/{email}")
+    public String denyRequest(@PathVariable String email) throws MessagingException, IOException {
+        Map<String, Object> templateModel = new HashMap<>();
+        emailService.sendHtmlMessage("srmndr06p13e507g@iisbadoni.edu.it", "Richiesta account Badoni NetWork", templateModel, "account-request-template");
         return "message";
     }
 
@@ -69,7 +71,7 @@ public class MainController {
         templateModel.put("indirizzo", indirizzo);
         templateModel.put("id", email);
 
-        emailService.sendHtmlMessage("cfrgnn06m28e507h@iisbadoni.edu.it", "Richiesta account Badoni NetWork", templateModel, "account-request-template");
+        emailService.sendHtmlMessage("srmndr06p13e507g@iisbadoni.edu.it", "Richiesta account Badoni NetWork", templateModel, "account-request-template");
         return new RedirectView("/register/request-sent");
     }
 }
