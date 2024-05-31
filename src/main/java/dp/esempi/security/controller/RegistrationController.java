@@ -18,8 +18,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+@CrossOrigin
 @RequestMapping("/register")
-@Controller
+@RestController
 public class RegistrationController {
     @Autowired
     private UtenteRepository utenteRepository;
