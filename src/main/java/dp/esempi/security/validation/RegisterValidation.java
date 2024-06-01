@@ -5,6 +5,7 @@ import dp.esempi.security.repository.UtenteRepository;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -38,15 +39,7 @@ public class RegisterValidation implements ConstraintValidator<UtenteValido, Ute
                     .addConstraintViolation();
             valido=false;
         }
-        System.out.println(u.getEmail());
-        if(!u.getEmail().endsWith("@iisbadoni.edu.it")) {
-            constraintValidatorContext.disableDefaultConstraintViolation();
-            constraintValidatorContext.buildConstraintViolationWithTemplate("Email non valida")
-                    .addPropertyNode("email")
-                    .addConstraintViolation();
-            valido=false;
-        }
-        utenteFind=holder.utenteRepository.findByUsername(u.getUsername());
+        utenteFind=holder.utenteRepository.findByUsername(u.getEmail());
         if(!utenteFind.isEmpty()) {
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate("Username già esistente")

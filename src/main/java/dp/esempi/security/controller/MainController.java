@@ -4,6 +4,7 @@ import dp.esempi.security.service.EmailService;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -13,6 +14,7 @@ import java.util.Map;
 import java.util.Random;
 @SuppressWarnings("unused")
 @Controller
+@CrossOrigin
 public class MainController {
 
     @Autowired

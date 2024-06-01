@@ -14,17 +14,18 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
--- Dump della struttura del database abbonati1
+DROP DATABASE IF EXISTS badoninetwork;
+-- Dump della struttura del database badoninetwork
 CREATE DATABASE IF NOT EXISTS `badoninetwork` /*!40100 DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci */;
 USE `badoninetwork`;
 
 -- Dump della struttura di tabella badoninetwork.aziende_waiting
 CREATE TABLE IF NOT EXISTS `aziende_waiting` (
-  `ragionesociale` varchar(30) NOT NULL,
+  `ragionesociale` varchar(256) NOT NULL,
   `email` varchar(256) NOT NULL,
-  `telefono` varchar(30) DEFAULT NULL,
-  `indirizzo` varchar(30) DEFAULT NULL,
-  `ruolo` varchar(30) DEFAULT NULL
+  `telefono` varchar(256) DEFAULT NULL,
+  `indirizzo` varchar(256) DEFAULT NULL,
+  `ruolo` varchar(256) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- Dump dei dati della tabella badoninetwork.aziende_waiting: ~1 rows (circa)
@@ -33,11 +34,11 @@ INSERT INTO `aziende_waiting` (`ragionesociale`, `email`, `telefono`, `indirizzo
 	
 -- Dump della struttura di tabella badoninetwork.aziende_approved
 CREATE TABLE IF NOT EXISTS `aziende_approved` (
-  `ragionesociale` varchar(30) NOT NULL,
+  `ragionesociale` varchar(256) NOT NULL,
   `email` varchar(256) NOT NULL,
-  `telefono` varchar(30) DEFAULT NULL,
-  `indirizzo` varchar(30) DEFAULT NULL,
-  `password` varchar(30) DEFAULT NULL
+  `telefono` varchar(256) DEFAULT NULL,
+  `indirizzo` varchar(256) DEFAULT NULL,
+  `password` varchar(256) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- Dump dei dati della tabella badoninetwork.aziende_approved: ~775 rows (circa)
@@ -820,14 +821,14 @@ INSERT INTO `aziende_approved` (`ragionesociale`, `email`, `telefono`, `indirizz
 
 -- Dump della struttura di tabella badoninetwork.utenti
 CREATE TABLE IF NOT EXISTS `utenti` (
-  `username` varchar(30) NOT NULL,
+  `username` varchar(256) NOT NULL,
   `password` varchar(256) NOT NULL,
-  `cognome` varchar(30) DEFAULT NULL,
-  `nome` varchar(30) DEFAULT NULL,
-  `citta` varchar(30) DEFAULT NULL,
+  `cognome` varchar(256) DEFAULT NULL,
+  `nome` varchar(256) DEFAULT NULL,
+  `citta` varchar(256) DEFAULT NULL,
   `dataNascita` date DEFAULT NULL,
-  `email` varchar(50) DEFAULT NULL,
-  `ruolo` varchar(50) DEFAULT 'USER'
+  `email` varchar(256) DEFAULT NULL,
+  `ruolo` varchar(256) DEFAULT 'USER'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- Dump dei dati della tabella badoninetwork.utenti: ~6 rows (circa)

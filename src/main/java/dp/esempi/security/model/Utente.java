@@ -16,7 +16,9 @@ public class Utente {
 
     @Id
 
+    private String nome;
     private String username;
+    private String cognome;
     private String email;
     private String password;
     @Column(name="ruolo")
@@ -25,7 +27,8 @@ public class Utente {
     @Override
     public String toString() {
         return "Utente{" +
-                "username='" + username + '\'' +
+                "nome='" + nome + '\'' +
+                ", cognome='" + cognome + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", role='" + role + '\'' +
