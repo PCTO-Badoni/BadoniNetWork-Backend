@@ -19,9 +19,11 @@ import org.springframework.web.servlet.view.RedirectView;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @RequestMapping("/register")
 @Controller
+@CrossOrigin
 public class RegistrationController {
     @Autowired
     private UtenteRepository utenteRepository;
@@ -44,6 +46,7 @@ public class RegistrationController {
         if(errors.hasErrors()) {
             return "register";
         } else {
+            // Set the primary key of the azienda entity
             azienda.setRole("USER");
             aziendaRepository.save(azienda);
 
@@ -74,10 +77,11 @@ public class RegistrationController {
         if(errors.hasErrors()) {
             return "register";
         } else {
+            System.out.println("prova");
             utente.setPassword(passwordEncoder.encode(utente.getPassword()));
             utente.setRole("USER");
             utenteRepository.save(utente);
-            return "redirect:/login";
+            return null;
         }
     }
 

@@ -26,10 +26,10 @@ public class UtenteService implements UserDetailsService {
         if(utente.isPresent()) {
             var user = utente.get();
             return User.builder()
-                    .username(user.getUsername())
+                    .username(user.getEmail())
                     .password(user.getPassword())
-                    .roles(getRoles(user))
-                    .build();
+                    .roles(getRoles(user)).build();
+
         } else {
             throw new UsernameNotFoundException(username);
         }
