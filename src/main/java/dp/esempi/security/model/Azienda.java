@@ -15,7 +15,6 @@ import lombok.*;
 public class Azienda {
 
     @Id
-    @Column(name="ragionesociale")
     private String ragionesociale;
     private String email;
     private String telefono;

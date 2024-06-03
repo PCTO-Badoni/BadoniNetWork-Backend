@@ -13,7 +13,7 @@ public record LoginValidation(UtenteService utenteService) implements Constraint
 
     @Override
     public boolean isValid(String u, ConstraintValidatorContext constraintValidatorContext) {
-        if(utenteService.getByUsername(u) == null) {
+        if(utenteService.getByEmail(u) == null) {
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate("Username non valido")
                     .addPropertyNode("username")

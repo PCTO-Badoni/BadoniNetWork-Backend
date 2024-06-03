@@ -14,25 +14,82 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-DROP DATABASE IF EXISTS badoninetwork;
--- Dump della struttura del database badoninetwork
-CREATE DATABASE IF NOT EXISTS `badoninetwork` /*!40100 DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci */;
-USE `badoninetwork`;
 
--- Dump della struttura di tabella badoninetwork.aziende_waiting
-CREATE TABLE IF NOT EXISTS `aziende_waiting` (
-  `ragionesociale` varchar(256) NOT NULL,
-  `email` varchar(256) NOT NULL,
-  `telefono` varchar(256) DEFAULT NULL,
+-- Dump della struttura del database network
+DROP DATABASE IF EXISTS `network`;
+CREATE DATABASE IF NOT EXISTS `network` /*!40100 DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci */;
+USE `network`;
+
+-- Dump della struttura di tabella network.altresedi
+CREATE TABLE IF NOT EXISTS `altresedi` (
+  `idsedi` int(11) NOT NULL AUTO_INCREMENT,
+  `email` varchar(50) DEFAULT NULL,
   `indirizzo` varchar(256) DEFAULT NULL,
-  `ruolo` varchar(256) DEFAULT NULL
+  `cap` varchar(30) DEFAULT NULL,
+  `citta` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`idsedi`) USING BTREE,
+  KEY `FK_altresedi_azienda` (`email`),
+  CONSTRAINT `FK_altresedi_azienda` FOREIGN KEY (`email`) REFERENCES `azienda` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Dump dei dati della tabella badoninetwork.aziende_waiting: ~1 rows (circa)
-INSERT INTO `aziende_waiting` (`ragionesociale`, `email`, `telefono`, `indirizzo`, `ruolo`) VALUES
-	('aaa', 'soandrea136@gmail.com', '3342260991', 'via valassina 140', 'USER');
-	
--- Dump della struttura di tabella badoninetwork.aziende_approved
+-- Dump dei dati della tabella network.altresedi: ~0 rows (circa)
+
+-- Dump della struttura di tabella network.area
+CREATE TABLE IF NOT EXISTS `area` (
+  `idarea` int(11) NOT NULL AUTO_INCREMENT,
+  `descrizione` varchar(256) DEFAULT NULL,
+  PRIMARY KEY (`idarea`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci COMMENT='Indica l''area in cui opera un''azienda';
+
+-- Dump dei dati della tabella network.area: ~4 rows (circa)
+INSERT INTO `area` (`idarea`, `descrizione`) VALUES
+	(1, 'Informatica'),
+	(2, 'Elettrotecnica'),
+	(3, 'Meccanica'),
+	(4, 'Altro');
+
+-- Dump della struttura di tabella network.articolazione
+CREATE TABLE IF NOT EXISTS `articolazione` (
+  `idarticolazione` varchar(50) NOT NULL,
+  `descrizione` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`idarticolazione`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- Dump dei dati della tabella network.articolazione: ~8 rows (circa)
+INSERT INTO `articolazione` (`idarticolazione`, `descrizione`) VALUES
+	('AUT', 'Automazione'),
+	('ELE', 'Elettrotecnica'),
+	('ELS', 'Elettronica'),
+	('INF', 'Informatica'),
+	('LIC', 'Liceo Scientifico delle Scienze Applicate'),
+	('MEC', 'Meccanica e Meccatronica'),
+	('MEE', 'Energia'),
+	('TEL', 'Telecomunicazioni');
+
+-- Dump della struttura di tabella network.azienda
+CREATE TABLE IF NOT EXISTS `azienda` (
+  `email` varchar(100) NOT NULL,
+  `password` varchar(256) DEFAULT NULL,
+  `ragionesociale` varchar(256) DEFAULT NULL,
+  `indirizzo` varchar(256) DEFAULT NULL,
+  `citta` varchar(50) DEFAULT NULL,
+  `cap` varchar(30) DEFAULT NULL,
+  `telefono` varchar(30) DEFAULT NULL,
+  `cognomereferente` varchar(50) DEFAULT NULL,
+  `nomereferente` varchar(50) DEFAULT NULL,
+  `telreferente` varchar(30) DEFAULT NULL,
+  `emmailreferente` varchar(50) DEFAULT NULL,
+  `ultimoaccesso` date DEFAULT NULL,
+  `idarea` int(11) DEFAULT NULL,
+  `ruolo` varchar(50) DEFAULT 'AZIENDA',
+  PRIMARY KEY (`email`),
+  KEY `FK_azienda_area` (`idarea`),
+  CONSTRAINT `FK_azienda_area` FOREIGN KEY (`idarea`) REFERENCES `area` (`idarea`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- Dump dei dati della tabella network.azienda: ~0 rows (circa)
+
+-- Dump della struttura di tabella network.aziende_approved
 CREATE TABLE IF NOT EXISTS `aziende_approved` (
   `ragionesociale` varchar(256) NOT NULL,
   `email` varchar(256) NOT NULL,
@@ -41,7 +98,7 @@ CREATE TABLE IF NOT EXISTS `aziende_approved` (
   `password` varchar(256) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Dump dei dati della tabella badoninetwork.aziende_approved: ~775 rows (circa)
+-- Dump dei dati della tabella network.aziende_approved: ~775 rows (circa)
 INSERT INTO `aziende_approved` (`ragionesociale`, `email`, `telefono`, `indirizzo`, `password`) VALUES
 	('ZEST GAMING SRL', 'amministrazione@zest-gaming.com', '0341 222011', 'VIA ROMA 32/F , PESCATE 23855', NULL),
 	('ZELANDO di Lorenzo Longatelli', 'amministrazione@zelando.com', '0341 254974', 'VICOLO DELLA TORRE 15 , LECCO 23900', NULL),
@@ -819,26 +876,175 @@ INSERT INTO `aziende_approved` (`ragionesociale`, `email`, `telefono`, `indirizz
 	('3A AUTOMATION SRL', 'info@3aautomation.com', '031 3110204', 'VIA CALVENZANA INFERIORE  20 , ROGENO 23849', NULL),
 	('2P SPA', 'COMMERCIALASSISTENT@2PSPA.IT', '031 874435', 'VIA LOMBARDIA 26 , BULCIAGO 23892', NULL);
 
--- Dump della struttura di tabella badoninetwork.utenti
-CREATE TABLE IF NOT EXISTS `utenti` (
-  `username` varchar(256) NOT NULL,
-  `password` varchar(256) NOT NULL,
-  `cognome` varchar(256) DEFAULT NULL,
-  `nome` varchar(256) DEFAULT NULL,
-  `citta` varchar(256) DEFAULT NULL,
-  `dataNascita` date DEFAULT NULL,
-  `email` varchar(256) DEFAULT NULL,
-  `ruolo` varchar(256) DEFAULT 'USER'
+-- Dump della struttura di tabella network.aziende_waiting
+CREATE TABLE IF NOT EXISTS `aziende_waiting` (
+  `ragionesociale` varchar(256) NOT NULL,
+  `email` varchar(256) NOT NULL,
+  `telefono` varchar(256) DEFAULT NULL,
+  `indirizzo` varchar(256) DEFAULT NULL,
+  `ruolo` varchar(256) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Dump dei dati della tabella badoninetwork.utenti: ~6 rows (circa)
-INSERT INTO `utenti` (`username`, `password`, `cognome`, `nome`, `citta`, `dataNascita`, `email`, `ruolo`) VALUES
-	('admin', '{bcrypt}$2y$10$Qs4vrW1.Bsjvp58utRsiEOuOCvqrbJau/rr1GJD2L8IAjNyMfddj6', 'Amministratore', 'Sito', 'Lecco', '1970-04-10', 'admin@gmail.com', 'ADMIN'),
-	('federico', '{bcrypt}$2y$10$Qs4vrW1.Bsjvp58utRsiEOuOCvqrbJau/rr1GJD2L8IAjNyMfddj6', 'Neri', 'Federico', 'Milano', '2009-04-17', 'email@it', 'USER'),
-	('luca', '{bcrypt}$2y$10$Qs4vrW1.Bsjvp58utRsiEOuOCvqrbJau/rr1GJD2L8IAjNyMfddj6', 'Rossi', 'Luca', 'Milano', '1995-12-05', 'email@it', 'USER'),
-	('marco', '{bcrypt}$2y$10$Qs4vrW1.Bsjvp58utRsiEOuOCvqrbJau/rr1GJD2L8IAjNyMfddj6', 'D\'Amato', 'marco', 'Lecco', '2010-04-03', 'email@it', 'USER'),
-	('paolo', '{bcrypt}$2y$10$Qs4vrW1.Bsjvp58utRsiEOuOCvqrbJau/rr1GJD2L8IAjNyMfddj6', 'Bianchi', 'Paolo', 'Lecco', '2019-04-03', 'email@it', 'USER'),
-	('pippo', '{bcrypt}$2a$10$zyU8W5HX1.M1J1DfJXPEse.n2ZX.kXBPhwKAh7nktIwUe5dZI.z2m', NULL, NULL, NULL, NULL, 'srmndr06p13e507g@iisbadoni.edu.it', 'USER');
+-- Dump dei dati della tabella network.aziende_waiting: ~1 rows (circa)
+INSERT INTO `aziende_waiting` (`ragionesociale`, `email`, `telefono`, `indirizzo`, `ruolo`) VALUES
+	('aaa', 'soandrea136@gmail.com', '3342260991', 'via valassina 140', 'USER');
+
+-- Dump della struttura di tabella network.competenze
+CREATE TABLE IF NOT EXISTS `competenze` (
+  `idcompetenza` int(11) NOT NULL AUTO_INCREMENT,
+  `descrizione` varchar(256) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`idcompetenza`)
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- Dump dei dati della tabella network.competenze: ~39 rows (circa)
+INSERT INTO `competenze` (`idcompetenza`, `descrizione`) VALUES
+	(1, 'Java'),
+	(2, 'JavaFX'),
+	(3, 'JavaScript'),
+	(4, 'Python'),
+	(5, 'C'),
+	(6, 'C++'),
+	(7, 'C#'),
+	(8, 'MongoDB'),
+	(9, 'SceneBuilder'),
+	(10, 'HTML'),
+	(11, 'Packet Tracer'),
+	(12, 'Cisco'),
+	(13, 'CAD'),
+	(14, 'CSS'),
+	(15, 'Sistemi'),
+	(16, 'Arduino'),
+	(17, 'PHP'),
+	(18, 'DataBase'),
+	(19, 'Labview'),
+	(20, 'Impianti civili e industriali'),
+	(21, 'Excel'),
+	(22, 'FlowGorithm'),
+	(23, 'Circuiti'),
+	(24, 'Sicurezza'),
+	(25, 'Assembly'),
+	(26, 'React'),
+	(27, 'Angular'),
+	(28, 'Go'),
+	(29, 'Gimp'),
+	(30, 'Cyber Security'),
+	(31, 'Tornio'),
+	(32, 'Fresa'),
+	(33, 'Word'),
+	(34, 'Multisim'),
+	(35, 'PowerPoint'),
+	(36, 'Latex'),
+	(37, 'Cablaggio'),
+	(38, 'Plc'),
+	(39, 'Sensori');
+
+-- Dump della struttura di tabella network.competenzestudenti
+CREATE TABLE IF NOT EXISTS `competenzestudenti` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `email` varchar(100) DEFAULT NULL,
+  `idcompetenza` int(11) DEFAULT NULL,
+  `idlivello` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_competenzestudenti_livellocompetenze` (`idlivello`),
+  KEY `FK_competenzestudenti_competenze` (`idcompetenza`),
+  KEY `FK_competenzestudenti_studente` (`email`),
+  CONSTRAINT `FK_competenzestudenti_competenze` FOREIGN KEY (`idcompetenza`) REFERENCES `competenze` (`idcompetenza`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_competenzestudenti_livellocompetenze` FOREIGN KEY (`idlivello`) REFERENCES `livellocompetenze` (`idlivello`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_competenzestudenti_studente` FOREIGN KEY (`email`) REFERENCES `studente` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- Dump dei dati della tabella network.competenzestudenti: ~0 rows (circa)
+
+-- Dump della struttura di tabella network.contatti
+CREATE TABLE IF NOT EXISTS `contatti` (
+  `idcontatto` int(11) NOT NULL AUTO_INCREMENT,
+  `emailstudente` varchar(50) DEFAULT NULL,
+  `emailazienda` varchar(50) DEFAULT NULL,
+  `tipo` enum('AS','SA') DEFAULT 'AS' COMMENT 'AS azienda contatta studente; SA Studente contatta azienda',
+  `dataora` timestamp NULL DEFAULT NULL,
+  `visualizzato` enum('Y','N') DEFAULT NULL,
+  `messaggio` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (`idcontatto`),
+  KEY `FK_contatti_studente` (`emailstudente`),
+  KEY `FK_contatti_azienda` (`emailazienda`),
+  CONSTRAINT `FK_contatti_azienda` FOREIGN KEY (`emailazienda`) REFERENCES `azienda` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_contatti_studente` FOREIGN KEY (`emailstudente`) REFERENCES `studente` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- Dump dei dati della tabella network.contatti: ~0 rows (circa)
+
+-- Dump della struttura di tabella network.lingue
+CREATE TABLE IF NOT EXISTS `lingue` (
+  `idlingua` int(11) NOT NULL AUTO_INCREMENT,
+  `descrizione` varchar(256) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`idlingua`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- Dump dei dati della tabella network.lingue: ~9 rows (circa)
+INSERT INTO `lingue` (`idlingua`, `descrizione`) VALUES
+	(1, 'Inglese'),
+	(2, 'Francese'),
+	(3, 'Tedesco'),
+	(4, 'Spagnolo'),
+	(5, 'Portoghese'),
+	(6, 'Giapponese'),
+	(7, 'Cinese'),
+	(8, 'Arabo'),
+	(9, 'Serbo');
+
+-- Dump della struttura di tabella network.linguestudenti
+CREATE TABLE IF NOT EXISTS `linguestudenti` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `idlingua` int(11) DEFAULT NULL,
+  `username` varchar(100) DEFAULT NULL,
+  `idlivello` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_linguestudenti_lingue` (`idlingua`),
+  KEY `FK_linguestudenti_studente` (`username`),
+  KEY `FK_linguestudenti_livellocompetenze` (`idlivello`),
+  CONSTRAINT `FK_linguestudenti_lingue` FOREIGN KEY (`idlingua`) REFERENCES `lingue` (`idlingua`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_linguestudenti_livellocompetenze` FOREIGN KEY (`idlivello`) REFERENCES `livellocompetenze` (`idlivello`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_linguestudenti_studente` FOREIGN KEY (`username`) REFERENCES `studente` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- Dump dei dati della tabella network.linguestudenti: ~0 rows (circa)
+
+-- Dump della struttura di tabella network.livellocompetenze
+CREATE TABLE IF NOT EXISTS `livellocompetenze` (
+  `idlivello` varchar(10) NOT NULL,
+  `descrizione` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`idlivello`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- Dump dei dati della tabella network.livellocompetenze: ~3 rows (circa)
+INSERT INTO `livellocompetenze` (`idlivello`, `descrizione`) VALUES
+	('A', 'Avanzato'),
+	('B', 'Base'),
+	('I', 'Intermedio');
+
+-- Dump della struttura di tabella network.studente
+CREATE TABLE IF NOT EXISTS `studente` (
+  `email` varchar(100) NOT NULL,
+  `password` varchar(256) DEFAULT NULL,
+  `cognome` varchar(100) DEFAULT NULL,
+  `nome` varchar(100) DEFAULT NULL,
+  `genere` enum('M','F') DEFAULT NULL,
+  `telefono` varchar(50) DEFAULT NULL,
+  `indirizzo` varchar(200) DEFAULT NULL,
+  `cap` varchar(30) DEFAULT NULL,
+  `citta` varchar(50) DEFAULT NULL,
+  `disponibile` enum('Y','N','P') DEFAULT 'Y' COMMENT 'P=Pausa - Utenti non contattabili ora',
+  `curriculum` varchar(100) DEFAULT NULL,
+  `dataregistrazione` timestamp NULL DEFAULT NULL,
+  `ultimoaccesso` date DEFAULT NULL,
+  `idarticolazione` varchar(50) DEFAULT NULL,
+  `ruolo` varchar(50) DEFAULT 'USER',
+  PRIMARY KEY (`email`),
+  KEY `FK_studente_articolazione` (`idarticolazione`),
+  CONSTRAINT `FK_studente_articolazione` FOREIGN KEY (`idarticolazione`) REFERENCES `articolazione` (`idarticolazione`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- Dump dei dati della tabella network.studente: ~0 rows (circa)
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

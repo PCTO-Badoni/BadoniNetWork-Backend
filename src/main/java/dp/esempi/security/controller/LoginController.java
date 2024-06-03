@@ -11,10 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.bind.annotation.GetMapping;
 
 @RequestMapping("/login")
-@CrossOrigin
+@CrossOrigin(origins = {"http://localhost:3001", "http://127.0.0.1:3001"})
 @RestController
 public class LoginController {
     @Autowired
@@ -28,10 +27,9 @@ public class LoginController {
     }
     
 
-    @PostMapping
+    @PostMapping("/authenticate")
     public Optional<Utente> findUser(@Valid @RequestBody Utente utente, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-        utente.setPassword(passwordEncoder.encode(utente.getPassword()));
-        Optional<Utente> user = utenteService.findByEmailAndPassword(utente.getEmail(), utente.getPassword());
+        Optional<Utente> user = utenteService.findByEmailAndPassword(utente.getEmail(), utente.getPassword(), passwordEncoder);
         if (bindingResult.hasErrors()) {
             String error = bindingResult.getFieldError().getDefaultMessage();
             redirectAttributes.addFlashAttribute("error", error);

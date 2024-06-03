@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -20,8 +21,8 @@ public class UtenteService implements UserDetailsService {
     private UtenteRepository utenteRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Utente> utente = utenteRepository.findByUsername(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<Utente> utente = utenteRepository.findByEmail(email);
 
         if(utente.isPresent()) {
             var user = utente.get();
@@ -31,21 +32,20 @@ public class UtenteService implements UserDetailsService {
                     .roles(getRoles(user)).build();
 
         } else {
-            throw new UsernameNotFoundException(username);
+            throw new UsernameNotFoundException(email);
         }
-    }
-
-    public Optional<Utente> getByUsername(String username) {
-        return utenteRepository.findByUsername(username);
-
     }
 
     public Optional<Utente> getByEmail(String email) {
         return utenteRepository.findByEmail(email);
     }
 
-    public Optional<Utente> findByEmailAndPassword(String email, String password) {
-        return utenteRepository.findByEmailAndPassword(email,password);
+    public Optional<Utente> findByEmailAndPassword(String email, String rawPassword, PasswordEncoder passwordEncoder) {
+        Optional<Utente> user = utenteRepository.findByEmail(email);
+        if (user.isPresent() && passwordEncoder.matches(rawPassword, user.get().getPassword())) {
+            return user;
+        }
+        return Optional.empty();
     }
 
     private String[] getRoles(Utente user) {

@@ -26,7 +26,7 @@ public class WebSecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(registry -> {
-                    registry.requestMatchers("/", "/register/**", "/login").permitAll();
+                    registry.requestMatchers("/", "/register/**", "/login/**").permitAll();
                     registry.requestMatchers("/admin/**").hasRole("ADMIN");
                     registry.requestMatchers("/user/**").hasRole("USER");
                     registry.anyRequest().authenticated();
@@ -34,7 +34,7 @@ public class WebSecurityConfig {
                 .formLogin(formLoginConfigurer -> {
                     formLoginConfigurer
                             .loginPage("/login")
-                            .loginProcessingUrl("/alogin") // Endpoint per l'autenticazione di Spring Security
+                            .loginProcessingUrl("/login/authenticatea") 
                             .successHandler(new AuthenticationSuccessHandler())
                             .permitAll();
                 })

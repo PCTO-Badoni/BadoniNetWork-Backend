@@ -10,14 +10,13 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="utenti")
+@Table(name="studente")
 @UtenteValido
 public class Utente {
 
     @Id
 
     private String nome;
-    private String username;
     private String cognome;
     private String email;
     private String password;

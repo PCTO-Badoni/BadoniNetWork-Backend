@@ -39,7 +39,7 @@ public class RegisterValidation implements ConstraintValidator<UtenteValido, Ute
                     .addConstraintViolation();
             valido=false;
         }
-        utenteFind=holder.utenteRepository.findByUsername(u.getEmail());
+        utenteFind=holder.utenteRepository.findByEmail(u.getEmail());
         if(!utenteFind.isEmpty()) {
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate("Username già esistente")
