@@ -42,7 +42,10 @@ public class UtenteService implements UserDetailsService {
 
     public Optional<Utente> getByEmail(String email) {
         return utenteRepository.findByEmail(email);
+    }
 
+    public Optional<Utente> findByEmailAndPassword(String email, String password) {
+        return utenteRepository.findByEmailAndPassword(email,password);
     }
 
     private String[] getRoles(Utente user) {

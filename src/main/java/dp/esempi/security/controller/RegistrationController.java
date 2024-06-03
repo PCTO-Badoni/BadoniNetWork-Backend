@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @RequestMapping("/register")
-@Controller
+@RestController
 @CrossOrigin
 public class RegistrationController {
     @Autowired
@@ -34,15 +34,8 @@ public class RegistrationController {
     @Autowired
     private EmailService emailService;
 
-    @GetMapping
-    public String register(Model model) {
-        model.addAttribute("utente", new Utente());
-        model.addAttribute("company", new Azienda());
-        return "register";
-    }
-
     @PostMapping("/azienda")
-    public String createCompany(HttpSession session, @ModelAttribute("company") @Valid Azienda azienda, @ModelAttribute("utente") Utente utente, Errors errors) throws MessagingException, IOException {
+    public String createCompany(HttpSession session, @Valid Azienda azienda, Errors errors) throws MessagingException, IOException {
         if(errors.hasErrors()) {
             return "register";
         } else {
@@ -73,11 +66,10 @@ public class RegistrationController {
     }
 
     @PostMapping("/utente")
-    public String createUser(@ModelAttribute("utente") @Valid Utente utente, @ModelAttribute("company") Azienda azienda, Errors errors) {
+    public String createUser(@Valid Utente utente, Errors errors) {
         if(errors.hasErrors()) {
             return "register";
         } else {
-            System.out.println("prova");
             utente.setPassword(passwordEncoder.encode(utente.getPassword()));
             utente.setRole("USER");
             utenteRepository.save(utente);
