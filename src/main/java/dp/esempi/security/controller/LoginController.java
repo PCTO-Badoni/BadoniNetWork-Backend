@@ -20,13 +20,7 @@ public class LoginController {
     private UtenteService utenteService;
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @GetMapping()
-    public String getMethodName() {
-        return "richiesta get";
-    }
     
-
     @PostMapping("/authenticate")
     public Optional<Utente> findUser(@Valid @RequestBody Utente utente, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         Optional<Utente> user = utenteService.findByEmailAndPassword(utente.getEmail(), utente.getPassword(), passwordEncoder);

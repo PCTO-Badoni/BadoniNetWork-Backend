@@ -15,8 +15,8 @@ import lombok.*;
 public class Azienda {
 
     @Id
-    private String ragionesociale;
     private String email;
+    private String ragionesociale;
     private String telefono;
     private String indirizzo;
     @Column(name="ruolo")

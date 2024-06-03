@@ -15,10 +15,9 @@ import lombok.*;
 public class Utente {
 
     @Id
-
+    private String email;
     private String nome;
     private String cognome;
-    private String email;
     private String password;
     @Column(name="ruolo")
     private String role;

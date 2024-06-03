@@ -19,8 +19,6 @@ public class AziendaService implements UserDetailsService {
     @Autowired
     private AziendaRepository aziendaRepository;
 
-
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Azienda> azienda = aziendaRepository.findByEmail(username);

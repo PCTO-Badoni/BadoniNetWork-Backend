@@ -23,21 +23,6 @@ public class MainController {
     
     Random random = new Random();
 
-    @GetMapping("/")
-    public String index(){
-        return "index";
-    }
-
-    @GetMapping("/admin/home")
-    public String admin(){
-        return "admin";
-    }
-
-    @GetMapping("/user/home")
-    public String user(){
-        return "user";
-    }
-
     @GetMapping("/admin/accept-request/{email}")
     public String acceptRequest(@PathVariable String email) throws MessagingException, IOException {
 

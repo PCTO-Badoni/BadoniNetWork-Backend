@@ -887,7 +887,7 @@ CREATE TABLE IF NOT EXISTS `aziende_waiting` (
 
 -- Dump dei dati della tabella network.aziende_waiting: ~1 rows (circa)
 INSERT INTO `aziende_waiting` (`ragionesociale`, `email`, `telefono`, `indirizzo`, `ruolo`) VALUES
-	('aaa', 'soandrea136@gmail.com', '3342260991', 'via valassina 140', 'USER');
+	('a', 'a@a', 'a', 'a', 'USER');
 
 -- Dump della struttura di tabella network.competenze
 CREATE TABLE IF NOT EXISTS `competenze` (
@@ -1033,6 +1033,7 @@ CREATE TABLE IF NOT EXISTS `studente` (
   `indirizzo` varchar(200) DEFAULT NULL,
   `cap` varchar(30) DEFAULT NULL,
   `citta` varchar(50) DEFAULT NULL,
+  `datanascita` date DEFAULT NULL,
   `disponibile` enum('Y','N','P') DEFAULT 'Y' COMMENT 'P=Pausa - Utenti non contattabili ora',
   `curriculum` varchar(100) DEFAULT NULL,
   `dataregistrazione` timestamp NULL DEFAULT NULL,
@@ -1044,7 +1045,11 @@ CREATE TABLE IF NOT EXISTS `studente` (
   CONSTRAINT `FK_studente_articolazione` FOREIGN KEY (`idarticolazione`) REFERENCES `articolazione` (`idarticolazione`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Dump dei dati della tabella network.studente: ~0 rows (circa)
+-- Dump dei dati della tabella network.studente: ~3 rows (circa)
+INSERT INTO `studente` (`email`, `password`, `cognome`, `nome`, `genere`, `telefono`, `indirizzo`, `cap`, `citta`, `datanascita`, `disponibile`, `curriculum`, `dataregistrazione`, `ultimoaccesso`, `idarticolazione`, `ruolo`) VALUES
+	('a@z', '{bcrypt}$2a$10$XvkiSbEKTH5I3YYGYMqhVexNyVZpmRc2uEK.yboTYbBtoN0Dtgc66', 'Sormani', 'Giovanni', NULL, NULL, NULL, NULL, NULL, NULL, 'Y', NULL, NULL, NULL, NULL, 'USER'),
+	('l@a', '{bcrypt}$2a$10$e.Zv2aVJ31sS5z2YIkUNf.cmkFUleiEyyb9e8WIVkKK5jaI0jtNuG', 'sormani', 'pippo', NULL, NULL, NULL, NULL, NULL, NULL, 'Y', NULL, NULL, NULL, NULL, 'USER'),
+	('p@p', '{bcrypt}$2a$10$/2b2G3.FPfME0piQzyKfc.Hek.EavTJD04Vpoy11fyqkyWyunmQSW', 'Sormani', 'Andrea', NULL, NULL, NULL, NULL, NULL, NULL, 'Y', NULL, NULL, NULL, NULL, 'USER');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

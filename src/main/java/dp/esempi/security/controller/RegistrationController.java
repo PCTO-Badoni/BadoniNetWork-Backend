@@ -9,6 +9,7 @@ import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
@@ -31,11 +32,10 @@ public class RegistrationController {
     private EmailService emailService;
 
     @PostMapping("/azienda")
-    public String createCompany(HttpSession session, @Valid Azienda azienda, Errors errors) throws MessagingException, IOException {
+    public void createCompany(@Valid Azienda azienda, Errors errors) throws MessagingException, IOException {
         if(errors.hasErrors()) {
-            return "register";
+            //Ritorna gli errori a react
         } else {
-            // Set the primary key of the azienda entity
             azienda.setRole("USER");
             aziendaRepository.save(azienda);
 
@@ -54,36 +54,24 @@ public class RegistrationController {
             //? 4) SE NON HA UN PASSWORD SETTATA lo porto alla pagina per inserire il codice e proseguire con l'inserimento dati
 
             //Se non ha mai fatto un registrazione => invia email
-            sendEmail(session,azienda.getRagionesociale(),azienda.getEmail(),azienda.getTelefono(),azienda.getIndirizzo());
-            return "redirect:/register/request-sent";
-
+            sendEmail(azienda.getRagionesociale(),azienda.getEmail(),azienda.getTelefono(),azienda.getIndirizzo());
             //passaggio di tabella
         }
     }
 
     @PostMapping("/utente")
-    public String createUser(@Valid Utente utente, Errors errors) {
+    public ResponseEntity<String> createUser(@Valid Utente utente, Errors errors) {
         if(errors.hasErrors()) {
-            return "register";
+            return ResponseEntity.badRequest().body("Utente già esistente");
         } else {
             utente.setPassword(passwordEncoder.encode(utente.getPassword()));
             utente.setRole("USER");
             utenteRepository.save(utente);
-            return null;
+            return ResponseEntity.ok("Utente creato con successo");
         }
     }
 
-    @GetMapping("/request-sent")
-    public String sentRequest(HttpSession session) {
-        if(session.getAttribute("requestSent") == null) {
-            return "redirect:/register";
-        }
-
-        session.removeAttribute("requestSent");
-        return "requestsent";
-    }
-
-    private void sendEmail(HttpSession session, String ragionesociale, String email, String telefono,String indirizzo) throws MessagingException, IOException {
+    private void sendEmail(String ragionesociale, String email, String telefono,String indirizzo) throws MessagingException, IOException {
 
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("ragionesociale", ragionesociale);
@@ -91,8 +79,6 @@ public class RegistrationController {
         templateModel.put("telefono", telefono);
         templateModel.put("indirizzo", indirizzo);
         templateModel.put("id", email);
-
-        session.setAttribute("requestSent", true);
 
         emailService.sendHtmlMessage("srmndr06p13e507g@iisbadoni.edu.it", "Richiesta account Badoni NetWork", templateModel, "account-request-template");
     }

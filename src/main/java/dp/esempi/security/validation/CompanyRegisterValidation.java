@@ -30,9 +30,9 @@ public class CompanyRegisterValidation implements ConstraintValidator<AziendaVal
     }
 
     @Override
-    public boolean isValid(Azienda u, ConstraintValidatorContext constraintValidatorContext) {
+    public boolean isValid(Azienda a, ConstraintValidatorContext constraintValidatorContext) {
         boolean valido=true;
-        Optional<Azienda> aziendaFind=holder.aziendaRepository.findByEmail(u.getEmail());
+        Optional<Azienda> aziendaFind=holder.aziendaRepository.findByEmail(a.getEmail());
         if(!aziendaFind.isEmpty()) {
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate("Email già esistente")
@@ -41,7 +41,7 @@ public class CompanyRegisterValidation implements ConstraintValidator<AziendaVal
             valido=false;
         }
 
-        aziendaFind=holder.aziendaRepository.findByragionesociale(u.getRagionesociale());
+        aziendaFind=holder.aziendaRepository.findByragionesociale(a.getRagionesociale());
         if(!aziendaFind.isEmpty()) {
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate("Ragione Sociale già esistente")

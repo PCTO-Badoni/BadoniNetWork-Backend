@@ -30,26 +30,15 @@ public class RegisterValidation implements ConstraintValidator<UtenteValido, Ute
 
     @Override
     public boolean isValid(Utente u, ConstraintValidatorContext constraintValidatorContext) {
-        boolean valido=true;
         Optional<Utente> utenteFind=holder.utenteRepository.findByEmail(u.getEmail());
         if(!utenteFind.isEmpty()) {
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate("Email già esistente")
                     .addPropertyNode("email")
                     .addConstraintViolation();
-            valido=false;
-        }
-        utenteFind=holder.utenteRepository.findByEmail(u.getEmail());
-        if(!utenteFind.isEmpty()) {
-            constraintValidatorContext.disableDefaultConstraintViolation();
-            constraintValidatorContext.buildConstraintViolationWithTemplate("Username già esistente")
-                    .addPropertyNode("username")
-                    .addConstraintViolation();
             return false;
         }
-
-        System.out.println("Utente valido");
-        return valido;
+        return true;
     }
 
     @Override
