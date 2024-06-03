@@ -1,10 +1,7 @@
 package dp.esempi.security.service;
 
 import dp.esempi.security.model.Azienda;
-import dp.esempi.security.model.Utente;
 import dp.esempi.security.repository.AziendaRepository;
-import dp.esempi.security.repository.UtenteRepository;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
