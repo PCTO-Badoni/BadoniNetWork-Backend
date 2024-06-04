@@ -55,7 +55,12 @@ public class RegistrationController {
     @PostMapping("/utente")
     public ResponseEntity<String> createUser(@Valid Utente utente, Errors errors) {
         if(errors.hasErrors()) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Account già esistente\"}");
+            if (errors.getAllErrors().toString().contains("Email invalida")) {
+                return ResponseEntity.badRequest().body("{\"message\": \"Email non valida\"}");
+                
+            } else if (errors.getAllErrors().toString().contains("Email già esistente")) {
+                return ResponseEntity.badRequest().body("{\"message\": \"Account già esistente\"}");
+            }
         }
 
         utente.setPassword(passwordEncoder.encode(utente.getPassword()));

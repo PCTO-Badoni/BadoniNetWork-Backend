@@ -30,15 +30,26 @@ public class RegisterValidation implements ConstraintValidator<UtenteValido, Ute
 
     @Override
     public boolean isValid(Utente u, ConstraintValidatorContext constraintValidatorContext) {
+        boolean valido = true;
+
+        if (!u.getEmail().endsWith("iisbadoni.edu.it")) {
+            constraintValidatorContext.disableDefaultConstraintViolation();
+            constraintValidatorContext.buildConstraintViolationWithTemplate("Email invalida")
+                    .addPropertyNode("errore")
+                    .addConstraintViolation();
+            valido = false;
+        }
+
         Optional<Utente> utenteFind=holder.utenteRepository.findByEmail(u.getEmail());
         if(!utenteFind.isEmpty()) {
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate("Email già esistente")
                     .addPropertyNode("email")
                     .addConstraintViolation();
-            return false;
+            valido = false;
         }
-        return true;
+
+        return valido;
     }
 
     @Override
