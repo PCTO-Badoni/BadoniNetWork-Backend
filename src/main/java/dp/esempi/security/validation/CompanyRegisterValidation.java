@@ -1,7 +1,6 @@
 package dp.esempi.security.validation;
 
 import dp.esempi.security.model.Azienda;
-import dp.esempi.security.model.Utente;
 import dp.esempi.security.repository.AziendaRepository;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -15,7 +14,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
-@SuppressWarnings("unused")
 @Configuration
 @Component
 public class CompanyRegisterValidation implements ConstraintValidator<AziendaValida, Azienda>{

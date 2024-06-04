@@ -66,6 +66,7 @@ public class RegistrationController {
         utente.setPassword(passwordEncoder.encode(utente.getPassword()));
         utente.setRole("USER");
         utenteRepository.save(utente);
+        
         return ResponseEntity.ok("{\"message\": \"Account creato con successo\"}");
     }
 

@@ -9,5 +9,4 @@ import java.util.Optional;
 public interface AziendaRepository extends JpaRepository<Azienda, String> {
 
     Optional<Azienda> findByEmail(String email);
-    Optional<Azienda> findByragionesociale(String ragionesociale);
 }

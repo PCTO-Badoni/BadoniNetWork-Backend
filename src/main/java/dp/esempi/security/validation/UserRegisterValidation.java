@@ -9,16 +9,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
-@SuppressWarnings("unused")
 @Configuration
 @Component
-public class RegisterValidation implements ConstraintValidator<UtenteValido, Utente>{
+public class UserRegisterValidation implements ConstraintValidator<UtenteValido, Utente>{
 
-    private static final RegisterValidation holder=new RegisterValidation();
+    private static final UserRegisterValidation holder=new UserRegisterValidation();
     private UtenteRepository utenteRepository;
 
     @Bean(name = "user_validator")
-    public static RegisterValidation bean(UtenteRepository utenteRepository) {
+    public static UserRegisterValidation bean(UtenteRepository utenteRepository) {
         holder.utenteRepository=utenteRepository;
         return holder;
     }

@@ -7,7 +7,7 @@ import java.lang.annotation.*;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = RegisterValidation.class)
+@Constraint(validatedBy = UserRegisterValidation.class)
 
 public @interface UtenteValido {
     String message() default "{Email-gia-esistente}";

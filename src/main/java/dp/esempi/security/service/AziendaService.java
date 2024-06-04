@@ -34,10 +34,6 @@ public class AziendaService implements UserDetailsService {
         }
     }
 
-    public Optional<Azienda> getBySocialRagion(String ragionesociale) {
-        return aziendaRepository.findByragionesociale(ragionesociale);
-    }
-
     public Optional<Azienda> getByEmail(String email) {
         return aziendaRepository.findByEmail(email);
 

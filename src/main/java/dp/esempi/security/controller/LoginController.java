@@ -2,7 +2,6 @@ package dp.esempi.security.controller;
 
 import dp.esempi.security.model.Utente;
 import dp.esempi.security.service.UtenteService;
-import jakarta.validation.Valid;
 
 import java.util.Optional;
 
