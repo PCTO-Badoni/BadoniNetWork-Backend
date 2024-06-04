@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -22,12 +23,13 @@ public class LoginController {
     private PasswordEncoder passwordEncoder;
     
     @PostMapping("/authenticate")
-    public Optional<Utente> findUser(@Valid @RequestBody Utente utente, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public ResponseEntity<String> findUser(@Valid @RequestBody Utente utente, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         Optional<Utente> user = utenteService.findByEmailAndPassword(utente.getEmail(), utente.getPassword(), passwordEncoder);
         if (bindingResult.hasErrors()) {
             String error = bindingResult.getFieldError().getDefaultMessage();
             redirectAttributes.addFlashAttribute("error", error);
+            return ResponseEntity.badRequest().body("Credenziali errate");
         }
-        return user;
+        return ResponseEntity.ok().body(user.toString());
     }
 }

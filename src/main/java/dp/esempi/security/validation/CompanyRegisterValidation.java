@@ -9,6 +9,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Optional;
 @SuppressWarnings("unused")
 @Configuration
@@ -41,15 +46,22 @@ public class CompanyRegisterValidation implements ConstraintValidator<AziendaVal
             valido=false;
         }
 
-        aziendaFind=holder.aziendaRepository.findByragionesociale(a.getRagionesociale());
-        if(!aziendaFind.isEmpty()) {
+        if (valido == false) {
             constraintValidatorContext.disableDefaultConstraintViolation();
-            constraintValidatorContext.buildConstraintViolationWithTemplate("Ragione Sociale già esistente")
-                    .addPropertyNode("ragionesociale")
+            constraintValidatorContext.buildConstraintViolationWithTemplate("Richiesta già inviata")
+                    .addPropertyNode("errore")
                     .addConstraintViolation();
+        }
+
+        boolean valido2 = checkEmailAzienda(constraintValidatorContext, a.getEmail());
+        
+        boolean valido3 = checkEmailApproved(constraintValidatorContext, a.getEmail());
+
+        if (valido && valido2 && valido3) {
+            return true;
+        } else {
             return false;
         }
-        return valido;
     }
 
     @Override
@@ -65,5 +77,71 @@ public class CompanyRegisterValidation implements ConstraintValidator<AziendaVal
     @Override
     public String toString() {
         return "";
+    }
+
+    private boolean checkEmailAzienda(ConstraintValidatorContext constraintValidatorContext, String email) {
+        String jdbcUrl = "jdbc:mysql://localhost:3306/network";
+        String username = "root";
+        String password = "";
+
+        try (Connection connection = DriverManager.getConnection(jdbcUrl, username, password)) {
+            String emailToCheck = email;
+
+            // Prepare the SQL query
+            String sql = "SELECT COUNT(*) FROM azienda WHERE email = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                preparedStatement.setString(1, emailToCheck);
+
+                // Execute the query
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        int count = resultSet.getInt(1);
+                        if (count > 0) {
+                            constraintValidatorContext.disableDefaultConstraintViolation();
+                            constraintValidatorContext.buildConstraintViolationWithTemplate("Account esistente")
+                                    .addPropertyNode("errore")
+                                    .addConstraintViolation();
+                            return false;
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    private boolean checkEmailApproved(ConstraintValidatorContext constraintValidatorContext, String email) {
+        String jdbcUrl = "jdbc:mysql://localhost:3306/network";
+        String username = "root";
+        String password = "";
+
+        try (Connection connection = DriverManager.getConnection(jdbcUrl, username, password)) {
+            String emailToCheck = email;
+
+            // Prepare the SQL query
+            String sql = "SELECT COUNT(*) FROM aziende_approved WHERE email = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                preparedStatement.setString(1, emailToCheck);
+
+                // Execute the query
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        int count = resultSet.getInt(1);
+                        if (count > 0) {
+                            constraintValidatorContext.disableDefaultConstraintViolation();
+                            constraintValidatorContext.buildConstraintViolationWithTemplate("Account già approvato")
+                                    .addPropertyNode("errore")
+                                    .addConstraintViolation();
+                            return false;
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 }

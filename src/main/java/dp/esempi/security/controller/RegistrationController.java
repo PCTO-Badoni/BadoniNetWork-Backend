@@ -6,7 +6,6 @@ import dp.esempi.security.repository.AziendaRepository;
 import dp.esempi.security.repository.UtenteRepository;
 import dp.esempi.security.service.EmailService;
 import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -32,43 +31,37 @@ public class RegistrationController {
     private EmailService emailService;
 
     @PostMapping("/azienda")
-    public void createCompany(@Valid Azienda azienda, Errors errors) throws MessagingException, IOException {
+    public ResponseEntity<String> createCompany(@Valid Azienda azienda, Errors errors) throws MessagingException, IOException {
         if(errors.hasErrors()) {
-            //Ritorna gli errori a react
-        } else {
-            azienda.setRole("USER");
-            aziendaRepository.save(azienda);
-
-            //Controlli
-
-            //! 1) verificare la ragione sociale e l'email se esistono all'interno del database sia waiting che approved
-
-            //? 2) SE NON ESISTE invio la mail alla segreteria per l'approvazione
-            //? 2) SE ESITE 
-                // 2.2 SE ESISTE NEL WAITING mostro un messaggio per dire che la richiesta è già stata fatta
-                // 2.2 SE ESISTE NEL APPROVED dire che l'account è già presente e reindirizzarlo alla login
+            if (errors.getAllErrors().toString().contains("Richiesta già inviata")) {
+                return ResponseEntity.badRequest().body("{\"message\": \"Richiesta già inviata\"}");   
                 
-            //! 3) NELLA LOGIN
+            } else if (errors.getAllErrors().toString().contains("Account esistente")) {
+                return ResponseEntity.badRequest().body("{\"message\": \"Account già esistente\"}");
 
-            //? 4) SE HA UNA PASSWORD SETTATA lo faccio accedere normalmente
-            //? 4) SE NON HA UN PASSWORD SETTATA lo porto alla pagina per inserire il codice e proseguire con l'inserimento dati
-
-            //Se non ha mai fatto un registrazione => invia email
-            sendEmail(azienda.getRagionesociale(),azienda.getEmail(),azienda.getTelefono(),azienda.getIndirizzo());
-            //passaggio di tabella
+            } else if (errors.getAllErrors().toString().contains("Account già approvato")) {
+                return ResponseEntity.badRequest().body("{\"message\": \"Account già approvato\"}");
+            }
         }
+
+        azienda.setRole("USER");
+        aziendaRepository.save(azienda);
+            
+        sendEmail(azienda.getRagionesociale(),azienda.getEmail(),azienda.getTelefono(),azienda.getIndirizzo());
+        
+        return ResponseEntity.ok("{\"message\": \"Account creato con successo\"}");
     }
 
     @PostMapping("/utente")
     public ResponseEntity<String> createUser(@Valid Utente utente, Errors errors) {
         if(errors.hasErrors()) {
-            return ResponseEntity.badRequest().body("Utente già esistente");
-        } else {
-            utente.setPassword(passwordEncoder.encode(utente.getPassword()));
-            utente.setRole("USER");
-            utenteRepository.save(utente);
-            return ResponseEntity.ok("Utente creato con successo");
+            return ResponseEntity.badRequest().body("{\"message\": \"Account già esistente\"}");
         }
+
+        utente.setPassword(passwordEncoder.encode(utente.getPassword()));
+        utente.setRole("USER");
+        utenteRepository.save(utente);
+        return ResponseEntity.ok("{\"message\": \"Account creato con successo\"}");
     }
 
     private void sendEmail(String ragionesociale, String email, String telefono,String indirizzo) throws MessagingException, IOException {
