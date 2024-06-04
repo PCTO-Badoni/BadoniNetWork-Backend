@@ -23,13 +23,15 @@ public class LoginController {
     private PasswordEncoder passwordEncoder;
     
     @PostMapping("/authenticate")
-    public ResponseEntity<String> findUser(@Valid @RequestBody Utente utente, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public ResponseEntity<?> findUser(@RequestBody Utente utente, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         Optional<Utente> user = utenteService.findByEmailAndPassword(utente.getEmail(), utente.getPassword(), passwordEncoder);
-        if (bindingResult.hasErrors()) {
-            String error = bindingResult.getFieldError().getDefaultMessage();
-            redirectAttributes.addFlashAttribute("error", error);
-            return ResponseEntity.badRequest().body("Credenziali errate");
+        
+        if (user.equals(Optional.empty())) {
+            // String error = bindingResult.getFieldError().getDefaultMessage();
+            // redirectAttributes.addFlashAttribute("error", error);
+            return ResponseEntity.badRequest().body("{\"message\": \"Credenziali errate\"}");
         }
-        return ResponseEntity.ok().body(user.toString());
+
+        return ResponseEntity.ok().body(user.get());
     }
 }
