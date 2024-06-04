@@ -49,9 +49,9 @@ public class UtenteService implements UserDetailsService {
     }
 
     private String[] getRoles(Utente user) {
-        if (user.getRole() == null) {
+        if (user.getRuolo() == null) {
             return new String[]{"USER"};
         }
-        return user.getRole().split(",");
+        return user.getRuolo().split(",");
     }
 }

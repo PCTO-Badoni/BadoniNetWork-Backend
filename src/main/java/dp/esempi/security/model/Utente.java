@@ -1,5 +1,8 @@
 package dp.esempi.security.model;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import dp.esempi.security.validation.UtenteValido;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,17 +22,30 @@ public class Utente {
     private String nome;
     private String cognome;
     private String password;
-    @Column(name="ruolo")
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Genere genere;
+    private String telefono;
+    private String indirizzo;
+    private String cap;
+    private String citta;
+    private LocalDate datanascita;
+    @Enumerated(EnumType.STRING)
+    private Disponibile disponibile;
+    private String curriculum;
+    private LocalDateTime dataregistrazione;
+    private LocalDate ultimoaccesso;
+    private String idarticolazione; 
+    private String ruolo;
+}
 
-    @Override
-    public String toString() {
-        return "Utente{" +
-                "nome='" + nome + '\'' +
-                ", cognome='" + cognome + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", role='" + role + '\'' +
-                '}';
-    }
+enum Genere {
+    M,
+    F,
+    NB
+}
+
+enum Disponibile {
+    Y,
+    N,
+    P
 }

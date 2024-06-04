@@ -1027,7 +1027,7 @@ CREATE TABLE IF NOT EXISTS `studente` (
   `password` varchar(256) DEFAULT NULL,
   `cognome` varchar(100) DEFAULT NULL,
   `nome` varchar(100) DEFAULT NULL,
-  `genere` enum('M','F') DEFAULT NULL,
+  `genere` enum('M','F','NB') DEFAULT NULL,
   `telefono` varchar(50) DEFAULT NULL,
   `indirizzo` varchar(200) DEFAULT NULL,
   `cap` varchar(30) DEFAULT NULL,
