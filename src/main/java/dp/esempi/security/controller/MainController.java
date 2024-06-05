@@ -30,6 +30,12 @@ public class MainController {
 
     @GetMapping("/accept-request/{email}")
     public ResponseEntity<String> acceptRequest(@PathVariable String email) throws MessagingException, IOException {
+        Optional<AziendaWaiting> azienda = aziendaRepository.findByEmail(email);
+    
+        if (azienda.isEmpty()) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Azienda non trovata\"}");
+        }
+        
         Optional<AziendaWaiting> aziendaFind;
         String codice;
         int contatore = 0;
@@ -50,12 +56,6 @@ public class MainController {
             return ResponseEntity.badRequest().body("{\"message\": \"Errore nella generazione del codice\"}");
         }
 
-        Optional<AziendaWaiting> azienda = aziendaRepository.findByEmail(email);
-    
-        if (azienda.isEmpty()) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Azienda non trovata\"}");
-        }
-
         AziendaWaiting aziendadb = azienda.get();
 
         aziendadb.setCodice(codice);
@@ -70,6 +70,16 @@ public class MainController {
 
     @GetMapping("/deny-request/{email}")
     public ResponseEntity<String> denyRequest(@PathVariable String email) throws MessagingException, IOException {
+        Optional<AziendaWaiting> azienda = aziendaRepository.findByEmail(email);
+    
+        if (azienda.isEmpty()) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Azienda non trovata\"}");
+        }
+
+        AziendaWaiting aziendadb = azienda.get();
+
+        aziendaRepository.delete(aziendadb);
+
         Map<String, Object> templateModel = new HashMap<>();
         emailService.sendHtmlMessage(email, "Richiesta account Badoni NetWork", templateModel, "request-deny-template");
         
