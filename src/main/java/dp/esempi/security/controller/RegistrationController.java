@@ -6,6 +6,8 @@ import dp.esempi.security.repository.AziendaWaitingRepository;
 import dp.esempi.security.repository.UtenteRepository;
 import dp.esempi.security.service.EmailService;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+
+
 
 @RequestMapping("/register")
 @RestController
@@ -71,6 +76,32 @@ public class RegistrationController {
         
         return ResponseEntity.ok("{\"message\": \"Account creato con successo\"}");
     }
+
+    @GetMapping("/validate-otp/{email}")
+    public void redirectToFrontend(HttpServletResponse response, HttpSession session, @PathVariable String email) throws IOException {
+        session.setAttribute("email", email);
+        response.sendRedirect("http://localhost:3001/otp");
+    }
+
+    @PostMapping("/validate-otp")
+    public ResponseEntity<String> validateOTP(@RequestBody Map<String, String> requestBody, HttpSession session) {
+        Optional<AziendaWaiting> aziendaFind = aziendaRepository.findByCodice(requestBody.get("codice"));
+
+        if (aziendaFind.isEmpty()) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Codice invalido\"}");
+        }
+
+        AziendaWaiting azienda = aziendaFind.get();
+        
+        if (!azienda.getEmail().equals(session.getAttribute("email"))) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Codice invalido\"}");
+        }
+
+        session.removeAttribute("email");
+
+        return ResponseEntity.ok("{\"message\": \"Codice valido\"}");
+    }
+    
 
     private void sendEmail(String ragionesociale, String email, String telefono,String indirizzo) throws MessagingException, IOException {
 

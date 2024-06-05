@@ -56,7 +56,7 @@ public class MainController {
             codice = String.valueOf(randomNumber);
     
             aziendaFind = aziendaRepository.findByCodice(codice);
-        } while (aziendaFind.isPresent() && contatore < max_tentativi);
+        } while (!aziendaFind.isEmpty() && contatore < max_tentativi);
 
         if (contatore>=max_tentativi) {
             return ResponseEntity.badRequest().body("{\"message\": \"Errore nella generazione del codice\"}");
@@ -67,6 +67,7 @@ public class MainController {
         
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("codice", codice);
+        templateModel.put("email", email);
         emailService.sendHtmlMessage(email, "Accettazione account", templateModel, "request-response-template");
         
         return ResponseEntity.ok().body("{\"message\": \"Richiesta accettata");
