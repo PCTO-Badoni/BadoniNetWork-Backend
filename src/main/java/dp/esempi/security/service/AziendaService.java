@@ -1,7 +1,7 @@
 package dp.esempi.security.service;
 
-import dp.esempi.security.model.Azienda;
-import dp.esempi.security.repository.AziendaRepository;
+import dp.esempi.security.model.AziendaWaiting;
+import dp.esempi.security.repository.AziendaWaitingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,11 +17,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AziendaService implements UserDetailsService {
     @Autowired
-    private AziendaRepository aziendaRepository;
+    private AziendaWaitingRepository aziendaRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Azienda> azienda = aziendaRepository.findByEmail(username);
+        Optional<AziendaWaiting> azienda = aziendaRepository.findByEmail(username);
 
         if(azienda.isPresent()) {
             var company = azienda.get();
@@ -34,15 +34,15 @@ public class AziendaService implements UserDetailsService {
         }
     }
 
-    public Optional<Azienda> getByEmail(String email) {
+    public Optional<AziendaWaiting> getByEmail(String email) {
         return aziendaRepository.findByEmail(email);
 
     }
 
-    private String[] getRoles(Azienda azienda) {
-        if (azienda.getRole() == null) {
+    private String[] getRoles(AziendaWaiting azienda) {
+        if (azienda.getRuolo() == null) {
             return new String[]{"USER"};
         }
-        return azienda.getRole().split(",");
+        return azienda.getRuolo().split(",");
     }
 }

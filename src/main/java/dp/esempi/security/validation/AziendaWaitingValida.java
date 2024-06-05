@@ -7,9 +7,9 @@ import java.lang.annotation.*;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = CompanyRegisterValidation.class)
+@Constraint(validatedBy = AziendaWaitingRegisterValidation.class)
 
-public @interface AziendaValida {
+public @interface AziendaWaitingValida {
     String message() default "{Email-gia-esistente}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};

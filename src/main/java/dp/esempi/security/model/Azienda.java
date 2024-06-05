@@ -1,6 +1,7 @@
 package dp.esempi.security.model;
 
-import dp.esempi.security.validation.AziendaValida;
+import java.time.LocalDate;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,26 +11,17 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="aziende_waiting")
-@AziendaValida
-public class Azienda {
+@Table(name="azienda")
+//@AziendaWaitingValida
+public class Azienda extends AziendaBase {
 
-    @Id
-    private String email;
-    private String ragionesociale;
-    private String telefono;
-    private String indirizzo;
-    @Column(name="ruolo")
-    private String role;
-
-    @Override
-    public String toString() {
-        return "Utente{" +
-                "ragione sociale='" + ragionesociale + '\'' +
-                ", email='" + email + '\'' +
-                ", telefono='" + telefono + '\'' +
-                ", indirizzo='" + indirizzo + '\'' +
-                ", role='" + role + '\'' +
-                '}';
-    }
+    private String password;
+    private String citta;
+    private String cap;
+    private String cognomereferente;
+    private String nomereferente;
+    private String telreferente;
+    private String emailreferente;
+    private int idarea;
+    private LocalDate ultimoaccesso;
 }

@@ -1,8 +1,8 @@
 package dp.esempi.security.controller;
 
-import dp.esempi.security.model.Azienda;
+import dp.esempi.security.model.AziendaWaiting;
 import dp.esempi.security.model.Utente;
-import dp.esempi.security.repository.AziendaRepository;
+import dp.esempi.security.repository.AziendaWaitingRepository;
 import dp.esempi.security.repository.UtenteRepository;
 import dp.esempi.security.service.EmailService;
 import jakarta.mail.MessagingException;
@@ -24,14 +24,14 @@ public class RegistrationController {
     @Autowired
     private UtenteRepository utenteRepository;
     @Autowired
-    private AziendaRepository aziendaRepository;
+    private AziendaWaitingRepository aziendaRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private EmailService emailService;
 
     @PostMapping("/azienda")
-    public ResponseEntity<String> createCompany(@Valid Azienda azienda, Errors errors) throws MessagingException, IOException {
+    public ResponseEntity<String> createCompany(@Valid AziendaWaiting azienda, Errors errors) throws MessagingException, IOException {
         if(errors.hasErrors()) {
             if (errors.getAllErrors().toString().contains("Richiesta già inviata")) {
                 return ResponseEntity.badRequest().body("{\"message\": \"Richiesta già inviata\"}");   
@@ -44,7 +44,7 @@ public class RegistrationController {
             }
         }
 
-        azienda.setRole("USER");
+        azienda.setRuolo("USER");
         aziendaRepository.save(azienda);
             
         sendEmail(azienda.getRagionesociale(),azienda.getEmail(),azienda.getTelefono(),azienda.getIndirizzo());
@@ -60,6 +60,9 @@ public class RegistrationController {
                 
             } else if (errors.getAllErrors().toString().contains("Email già esistente")) {
                 return ResponseEntity.badRequest().body("{\"message\": \"Account già esistente\"}");
+                
+            } else if (errors.getAllErrors().toString().contains("Password insicura")) {
+                return ResponseEntity.badRequest().body("{\"message\": \"Password insicura\"}");
             }
         }
 

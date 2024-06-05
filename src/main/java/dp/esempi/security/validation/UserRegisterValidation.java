@@ -4,6 +4,7 @@ import dp.esempi.security.model.Utente;
 import dp.esempi.security.repository.UtenteRepository;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
@@ -44,6 +45,16 @@ public class UserRegisterValidation implements ConstraintValidator<UtenteValido,
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate("Email già esistente")
                     .addPropertyNode("email")
+                    .addConstraintViolation();
+            valido = false;
+        }
+
+        String regex = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).{8,}$";
+
+        if (!u.getPassword().matches(regex)) {
+            constraintValidatorContext.disableDefaultConstraintViolation();
+            constraintValidatorContext.buildConstraintViolationWithTemplate("Password insicura")
+                    .addPropertyNode("password")
                     .addConstraintViolation();
             valido = false;
         }

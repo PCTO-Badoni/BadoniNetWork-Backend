@@ -21,23 +21,38 @@ public class WebSecurityConfig {
     @Autowired
     private UtenteService utenteService;
 
+    // @Bean
+    // public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    //     return http
+    //             .csrf(AbstractHttpConfigurer::disable)
+    //             .authorizeHttpRequests(registry -> {
+    //                 registry.requestMatchers("/", "/register/**", "/login/**").permitAll();
+    //                 registry.requestMatchers("/admin/**").hasRole("ADMIN");
+    //                 registry.requestMatchers("/user/**").hasRole("USER");
+    //                 registry.anyRequest().authenticated();
+    //             })
+    //             .formLogin(formLoginConfigurer -> {
+    //                 formLoginConfigurer
+    //                         .loginPage("/login")
+    //                         .loginProcessingUrl("/login/authenticatea") 
+    //                         .successHandler(new AuthenticationSuccessHandler())
+    //                         .permitAll();
+    //             })
+    //             .build();
+    // }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(registry -> {
-                    registry.requestMatchers("/", "/register/**", "/login/**").permitAll();
-                    registry.requestMatchers("/admin/**").hasRole("ADMIN");
-                    registry.requestMatchers("/user/**").hasRole("USER");
-                    registry.anyRequest().authenticated();
+                    registry.anyRequest().permitAll();
                 })
                 .formLogin(formLoginConfigurer -> {
-                    formLoginConfigurer
-                            .loginPage("/login")
-                            .loginProcessingUrl("/login/authenticatea") 
-                            .successHandler(new AuthenticationSuccessHandler())
-                            .permitAll();
+                    formLoginConfigurer.disable();
                 })
+                .httpBasic(basic -> basic.disable()) // Disattiva l'autenticazione di base
+                .logout(logout -> logout.disable()) // Disattiva la gestione del logout
                 .build();
     }
 
