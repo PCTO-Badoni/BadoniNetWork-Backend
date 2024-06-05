@@ -26,7 +26,7 @@ public class MainController {
     @Autowired
     private AziendaWaitingRepository aziendaRepository;
     
-    Random random = new Random();
+    private Random random = new Random();
 
     @GetMapping("/accept-request/{email}")
     public ResponseEntity<String> acceptRequest(@PathVariable String email) throws MessagingException, IOException {
