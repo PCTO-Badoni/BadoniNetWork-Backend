@@ -24,4 +24,5 @@ public class Azienda extends AziendaBase {
     private String emailreferente;
     private int idarea;
     private LocalDate ultimoaccesso;
+    private String ruolo;
 }

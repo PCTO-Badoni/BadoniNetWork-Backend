@@ -44,7 +44,6 @@ public class RegistrationController {
             }
         }
 
-        azienda.setRuolo("USER");
         aziendaRepository.save(azienda);
             
         sendEmail(azienda.getRagionesociale(),azienda.getEmail(),azienda.getTelefono(),azienda.getIndirizzo());

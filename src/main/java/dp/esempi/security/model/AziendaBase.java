@@ -12,7 +12,6 @@ public abstract class AziendaBase {
 
     @Id
     private String email;
-    private String ruolo;
     private String ragionesociale;
     private String telefono;
     private String indirizzo;

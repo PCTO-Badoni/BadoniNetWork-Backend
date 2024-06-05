@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class AziendaService implements UserDetailsService {
+public class AziendaWaitingService implements UserDetailsService {
     @Autowired
     private AziendaWaitingRepository aziendaRepository;
 
@@ -27,7 +27,6 @@ public class AziendaService implements UserDetailsService {
             var company = azienda.get();
             return User.builder()
                     .username(company.getRagionesociale())
-                    .roles(getRoles(company))
                     .build();
         } else {
             throw new UsernameNotFoundException(username);
@@ -37,12 +36,5 @@ public class AziendaService implements UserDetailsService {
     public Optional<AziendaWaiting> getByEmail(String email) {
         return aziendaRepository.findByEmail(email);
 
-    }
-
-    private String[] getRoles(AziendaWaiting azienda) {
-        if (azienda.getRuolo() == null) {
-            return new String[]{"USER"};
-        }
-        return azienda.getRuolo().split(",");
     }
 }

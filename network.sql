@@ -882,7 +882,7 @@ CREATE TABLE IF NOT EXISTS `aziende_waiting` (
   `ragionesociale` varchar(256) NOT NULL,
   `indirizzo` varchar(256) DEFAULT NULL,
   `telefono` varchar(256) DEFAULT NULL,
-  `ruolo` varchar(256) DEFAULT 'AZIENDA',
+  `codice` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
@@ -1044,7 +1044,11 @@ CREATE TABLE IF NOT EXISTS `studente` (
   CONSTRAINT `FK_studente_articolazione` FOREIGN KEY (`idarticolazione`) REFERENCES `articolazione` (`idarticolazione`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Dump dei dati della tabella network.studente: ~0 rows (circa)
+-- Dump dei dati della tabella network.studente: ~3 rows (circa)
+INSERT INTO `studente` (`email`, `password`, `cognome`, `nome`, `genere`, `telefono`, `indirizzo`, `cap`, `citta`, `datanascita`, `disponibile`, `curriculum`, `dataregistrazione`, `ultimoaccesso`, `idarticolazione`, `ruolo`) VALUES
+	('a@iisbadoni.edu.it', '{bcrypt}$2a$10$mXdoJG48bPv2Siuta5KFw./F1RQA3caHBKJ6Efj5tq9IqLTZDX11a', 'a', 'a', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'USER'),
+	('f@iisbadoni.edu.it', '{bcrypt}$2a$10$BJl/6vUX3QQc9LO0/fGyMeztVOi/cUgg71lREhPR1WJjdJ3xXFko.', 'a', 'a', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'USER'),
+	('soandrea136@iisbadoni.edu.it', '{bcrypt}$2a$10$FkLZhgMkfKJOWowwBeLJL.PhJ/z3Z1pHG9Eomr2FnlUjolCnpTDFK', 'Sormani', 'Andrea', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'USER');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
