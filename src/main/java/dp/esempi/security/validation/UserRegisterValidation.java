@@ -59,6 +59,22 @@ public class UserRegisterValidation implements ConstraintValidator<UtenteValido,
             valido = false;
         }
 
+        if (u.getNome().strip().isEmpty()) {
+            constraintValidatorContext.disableDefaultConstraintViolation();
+            constraintValidatorContext.buildConstraintViolationWithTemplate("Nome invalido")
+                    .addPropertyNode("nome")
+                    .addConstraintViolation();
+            valido = false;
+        }
+
+        if (u.getCognome().strip().isEmpty()) {
+            constraintValidatorContext.disableDefaultConstraintViolation();
+            constraintValidatorContext.buildConstraintViolationWithTemplate("Cognome invalido")
+                    .addPropertyNode("cognome")
+                    .addConstraintViolation();
+            valido = false;
+        }
+
         return valido;
     }
 

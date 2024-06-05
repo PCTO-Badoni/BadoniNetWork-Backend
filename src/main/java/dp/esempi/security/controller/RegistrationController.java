@@ -45,6 +45,9 @@ public class RegistrationController {
 
             } else if (errors.getAllErrors().toString().contains("Account già approvato")) {
                 return ResponseEntity.badRequest().body("{\"message\": \"Account già approvato\"}");
+                
+            } else if (errors.getAllErrors().toString().contains("Telefono invalido")) {
+                return ResponseEntity.badRequest().body("{\"message\": \"Numero di telefono non valido\"}");
             }
         }
 
@@ -58,7 +61,13 @@ public class RegistrationController {
     @PostMapping("/utente")
     public ResponseEntity<String> createUser(@Valid Utente utente, Errors errors) {
         if(errors.hasErrors()) {
-            if (errors.getAllErrors().toString().contains("Email invalida")) {
+            if (errors.getAllErrors().toString().contains("Nome invalido")) {
+                return ResponseEntity.badRequest().body("{\"message\": \"Nome non valido\"}");
+
+            } else if (errors.getAllErrors().toString().contains("Cognome invalido")) {
+                return ResponseEntity.badRequest().body("{\"message\": \"Cognome non valido\"}");
+                
+            } else if (errors.getAllErrors().toString().contains("Email invalida")) {
                 return ResponseEntity.badRequest().body("{\"message\": \"Email non valida\"}");
                 
             } else if (errors.getAllErrors().toString().contains("Email già esistente")) {

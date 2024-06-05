@@ -39,6 +39,17 @@ public class AziendaWaitingRegisterValidation implements ConstraintValidator<Azi
                     .addConstraintViolation();
         }
 
+        String cellulare = "^(\\+39\\s?)?(\\d{2,4}\\s?\\d{6,8})$";
+        String fisso = "^\\+\\d{1,3}\\s?\\d{1,14}$";
+
+        if (!a.getTelefono().matches(cellulare) && !a.getTelefono().matches(fisso)) {
+            constraintValidatorContext.disableDefaultConstraintViolation();
+            constraintValidatorContext.buildConstraintViolationWithTemplate("Telefono invalido")
+                    .addPropertyNode("telefono")
+                    .addConstraintViolation();
+            valido = false;
+        }
+
         boolean valido2 = checkEmailAzienda(a.getEmail(), constraintValidatorContext);
         boolean valido3 = checkEmailApproved(a.getEmail(), constraintValidatorContext);
 
