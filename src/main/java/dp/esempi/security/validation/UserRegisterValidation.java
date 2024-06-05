@@ -49,7 +49,7 @@ public class UserRegisterValidation implements ConstraintValidator<UtenteValido,
             valido = false;
         }
 
-        String regex = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).{8,}$";
+        String regex = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).{8,}$";
 
         if (!u.getPassword().matches(regex)) {
             constraintValidatorContext.disableDefaultConstraintViolation();

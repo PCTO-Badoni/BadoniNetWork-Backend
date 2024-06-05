@@ -35,6 +35,12 @@ public class MainController {
         if (azienda.isEmpty()) {
             return ResponseEntity.badRequest().body("{\"message\": \"Azienda non trovata\"}");
         }
+
+        AziendaWaiting aziendadb = azienda.get();
+
+        if (aziendadb.getCodice() != null) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Azienda già accettata\"}");
+        }
         
         Optional<AziendaWaiting> aziendaFind;
         String codice;
@@ -55,8 +61,6 @@ public class MainController {
         if (contatore>=max_tentativi) {
             return ResponseEntity.badRequest().body("{\"message\": \"Errore nella generazione del codice\"}");
         }
-
-        AziendaWaiting aziendadb = azienda.get();
 
         aziendadb.setCodice(codice);
         aziendaRepository.save(aziendadb);
