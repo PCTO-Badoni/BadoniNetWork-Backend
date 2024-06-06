@@ -13,7 +13,7 @@ import java.util.Optional;
 public class AziendaWaitingRegisterValidation implements ConstraintValidator<AziendaWaitingValida, AziendaWaiting> {
 
     @Autowired
-    private AziendaWaitingRepository aziendaRepository;
+    private AziendaWaitingRepository aziendaWaitingRepository;
 
     @Override
     public void initialize(AziendaWaitingValida constraintAnnotation) {
@@ -23,7 +23,7 @@ public class AziendaWaitingRegisterValidation implements ConstraintValidator<Azi
     @Override
     public boolean isValid(AziendaWaiting a, ConstraintValidatorContext constraintValidatorContext) {
         boolean valido = true;
-        Optional<AziendaWaiting> aziendaFind = aziendaRepository.findByEmail(a.getEmail());
+        Optional<AziendaWaiting> aziendaFind = aziendaWaitingRepository.findByEmail(a.getEmail());
         if (aziendaFind.isPresent()) {
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate("Email già esistente")
@@ -57,7 +57,7 @@ public class AziendaWaitingRegisterValidation implements ConstraintValidator<Azi
     }
 
     private boolean checkEmailAzienda(String email, ConstraintValidatorContext constraintValidatorContext) {
-        if (aziendaRepository.countByEmailInAzienda(email) > 0) {
+        if (aziendaWaitingRepository.countByEmailInAzienda(email) > 0) {
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate("Account esistente")
                     .addPropertyNode("errore")
@@ -68,7 +68,7 @@ public class AziendaWaitingRegisterValidation implements ConstraintValidator<Azi
     }
 
     private boolean checkEmailApproved(String email, ConstraintValidatorContext constraintValidatorContext) {
-        if (aziendaRepository.countByEmailInAziendeApproved(email) > 0) {
+        if (aziendaWaitingRepository.countByEmailInAziendeApproved(email) > 0) {
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate("Account già approvato")
                     .addPropertyNode("errore")

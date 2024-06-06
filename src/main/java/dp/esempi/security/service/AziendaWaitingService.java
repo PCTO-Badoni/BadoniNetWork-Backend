@@ -17,11 +17,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AziendaWaitingService implements UserDetailsService {
     @Autowired
-    private AziendaWaitingRepository aziendaRepository;
+    private AziendaWaitingRepository aziendaWaitingRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<AziendaWaiting> azienda = aziendaRepository.findByEmail(username);
+        Optional<AziendaWaiting> azienda = aziendaWaitingRepository.findByEmail(username);
 
         if(azienda.isPresent()) {
             var company = azienda.get();

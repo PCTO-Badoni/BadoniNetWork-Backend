@@ -3,6 +3,7 @@ package dp.esempi.security.controller;
 import dp.esempi.security.model.Azienda;
 import dp.esempi.security.model.AziendaWaiting;
 import dp.esempi.security.model.Utente;
+import dp.esempi.security.repository.AziendaRepository;
 import dp.esempi.security.repository.AziendaWaitingRepository;
 import dp.esempi.security.repository.UtenteRepository;
 import dp.esempi.security.service.EmailService;
@@ -30,7 +31,9 @@ public class RegistrationController {
     @Autowired
     private UtenteRepository utenteRepository;
     @Autowired
-    private AziendaWaitingRepository aziendaRepository;
+    private AziendaWaitingRepository aziendaWaitingRepository;
+    @Autowired
+    private AziendaRepository aziendaRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
@@ -53,7 +56,7 @@ public class RegistrationController {
             }
         }
 
-        aziendaRepository.save(azienda);
+        aziendaWaitingRepository.save(azienda);
             
         sendEmail(azienda.getRagionesociale(),azienda.getEmail(),azienda.getTelefono(),azienda.getIndirizzo());
         
@@ -109,7 +112,7 @@ public class RegistrationController {
             return ResponseEntity.badRequest().body("{\"message\": \"Tentativi esauriti\"}");
         }
 
-        Optional<AziendaWaiting> aziendaFind = aziendaRepository.findByCodice(requestBody.get("codice"));
+        Optional<AziendaWaiting> aziendaFind = aziendaWaitingRepository.findByCodice(requestBody.get("codice"));
 
         if (aziendaFind.isEmpty()) {
             return ResponseEntity.badRequest().body("{\"message\": \"Codice invalido\"}");
@@ -120,9 +123,11 @@ public class RegistrationController {
     
 
     @PostMapping("/confirm-azienda")
-    public ResponseEntity<String> confirmCompany(Azienda azienda, Errors errors) {
+    public ResponseEntity<String> confirmCompany(@RequestBody Azienda azienda, Errors errors) {
 
-        System.out.println(azienda);
+        System.out.println("\n\n\n\n\n\n"+azienda.toString()+"\n\n\n\n\n\n");
+
+        aziendaRepository.save(azienda);
 
         return ResponseEntity.ok("{\"message\": \"Account creato\"}");
     }

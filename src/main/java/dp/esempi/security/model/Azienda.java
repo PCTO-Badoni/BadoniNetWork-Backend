@@ -25,4 +25,20 @@ public class Azienda extends AziendaBase {
     private int idarea;
     private LocalDate ultimoaccesso;
     private String ruolo;
+
+    @Override
+    public String toString() {
+        return "ClassName {" +
+                "password='" + password + '\'' +
+                ", citta='" + citta + '\'' +
+                ", cap='" + cap + '\'' +
+                ", cognomereferente='" + cognomereferente + '\'' +
+                ", nomereferente='" + nomereferente + '\'' +
+                ", telreferente='" + telreferente + '\'' +
+                ", emailreferente='" + emailreferente + '\'' +
+                ", idarea=" + idarea +
+                ", ultimoaccesso=" + ultimoaccesso +
+                ", ruolo='" + ruolo + '\'' +
+                '}';
+    }    
 }

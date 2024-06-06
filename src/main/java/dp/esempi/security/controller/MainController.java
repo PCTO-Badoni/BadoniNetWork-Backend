@@ -24,13 +24,13 @@ public class MainController {
     private EmailService emailService;
 
     @Autowired
-    private AziendaWaitingRepository aziendaRepository;
+    private AziendaWaitingRepository aziendaWaitingRepository;
     
     private Random random = new Random();
 
     @GetMapping("/accept-request/{email}")
     public ResponseEntity<String> acceptRequest(@PathVariable String email) throws MessagingException, IOException {
-        Optional<AziendaWaiting> azienda = aziendaRepository.findByEmail(email);
+        Optional<AziendaWaiting> azienda = aziendaWaitingRepository.findByEmail(email);
     
         if (azienda.isEmpty()) {
             return ResponseEntity.badRequest().body("{\"message\": \"Azienda non trovata\"}");
@@ -55,7 +55,7 @@ public class MainController {
             int randomNumber = min + random.nextInt(max - min + 1);
             codice = String.valueOf(randomNumber);
     
-            aziendaFind = aziendaRepository.findByCodice(codice);
+            aziendaFind = aziendaWaitingRepository.findByCodice(codice);
         } while (!aziendaFind.isEmpty() && contatore < max_tentativi);
 
         if (contatore>=max_tentativi) {
@@ -63,7 +63,7 @@ public class MainController {
         }
 
         aziendadb.setCodice(codice);
-        aziendaRepository.save(aziendadb);
+        aziendaWaitingRepository.save(aziendadb);
         
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("codice", codice);
@@ -74,7 +74,7 @@ public class MainController {
 
     @GetMapping("/deny-request/{email}")
     public ResponseEntity<String> denyRequest(@PathVariable String email) throws MessagingException, IOException {
-        Optional<AziendaWaiting> azienda = aziendaRepository.findByEmail(email);
+        Optional<AziendaWaiting> azienda = aziendaWaitingRepository.findByEmail(email);
     
         if (azienda.isEmpty()) {
             return ResponseEntity.badRequest().body("{\"message\": \"Azienda non trovata\"}");
@@ -82,7 +82,7 @@ public class MainController {
 
         AziendaWaiting aziendadb = azienda.get();
 
-        aziendaRepository.delete(aziendadb);
+        aziendaWaitingRepository.delete(aziendadb);
 
         Map<String, Object> templateModel = new HashMap<>();
         emailService.sendHtmlMessage(email, "Richiesta account Badoni NetWork", templateModel, "request-deny-template");
