@@ -67,7 +67,6 @@ public class MainController {
         
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("codice", codice);
-        templateModel.put("email", email);
         emailService.sendHtmlMessage(email, "Accettazione account", templateModel, "request-response-template");
         
         return ResponseEntity.ok().body("{\"message\": \"Richiesta accettata");

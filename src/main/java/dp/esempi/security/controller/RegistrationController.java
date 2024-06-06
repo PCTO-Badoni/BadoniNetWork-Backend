@@ -6,7 +6,7 @@ import dp.esempi.security.repository.AziendaWaitingRepository;
 import dp.esempi.security.repository.UtenteRepository;
 import dp.esempi.security.service.EmailService;
 import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -55,7 +55,7 @@ public class RegistrationController {
             
         sendEmail(azienda.getRagionesociale(),azienda.getEmail(),azienda.getTelefono(),azienda.getIndirizzo());
         
-        return ResponseEntity.ok("{\"message\": \"Account creato con successo\"}");
+        return ResponseEntity.ok("{\"message\": \"Email inviata\"}");
     }
 
     @PostMapping("/utente")
@@ -85,8 +85,13 @@ public class RegistrationController {
         return ResponseEntity.ok("{\"message\": \"Account creato con successo\"}");
     }
 
+    @GetMapping("/validate-otp")
+    public void validateOTP(HttpServletResponse response) throws IOException {
+        response.sendRedirect("http://localhost:3001/otp");
+    }
+
     @PostMapping("/validate-otp")
-    public ResponseEntity<String> validateOTP(@RequestBody Map<String, String> requestBody, HttpSession session) {
+    public ResponseEntity<String> validateOTP(@RequestBody Map<String, String> requestBody) {
         Optional<AziendaWaiting> aziendaFind = aziendaRepository.findByCodice(requestBody.get("codice"));
 
         if (aziendaFind.isEmpty()) {
