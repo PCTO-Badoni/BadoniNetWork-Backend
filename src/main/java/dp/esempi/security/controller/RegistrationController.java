@@ -1,101 +1,108 @@
 package dp.esempi.security.controller;
 
-import dp.esempi.security.model.Azienda;
+import dp.esempi.security.model.AziendaWaiting;
 import dp.esempi.security.model.Utente;
-import dp.esempi.security.repository.AziendaRepository;
+import dp.esempi.security.repository.AziendaWaitingRepository;
 import dp.esempi.security.repository.UtenteRepository;
 import dp.esempi.security.service.EmailService;
 import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
+import java.util.Optional;
+
+
 
 @RequestMapping("/register")
-@Controller
+@RestController
 @CrossOrigin
 public class RegistrationController {
     @Autowired
     private UtenteRepository utenteRepository;
     @Autowired
-    private AziendaRepository aziendaRepository;
+    private AziendaWaitingRepository aziendaRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private EmailService emailService;
 
-    @GetMapping
-    public String register(Model model) {
-        model.addAttribute("utente", new Utente());
-        model.addAttribute("company", new Azienda());
-        return "register";
-    }
-
     @PostMapping("/azienda")
-    public String createCompany(HttpSession session, @ModelAttribute("company") @Valid Azienda azienda, @ModelAttribute("utente") Utente utente, Errors errors) throws MessagingException, IOException {
+    public ResponseEntity<String> createCompany(@Valid AziendaWaiting azienda, Errors errors) throws MessagingException, IOException {
         if(errors.hasErrors()) {
-            return "register";
-        } else {
-            // Set the primary key of the azienda entity
-            azienda.setRole("USER");
-            aziendaRepository.save(azienda);
-
-            //Controlli
-
-            //! 1) verificare la ragione sociale e l'email se esistono all'interno del database sia waiting che approved
-
-            //? 2) SE NON ESISTE invio la mail alla segreteria per l'approvazione
-            //? 2) SE ESITE 
-                // 2.2 SE ESISTE NEL WAITING mostro un messaggio per dire che la richiesta è già stata fatta
-                // 2.2 SE ESISTE NEL APPROVED dire che l'account è già presente e reindirizzarlo alla login
+            if (errors.getAllErrors().toString().contains("Richiesta già inviata")) {
+                return ResponseEntity.badRequest().body("{\"message\": \"Richiesta già inviata\"}");   
                 
-            //! 3) NELLA LOGIN
+            } else if (errors.getAllErrors().toString().contains("Account esistente")) {
+                return ResponseEntity.badRequest().body("{\"message\": \"Account già esistente\"}");
 
-            //? 4) SE HA UNA PASSWORD SETTATA lo faccio accedere normalmente
-            //? 4) SE NON HA UN PASSWORD SETTATA lo porto alla pagina per inserire il codice e proseguire con l'inserimento dati
-
-            //Se non ha mai fatto un registrazione => invia email
-            sendEmail(session,azienda.getRagionesociale(),azienda.getEmail(),azienda.getTelefono(),azienda.getIndirizzo());
-            return "redirect:/register/request-sent";
-
-            //passaggio di tabella
+            } else if (errors.getAllErrors().toString().contains("Account già approvato")) {
+                return ResponseEntity.badRequest().body("{\"message\": \"Account già approvato\"}");
+                
+            } else if (errors.getAllErrors().toString().contains("Telefono invalido")) {
+                return ResponseEntity.badRequest().body("{\"message\": \"Numero di telefono non valido\"}");
+            }
         }
+
+        aziendaRepository.save(azienda);
+            
+        sendEmail(azienda.getRagionesociale(),azienda.getEmail(),azienda.getTelefono(),azienda.getIndirizzo());
+        
+        return ResponseEntity.ok("{\"message\": \"Email inviata\"}");
     }
 
     @PostMapping("/utente")
-    public String createUser(@ModelAttribute("utente") @Valid Utente utente, @ModelAttribute("company") Azienda azienda, Errors errors) {
+    public ResponseEntity<String> createUser(@Valid Utente utente, Errors errors) {
         if(errors.hasErrors()) {
-            return "register";
-        } else {
-            System.out.println("prova");
-            utente.setPassword(passwordEncoder.encode(utente.getPassword()));
-            utente.setRole("USER");
-            utenteRepository.save(utente);
-            return null;
+            if (errors.getAllErrors().toString().contains("Nome invalido")) {
+                return ResponseEntity.badRequest().body("{\"message\": \"Nome non valido\"}");
+
+            } else if (errors.getAllErrors().toString().contains("Cognome invalido")) {
+                return ResponseEntity.badRequest().body("{\"message\": \"Cognome non valido\"}");
+                
+            } else if (errors.getAllErrors().toString().contains("Email invalida")) {
+                return ResponseEntity.badRequest().body("{\"message\": \"Email non valida\"}");
+                
+            } else if (errors.getAllErrors().toString().contains("Email già esistente")) {
+                return ResponseEntity.badRequest().body("{\"message\": \"Account già esistente\"}");
+                
+            } else if (errors.getAllErrors().toString().contains("Password insicura")) {
+                return ResponseEntity.badRequest().body("{\"message\": \"Password insicura\"}");
+            }
         }
+
+        utente.setPassword(passwordEncoder.encode(utente.getPassword()));
+        utente.setRuolo("USER");
+        utenteRepository.save(utente);
+        
+        return ResponseEntity.ok("{\"message\": \"Account creato con successo\"}");
     }
 
-    @GetMapping("/request-sent")
-    public String sentRequest(HttpSession session) {
-        if(session.getAttribute("requestSent") == null) {
-            return "redirect:/register";
-        }
-
-        session.removeAttribute("requestSent");
-        return "requestsent";
+    @GetMapping("/validate-otp")
+    public void validateOTP(HttpServletResponse response) throws IOException {
+        response.sendRedirect("http://localhost:3001/otp");
     }
 
-    private void sendEmail(HttpSession session, String ragionesociale, String email, String telefono,String indirizzo) throws MessagingException, IOException {
+    @PostMapping("/validate-otp")
+    public ResponseEntity<String> validateOTP(@RequestBody Map<String, String> requestBody) {
+        Optional<AziendaWaiting> aziendaFind = aziendaRepository.findByCodice(requestBody.get("codice"));
+
+        if (aziendaFind.isEmpty()) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Codice invalido\"}");
+        }
+
+        return ResponseEntity.ok("{\"message\": \"Codice valido\"}");
+    }
+    
+
+    private void sendEmail(String ragionesociale, String email, String telefono,String indirizzo) throws MessagingException, IOException {
 
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("ragionesociale", ragionesociale);
@@ -103,8 +110,6 @@ public class RegistrationController {
         templateModel.put("telefono", telefono);
         templateModel.put("indirizzo", indirizzo);
         templateModel.put("id", email);
-
-        session.setAttribute("requestSent", true);
 
         emailService.sendHtmlMessage("srmndr06p13e507g@iisbadoni.edu.it", "Richiesta account Badoni NetWork", templateModel, "account-request-template");
     }

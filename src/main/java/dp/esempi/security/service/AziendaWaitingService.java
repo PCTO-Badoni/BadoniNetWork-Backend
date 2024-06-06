@@ -1,10 +1,7 @@
 package dp.esempi.security.service;
 
-import dp.esempi.security.model.Azienda;
-import dp.esempi.security.model.Utente;
-import dp.esempi.security.repository.AziendaRepository;
-import dp.esempi.security.repository.UtenteRepository;
-
+import dp.esempi.security.model.AziendaWaiting;
+import dp.esempi.security.repository.AziendaWaitingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,40 +15,26 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class AziendaService implements UserDetailsService {
+public class AziendaWaitingService implements UserDetailsService {
     @Autowired
-    private AziendaRepository aziendaRepository;
-
-
+    private AziendaWaitingRepository aziendaRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Azienda> azienda = aziendaRepository.findByEmail(username);
+        Optional<AziendaWaiting> azienda = aziendaRepository.findByEmail(username);
 
         if(azienda.isPresent()) {
             var company = azienda.get();
             return User.builder()
                     .username(company.getRagionesociale())
-                    .roles(getRoles(company))
                     .build();
         } else {
             throw new UsernameNotFoundException(username);
         }
     }
 
-    public Optional<Azienda> getBySocialRagion(String ragionesociale) {
-        return aziendaRepository.findByragionesociale(ragionesociale);
-    }
-
-    public Optional<Azienda> getByEmail(String email) {
+    public Optional<AziendaWaiting> getByEmail(String email) {
         return aziendaRepository.findByEmail(email);
 
-    }
-
-    private String[] getRoles(Azienda azienda) {
-        if (azienda.getRole() == null) {
-            return new String[]{"USER"};
-        }
-        return azienda.getRole().split(",");
     }
 }
