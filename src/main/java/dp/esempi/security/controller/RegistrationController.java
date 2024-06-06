@@ -1,5 +1,6 @@
 package dp.esempi.security.controller;
 
+import dp.esempi.security.model.Azienda;
 import dp.esempi.security.model.AziendaWaiting;
 import dp.esempi.security.model.Utente;
 import dp.esempi.security.repository.AziendaWaitingRepository;
@@ -7,6 +8,7 @@ import dp.esempi.security.repository.UtenteRepository;
 import dp.esempi.security.service.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -91,7 +93,22 @@ public class RegistrationController {
     }
 
     @PostMapping("/validate-otp")
-    public ResponseEntity<String> validateOTP(@RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<String> validateOTP(HttpSession httpSession, @RequestBody Map<String, String> requestBody) {
+        int tries=-1;
+
+        if (httpSession.getAttribute("tries") == null) {
+            httpSession.setAttribute("tries", 1);
+        } else {
+            tries = (int) httpSession.getAttribute("tries")+1;
+            httpSession.setAttribute("tries", tries);
+        }
+
+        if (tries>=5) {
+            httpSession.removeAttribute("tries");
+            //! Implementare un meccanismo
+            return ResponseEntity.badRequest().body("{\"message\": \"Tentativi esauriti\"}");
+        }
+
         Optional<AziendaWaiting> aziendaFind = aziendaRepository.findByCodice(requestBody.get("codice"));
 
         if (aziendaFind.isEmpty()) {
@@ -101,6 +118,14 @@ public class RegistrationController {
         return ResponseEntity.ok("{\"message\": \"Codice valido\"}");
     }
     
+
+    @PostMapping("/confirm-azienda")
+    public ResponseEntity<String> confirmCompany(Azienda azienda, Errors errors) {
+
+        System.out.println(azienda);
+
+        return ResponseEntity.ok("{\"message\": \"Account creato\"}");
+    }
 
     private void sendEmail(String ragionesociale, String email, String telefono,String indirizzo) throws MessagingException, IOException {
 

@@ -32,9 +32,4 @@ public class AziendaWaitingService implements UserDetailsService {
             throw new UsernameNotFoundException(username);
         }
     }
-
-    public Optional<AziendaWaiting> getByEmail(String email) {
-        return aziendaRepository.findByEmail(email);
-
-    }
 }

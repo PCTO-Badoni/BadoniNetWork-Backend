@@ -26,8 +26,6 @@ public class LoginController {
         Optional<Utente> user = utenteService.findByEmailAndPassword(utente.getEmail(), utente.getPassword(), passwordEncoder);
         
         if (user.equals(Optional.empty())) {
-            // String error = bindingResult.getFieldError().getDefaultMessage();
-            // redirectAttributes.addFlashAttribute("error", error);
             return ResponseEntity.badRequest().body("{\"message\": \"Credenziali errate\"}");
         }
 

@@ -36,10 +36,6 @@ public class UtenteService implements UserDetailsService {
         }
     }
 
-    public Optional<Utente> getByEmail(String email) {
-        return utenteRepository.findByEmail(email);
-    }
-
     public Optional<Utente> findByEmailAndPassword(String email, String rawPassword, PasswordEncoder passwordEncoder) {
         Optional<Utente> user = utenteRepository.findByEmail(email);
         if (user.isPresent() && passwordEncoder.matches(rawPassword, user.get().getPassword())) {
