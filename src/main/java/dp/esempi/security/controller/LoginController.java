@@ -21,7 +21,7 @@ public class LoginController {
     @Autowired
     private PasswordEncoder passwordEncoder;
     
-    @PostMapping("/authenticate")
+    @PostMapping()
     public ResponseEntity<?> findUser(@RequestBody Utente utente, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         Optional<Utente> user = utenteService.findByEmailAndPassword(utente.getEmail(), utente.getPassword(), passwordEncoder);
         
