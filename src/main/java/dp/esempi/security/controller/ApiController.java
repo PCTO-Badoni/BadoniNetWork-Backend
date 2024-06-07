@@ -8,22 +8,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import dp.esempi.security.model.AltreSedi;
 import dp.esempi.security.model.Area;
 import dp.esempi.security.model.Articolazione;
 import dp.esempi.security.model.Azienda;
 import dp.esempi.security.model.AziendaApproved;
 import dp.esempi.security.model.AziendaWaiting;
 import dp.esempi.security.model.Competenza;
+import dp.esempi.security.model.CompetenzeStudenti;
+import dp.esempi.security.model.Contatti;
 import dp.esempi.security.model.Lingua;
+import dp.esempi.security.model.LingueStudenti;
 import dp.esempi.security.model.LivelloCompetenze;
 import dp.esempi.security.model.Utente;
+import dp.esempi.security.repository.AltreSediRepository;
 import dp.esempi.security.repository.AreaRepository;
 import dp.esempi.security.repository.ArticolazioneRepository;
 import dp.esempi.security.repository.AziendaApprovedRepository;
 import dp.esempi.security.repository.AziendaRepository;
 import dp.esempi.security.repository.AziendaWaitingRepository;
 import dp.esempi.security.repository.CompetenzaRepository;
+import dp.esempi.security.repository.CompetenzeStudentiRepository;
+import dp.esempi.security.repository.ContattiRepository;
 import dp.esempi.security.repository.LinguaRepository;
+import dp.esempi.security.repository.LingueStudentiRepository;
 import dp.esempi.security.repository.LivelloCompentezeRepository;
 import dp.esempi.security.repository.UtenteRepository;
 
@@ -52,6 +60,14 @@ public class ApiController {
     private AziendaApprovedRepository aziendaApprovedRepository;
     @Autowired
     private AziendaRepository aziendaRepository;
+    @Autowired
+    private AltreSediRepository altreSediRepository;
+    @Autowired
+    private CompetenzeStudentiRepository competenzeStudentiRepository;
+    @Autowired
+    private ContattiRepository contattiRepository;
+    @Autowired
+    private LingueStudentiRepository lingueStudentiRepository;
 
 
     @PostMapping("/verify-email")
@@ -123,5 +139,29 @@ public class ApiController {
     public ResponseEntity<List<Azienda>> getAllAzienda() {
         List<Azienda> azienda = aziendaRepository.findAll();
         return ResponseEntity.ok(azienda);
+    }
+
+    @GetMapping("/get-all-altre_sedi")
+    public ResponseEntity<List<AltreSedi>> getAllAltreSedi() {
+        List<AltreSedi> altre_sedi = altreSediRepository.findAll();
+        return ResponseEntity.ok(altre_sedi);
+    }
+    
+    @GetMapping("/get-all-competenze_studenti")
+    public ResponseEntity<List<CompetenzeStudenti>> getAllCompetenzeStudenti() {
+        List<CompetenzeStudenti> competenze_studenti = competenzeStudentiRepository.findAll();
+        return ResponseEntity.ok(competenze_studenti);
+    }
+
+    @GetMapping("/get-all-contatti")
+    public ResponseEntity<List<Contatti>> getAllContatti() {
+        List<Contatti> contatti = contattiRepository.findAll();
+        return ResponseEntity.ok(contatti);
+    }
+
+    @GetMapping("/get-all-lingue_studenti")
+    public ResponseEntity<List<LingueStudenti>> getAllLingueStudenti() {
+        List<LingueStudenti> lingue_studenti = lingueStudentiRepository.findAll();
+        return ResponseEntity.ok(lingue_studenti);
     }
 }
