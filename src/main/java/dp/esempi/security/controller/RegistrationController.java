@@ -1,7 +1,7 @@
 package dp.esempi.security.controller;
 
 import dp.esempi.security.model.Azienda;
-import dp.esempi.security.model.AziendaApproved;
+import dp.esempi.security.model.AziendaPending;
 import dp.esempi.security.model.AziendaWaiting;
 import dp.esempi.security.model.Utente;
 import dp.esempi.security.repository.AziendaApprovedRepository;
@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 
 
@@ -104,7 +103,7 @@ public class RegistrationController {
     }
 
     @PostMapping("/validate-otp")
-    public ResponseEntity<String> validateOTP(HttpSession httpSession, @RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<?> validateOTP(HttpSession httpSession, @RequestBody Map<String, String> requestBody) {
         int tries=-1;
 
         if (httpSession.getAttribute("tries") == null) {
@@ -120,21 +119,24 @@ public class RegistrationController {
             return ResponseEntity.badRequest().body("{\"message\": \"Tentativi esauriti\"}");
         }
 
-        Optional<AziendaWaiting> aziendaFind = aziendaWaitingRepository.findByCodice(requestBody.get("codice"));
-        Optional<AziendaApproved> aziendaApprovedFind = aziendaApprovedRepository.findByCodice(requestBody.get("codice"));
+        AziendaPending azienda;
 
-        if (aziendaFind.isEmpty() && aziendaApprovedFind.isEmpty()) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Codice invalido\"}");
+        azienda = aziendaWaitingRepository.findByCodice(requestBody.get("codice")).orElse(null);
+
+        if (azienda == null) {
+            azienda = aziendaApprovedRepository.findByCodice(requestBody.get("codice")).orElse(null);
+
+            if (azienda == null) {
+                return ResponseEntity.badRequest().body("{\"message\": \"Codice invalido\"}");
+            }
         }
 
-        return ResponseEntity.ok("{\"message\": \"Codice valido\"}");
+        return ResponseEntity.ok(azienda);
     }
     
 
     @PostMapping("/confirm-azienda")
     public ResponseEntity<String> confirmCompany(@RequestBody Azienda azienda, Errors errors) {
-
-        System.out.println("\n\n\n\n\n\n"+azienda.toString()+"\n\n\n\n\n\n");
 
         aziendaRepository.save(azienda);
 
