@@ -1,7 +1,7 @@
 package dp.esempi.security.controller;
 
 import dp.esempi.security.model.AziendaApproved;
-import dp.esempi.security.model.AziendaBase;
+import dp.esempi.security.model.AziendaPending;
 import dp.esempi.security.model.AziendaWaiting;
 import dp.esempi.security.repository.AziendaApprovedRepository;
 import dp.esempi.security.repository.AziendaWaitingRepository;
@@ -68,36 +68,14 @@ public class MainController {
     }
 
 
-    private ResponseEntity<String> dataProcess(Optional<? extends AziendaBase> azienda) throws MessagingException, IOException {
+    private ResponseEntity<String> dataProcess(Optional<? extends AziendaPending> azienda) throws MessagingException, IOException {
         if (azienda.isEmpty()) {
             return ResponseEntity.badRequest().body("{\"message\": \"Azienda non trovata\"}");
         }
     
-        AziendaBase aziendaget = azienda.get();
+        AziendaPending aziendaget = azienda.get();
 
-        boolean already_accepted = false;
-    
-        // Verifica se l'azienda è già stata accettata
-        if (aziendaget instanceof AziendaWaiting) {
-            AziendaWaiting aziendawaiting = (AziendaWaiting) aziendaget;
-    
-            if (aziendawaiting.getCodice() != null) {
-                already_accepted = true;
-            }
-    
-        } else if (aziendaget instanceof AziendaApproved) {
-            AziendaApproved aziendaapproved = (AziendaApproved) aziendaget;
-    
-            if (aziendaapproved.getCodice() != null) {
-                already_accepted = true;
-            }
-
-        } else {
-            return ResponseEntity.badRequest().body("{\"message\": \"Tipo di azienda non valido\"}");
-        }
-    
-        // Se l'azienda è già stata accettata, restituisci un errore
-        if (already_accepted) {
+        if (aziendaget.getCodice() != null) {
             return ResponseEntity.badRequest().body("{\"message\": \"Azienda già accettata\"}");
         }
     
@@ -108,19 +86,7 @@ public class MainController {
             return ResponseEntity.badRequest().body("{\"message\": \"Errore nella generazione del codice\"}");
         }
 
-        if (aziendaget instanceof AziendaWaiting) {
-            AziendaWaiting aziendawaiting = (AziendaWaiting) aziendaget;
-    
-            aziendawaiting.setCodice(codice);
-    
-        } else if (aziendaget instanceof AziendaApproved) {
-            AziendaApproved aziendaapproved = (AziendaApproved) aziendaget;
-            
-            aziendaapproved.setCodice(codice);
-
-        } else {
-            return ResponseEntity.badRequest().body("{\"message\": \"Tipo di azienda non valido\"}");
-        }
+        aziendaget.setCodice(codice);
 
         if (aziendaget instanceof AziendaWaiting) {
             aziendaWaitingRepository.save((AziendaWaiting) aziendaget);

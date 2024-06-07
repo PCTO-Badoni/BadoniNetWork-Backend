@@ -7,12 +7,8 @@ import lombok.*;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name="aziende_waiting")
 @AziendaWaitingValida
-public class AziendaWaiting extends AziendaBase {
-
-    private String codice;
+public class AziendaWaiting extends AziendaPending {
 }
