@@ -40,7 +40,7 @@ public class RegistrationController {
     private EmailService emailService;
 
     @PostMapping("/azienda")
-    public ResponseEntity<String> createCompany(@Valid AziendaWaiting azienda, Errors errors) throws MessagingException, IOException {
+    public ResponseEntity<?> createCompany(@Valid AziendaWaiting azienda, Errors errors, HttpServletResponse response) throws MessagingException, IOException {
         if(errors.hasErrors()) {
             if (errors.getAllErrors().toString().contains("Richiesta già inviata")) {
                 return ResponseEntity.badRequest().body("{\"message\": \"Richiesta già inviata\"}");   
@@ -48,14 +48,18 @@ public class RegistrationController {
             } else if (errors.getAllErrors().toString().contains("Account esistente")) {
                 return ResponseEntity.badRequest().body("{\"message\": \"Account già esistente\"}");
 
-            } else if (errors.getAllErrors().toString().contains("Account già approvato")) {
-                return ResponseEntity.badRequest().body("{\"message\": \"Account già approvato\"}");
-                
             } else if (errors.getAllErrors().toString().contains("Telefono invalido")) {
                 return ResponseEntity.badRequest().body("{\"message\": \"Numero di telefono non valido\"}");
             }
         }
 
+        //Operazioni per approvare automaticamente l'azienda
+        if (aziendaWaitingRepository.findByEmailInAziendeApproved(azienda.getEmail()).isPresent()) {
+            response.sendRedirect("http://localhost:8080/accept-approved-request/"+azienda.getEmail());
+            return ResponseEntity.ok(null);
+        }
+
+        //Operazioni per aggiungere l'azienda al waiting
         aziendaWaitingRepository.save(azienda);
             
         sendEmail(azienda.getRagionesociale(),azienda.getEmail(),azienda.getTelefono(),azienda.getIndirizzo());
@@ -113,8 +117,9 @@ public class RegistrationController {
         }
 
         Optional<AziendaWaiting> aziendaFind = aziendaWaitingRepository.findByCodice(requestBody.get("codice"));
+        Optional<AziendaWaiting> aziendaApprovedFind = aziendaWaitingRepository.findByCodiceInAziendeApproved(requestBody.get("codice"));
 
-        if (aziendaFind.isEmpty()) {
+        if (aziendaFind.isEmpty() && aziendaApprovedFind.isEmpty()) {
             return ResponseEntity.badRequest().body("{\"message\": \"Codice invalido\"}");
         }
 

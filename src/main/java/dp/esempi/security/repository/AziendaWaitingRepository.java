@@ -16,9 +16,12 @@ public interface AziendaWaitingRepository extends JpaRepository<AziendaWaiting, 
 
     Optional<AziendaWaiting> findByCodice(String codice);
 
-    @Query(value = "SELECT COUNT(*) FROM azienda WHERE email = :email", nativeQuery = true)
-    long countByEmailInAzienda(@Param("email") String email);
+    @Query(value = "SELECT * FROM aziende_approved WHERE email = :email LIMIT 1", nativeQuery = true)
+    Optional<AziendaWaiting> findByEmailInAziendeApproved(@Param("email") String email);
 
-    @Query(value = "SELECT COUNT(*) FROM aziende_approved WHERE email = :email", nativeQuery = true)
-    long countByEmailInAziendeApproved(@Param("email") String email);
+    @Query(value = "SELECT * FROM aziende_approved WHERE codice = :codice LIMIT 1", nativeQuery = true)
+    Optional<AziendaWaiting> findByCodiceInAziendeApproved(@Param("codice") String codice);
+    
+    @Query(value = "INSERT INTO aziende_approved (ragionesociale, email, indirizzo, telefono, codice) VALUES (:ragionesociale, :email, :indirizzo, :telefono, :codice)", nativeQuery = true)
+    void saveInAziendeApproved(@Param("ragionesociale") String ragionesociale, @Param("email") String email, @Param("indirizzo") String indirizzo, @Param("telefono") String telefono, @Param("codice") String codice);
 }

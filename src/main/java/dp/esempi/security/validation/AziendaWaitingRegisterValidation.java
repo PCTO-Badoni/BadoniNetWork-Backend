@@ -1,6 +1,7 @@
 package dp.esempi.security.validation;
 
 import dp.esempi.security.model.AziendaWaiting;
+import dp.esempi.security.repository.AziendaRepository;
 import dp.esempi.security.repository.AziendaWaitingRepository;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -14,6 +15,9 @@ public class AziendaWaitingRegisterValidation implements ConstraintValidator<Azi
 
     @Autowired
     private AziendaWaitingRepository aziendaWaitingRepository;
+
+    @Autowired
+    private AziendaRepository aziendaRepository;
 
     @Override
     public void initialize(AziendaWaitingValida constraintAnnotation) {
@@ -51,26 +55,14 @@ public class AziendaWaitingRegisterValidation implements ConstraintValidator<Azi
         }
 
         boolean valido2 = checkEmailAzienda(a.getEmail(), constraintValidatorContext);
-        boolean valido3 = checkEmailApproved(a.getEmail(), constraintValidatorContext);
 
-        return valido && valido2 && valido3;
+        return valido && valido2;
     }
 
     private boolean checkEmailAzienda(String email, ConstraintValidatorContext constraintValidatorContext) {
-        if (aziendaWaitingRepository.countByEmailInAzienda(email) > 0) {
+        if (aziendaRepository.findByEmail(email).isPresent()) {
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate("Account esistente")
-                    .addPropertyNode("errore")
-                    .addConstraintViolation();
-            return false;
-        }
-        return true;
-    }
-
-    private boolean checkEmailApproved(String email, ConstraintValidatorContext constraintValidatorContext) {
-        if (aziendaWaitingRepository.countByEmailInAziendeApproved(email) > 0) {
-            constraintValidatorContext.disableDefaultConstraintViolation();
-            constraintValidatorContext.buildConstraintViolationWithTemplate("Account già approvato")
                     .addPropertyNode("errore")
                     .addConstraintViolation();
             return false;

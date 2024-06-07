@@ -28,48 +28,19 @@ public class MainController {
     
     private Random random = new Random();
 
+
     @GetMapping("/accept-request/{email}")
     public ResponseEntity<String> acceptRequest(@PathVariable String email) throws MessagingException, IOException {
         Optional<AziendaWaiting> azienda = aziendaWaitingRepository.findByEmail(email);
     
-        if (azienda.isEmpty()) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Azienda non trovata\"}");
-        }
+        return dataProcess(azienda, 1);
+    }
 
-        AziendaWaiting aziendadb = azienda.get();
-
-        if (aziendadb.getCodice() != null) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Azienda già accettata\"}");
-        }
-        
-        Optional<AziendaWaiting> aziendaFind;
-        String codice;
-        int contatore = 0;
-        int max_tentativi = 1000;
-
-        do {
-            contatore++;
-
-            int min = 100000;
-            int max = 999999;
-            int randomNumber = min + random.nextInt(max - min + 1);
-            codice = String.valueOf(randomNumber);
+    @GetMapping("/accept-approved-request/{email}")
+    public ResponseEntity<String> acceptApprovedRequest(@PathVariable String email) throws MessagingException, IOException {
+        Optional<AziendaWaiting> azienda = aziendaWaitingRepository.findByEmailInAziendeApproved(email);
     
-            aziendaFind = aziendaWaitingRepository.findByCodice(codice);
-        } while (!aziendaFind.isEmpty() && contatore < max_tentativi);
-
-        if (contatore>=max_tentativi) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Errore nella generazione del codice\"}");
-        }
-
-        aziendadb.setCodice(codice);
-        aziendaWaitingRepository.save(aziendadb);
-        
-        Map<String, Object> templateModel = new HashMap<>();
-        templateModel.put("codice", codice);
-        emailService.sendHtmlMessage(email, "Accettazione account", templateModel, "request-response-template");
-        
-        return ResponseEntity.ok().body("{\"message\": \"Richiesta accettata");
+        return dataProcess(azienda, 2);
     }
 
     @GetMapping("/deny-request/{email}")
@@ -88,6 +59,66 @@ public class MainController {
         emailService.sendHtmlMessage(email, "Richiesta account Badoni NetWork", templateModel, "request-deny-template");
         
         return ResponseEntity.ok().body("{\"message\": \"Richiesta rifiutata");
+    }
+
+
+    private ResponseEntity<String> dataProcess(Optional<AziendaWaiting> azienda, int mode) throws MessagingException, IOException {
+        if (azienda.isEmpty()) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Azienda non trovata\"}");
+        }
+
+        AziendaWaiting aziendadb = azienda.get();
+
+        if (aziendadb.getCodice() != null) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Azienda già accettata\"}");
+        }
+
+        String codice = generateCode();
+
+        if (codice.equals("error")) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Errore nella generazione del codice\"}");
+        }
+
+        aziendadb.setCodice(codice);
+
+        if (mode == 1) {
+            aziendaWaitingRepository.save(aziendadb);
+        } else if (mode == 2) {
+            aziendaWaitingRepository.saveInAziendeApproved(aziendadb.getRagionesociale(), aziendadb.getEmail(), aziendadb.getIndirizzo() , aziendadb.getTelefono(), aziendadb.getCodice());
+        }
+
+        Map<String, Object> templateModel = new HashMap<>();
+        templateModel.put("codice", codice);
+        emailService.sendHtmlMessage(aziendadb.getEmail(), "Accettazione account", templateModel, "request-response-template");
+        
+        return ResponseEntity.ok().body("{\"message\": \"Richiesta accettata");
+    }
+
+    private String generateCode() {
+        Optional<AziendaWaiting> aziendaFind;
+        Optional<AziendaWaiting> aziendaApprovedFind;
+        String codice;
+        int contatore = 0;
+        int max_tentativi = 1000;
+
+        do {
+            contatore++;
+
+            int min = 100000;
+            int max = 999999;
+            int randomNumber = min + random.nextInt(max - min + 1);
+            codice = String.valueOf(randomNumber);
+    
+            aziendaFind = aziendaWaitingRepository.findByCodice(codice);
+            aziendaApprovedFind = aziendaWaitingRepository.findByCodiceInAziendeApproved(codice);
+
+        } while (aziendaFind.isPresent() && aziendaApprovedFind.isPresent() && contatore < max_tentativi);
+
+        if (contatore>=max_tentativi) {
+            return "error";
+        }
+
+        return codice;
     }
 }
 
