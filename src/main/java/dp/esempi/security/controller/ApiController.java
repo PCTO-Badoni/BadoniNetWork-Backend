@@ -12,7 +12,7 @@ import dp.esempi.security.repository.UtenteRepository;
 
 
 @RequestMapping("/api")
-@CrossOrigin //(origins = {"http://localhost:3001", "http://127.0.0.1:3001"})
+@CrossOrigin (origins = {"http://localhost:3001", "http://127.0.0.1:3001"})
 @RestController
 public class ApiController {
 

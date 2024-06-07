@@ -1,8 +1,10 @@
 package dp.esempi.security.controller;
 
 import dp.esempi.security.model.Azienda;
+import dp.esempi.security.model.AziendaApproved;
 import dp.esempi.security.model.AziendaWaiting;
 import dp.esempi.security.model.Utente;
+import dp.esempi.security.repository.AziendaApprovedRepository;
 import dp.esempi.security.repository.AziendaRepository;
 import dp.esempi.security.repository.AziendaWaitingRepository;
 import dp.esempi.security.repository.UtenteRepository;
@@ -33,6 +35,8 @@ public class RegistrationController {
     @Autowired
     private AziendaWaitingRepository aziendaWaitingRepository;
     @Autowired
+    private AziendaApprovedRepository aziendaApprovedRepository;
+    @Autowired
     private AziendaRepository aziendaRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -40,7 +44,7 @@ public class RegistrationController {
     private EmailService emailService;
 
     @PostMapping("/azienda")
-    public ResponseEntity<?> createCompany(@Valid AziendaWaiting azienda, Errors errors, HttpServletResponse response) throws MessagingException, IOException {
+    public ResponseEntity<?> createCompany(@RequestBody @Valid AziendaWaiting azienda, Errors errors, HttpServletResponse response) throws MessagingException, IOException {
         if(errors.hasErrors()) {
             if (errors.getAllErrors().toString().contains("Richiesta già inviata")) {
                 return ResponseEntity.badRequest().body("{\"message\": \"Richiesta già inviata\"}");   
@@ -54,7 +58,7 @@ public class RegistrationController {
         }
 
         //Operazioni per approvare automaticamente l'azienda
-        if (aziendaWaitingRepository.findByEmailInAziendeApproved(azienda.getEmail()).isPresent()) {
+        if (aziendaApprovedRepository.findByEmail(azienda.getEmail()).isPresent()) {
             response.sendRedirect("http://localhost:8080/accept-approved-request/"+azienda.getEmail());
             return ResponseEntity.ok(null);
         }
@@ -68,7 +72,7 @@ public class RegistrationController {
     }
 
     @PostMapping("/utente")
-    public ResponseEntity<String> createUser(@Valid Utente utente, Errors errors) {
+    public ResponseEntity<String> createUser(@RequestBody @Valid Utente utente, Errors errors) {
         if(errors.hasErrors()) {
             if (errors.getAllErrors().toString().contains("Nome invalido")) {
                 return ResponseEntity.badRequest().body("{\"message\": \"Nome non valido\"}");
@@ -117,7 +121,7 @@ public class RegistrationController {
         }
 
         Optional<AziendaWaiting> aziendaFind = aziendaWaitingRepository.findByCodice(requestBody.get("codice"));
-        Optional<AziendaWaiting> aziendaApprovedFind = aziendaWaitingRepository.findByCodiceInAziendeApproved(requestBody.get("codice"));
+        Optional<AziendaApproved> aziendaApprovedFind = aziendaApprovedRepository.findByCodice(requestBody.get("codice"));
 
         if (aziendaFind.isEmpty() && aziendaApprovedFind.isEmpty()) {
             return ResponseEntity.badRequest().body("{\"message\": \"Codice invalido\"}");

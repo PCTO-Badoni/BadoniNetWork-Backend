@@ -1,6 +1,9 @@
 package dp.esempi.security.controller;
 
+import dp.esempi.security.model.AziendaApproved;
+import dp.esempi.security.model.AziendaBase;
 import dp.esempi.security.model.AziendaWaiting;
+import dp.esempi.security.repository.AziendaApprovedRepository;
 import dp.esempi.security.repository.AziendaWaitingRepository;
 import dp.esempi.security.service.EmailService;
 import jakarta.mail.MessagingException;
@@ -25,6 +28,9 @@ public class MainController {
 
     @Autowired
     private AziendaWaitingRepository aziendaWaitingRepository;
+
+    @Autowired
+    private AziendaApprovedRepository aziendaApprovedRepository;
     
     private Random random = new Random();
 
@@ -33,14 +39,14 @@ public class MainController {
     public ResponseEntity<String> acceptRequest(@PathVariable String email) throws MessagingException, IOException {
         Optional<AziendaWaiting> azienda = aziendaWaitingRepository.findByEmail(email);
     
-        return dataProcess(azienda, 1);
+        return dataProcess(azienda);
     }
 
     @GetMapping("/accept-approved-request/{email}")
     public ResponseEntity<String> acceptApprovedRequest(@PathVariable String email) throws MessagingException, IOException {
-        Optional<AziendaWaiting> azienda = aziendaWaitingRepository.findByEmailInAziendeApproved(email);
+        Optional<AziendaApproved> azienda = aziendaApprovedRepository.findByEmail(email);
     
-        return dataProcess(azienda, 2);
+        return dataProcess(azienda);
     }
 
     @GetMapping("/deny-request/{email}")
@@ -62,41 +68,78 @@ public class MainController {
     }
 
 
-    private ResponseEntity<String> dataProcess(Optional<AziendaWaiting> azienda, int mode) throws MessagingException, IOException {
+    private ResponseEntity<String> dataProcess(Optional<? extends AziendaBase> azienda) throws MessagingException, IOException {
         if (azienda.isEmpty()) {
             return ResponseEntity.badRequest().body("{\"message\": \"Azienda non trovata\"}");
         }
+    
+        AziendaBase aziendaget = azienda.get();
 
-        AziendaWaiting aziendadb = azienda.get();
+        boolean already_accepted = false;
+    
+        // Verifica se l'azienda è già stata accettata
+        if (aziendaget instanceof AziendaWaiting) {
+            AziendaWaiting aziendawaiting = (AziendaWaiting) aziendaget;
+    
+            if (aziendawaiting.getCodice() != null) {
+                already_accepted = true;
+            }
+    
+        } else if (aziendaget instanceof AziendaApproved) {
+            AziendaApproved aziendaapproved = (AziendaApproved) aziendaget;
+    
+            if (aziendaapproved.getCodice() != null) {
+                already_accepted = true;
+            }
 
-        if (aziendadb.getCodice() != null) {
+        } else {
+            return ResponseEntity.badRequest().body("{\"message\": \"Tipo di azienda non valido\"}");
+        }
+    
+        // Se l'azienda è già stata accettata, restituisci un errore
+        if (already_accepted) {
             return ResponseEntity.badRequest().body("{\"message\": \"Azienda già accettata\"}");
         }
-
+    
+        // Genera un nuovo codice
         String codice = generateCode();
-
+    
         if (codice.equals("error")) {
             return ResponseEntity.badRequest().body("{\"message\": \"Errore nella generazione del codice\"}");
         }
 
-        aziendadb.setCodice(codice);
+        if (aziendaget instanceof AziendaWaiting) {
+            AziendaWaiting aziendawaiting = (AziendaWaiting) aziendaget;
+    
+            aziendawaiting.setCodice(codice);
+    
+        } else if (aziendaget instanceof AziendaApproved) {
+            AziendaApproved aziendaapproved = (AziendaApproved) aziendaget;
+            
+            aziendaapproved.setCodice(codice);
 
-        if (mode == 1) {
-            aziendaWaitingRepository.save(aziendadb);
-        } else if (mode == 2) {
-            aziendaWaitingRepository.saveInAziendeApproved(aziendadb.getRagionesociale(), aziendadb.getEmail(), aziendadb.getIndirizzo() , aziendadb.getTelefono(), aziendadb.getCodice());
+        } else {
+            return ResponseEntity.badRequest().body("{\"message\": \"Tipo di azienda non valido\"}");
         }
 
+        if (aziendaget instanceof AziendaWaiting) {
+            aziendaWaitingRepository.save((AziendaWaiting) aziendaget);
+        } else if (aziendaget instanceof AziendaApproved) {
+            aziendaApprovedRepository.save((AziendaApproved) aziendaget);
+        }
+    
+        // Invia la mail di accettazione
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("codice", codice);
-        emailService.sendHtmlMessage(aziendadb.getEmail(), "Accettazione account", templateModel, "request-response-template");
-        
+        emailService.sendHtmlMessage(aziendaget.getEmail(), "Accettazione account", templateModel, "request-response-template");
+    
         return ResponseEntity.ok().body("{\"message\": \"Richiesta accettata");
     }
+    
 
     private String generateCode() {
         Optional<AziendaWaiting> aziendaFind;
-        Optional<AziendaWaiting> aziendaApprovedFind;
+        Optional<AziendaApproved> aziendaApprovedFind;
         String codice;
         int contatore = 0;
         int max_tentativi = 1000;
@@ -110,7 +153,7 @@ public class MainController {
             codice = String.valueOf(randomNumber);
     
             aziendaFind = aziendaWaitingRepository.findByCodice(codice);
-            aziendaApprovedFind = aziendaWaitingRepository.findByCodiceInAziendeApproved(codice);
+            aziendaApprovedFind = aziendaApprovedRepository.findByCodice(codice);
 
         } while (aziendaFind.isPresent() && aziendaApprovedFind.isPresent() && contatore < max_tentativi);
 
