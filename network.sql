@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
 -- Host:                         127.0.0.1
--- Versione server:              10.4.32-MariaDB - mariadb.org binary distribution
+-- Versione server:              10.4.28-MariaDB - mariadb.org binary distribution
 -- S.O. server:                  Win64
--- HeidiSQL Versione:            12.7.0.6850
+-- HeidiSQL Versione:            12.5.0.6677
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -1038,6 +1038,7 @@ CREATE TABLE IF NOT EXISTS `studente` (
   `dataregistrazione` timestamp NULL DEFAULT NULL,
   `ultimoaccesso` date DEFAULT NULL,
   `idarticolazione` varchar(50) DEFAULT NULL,
+  `note` longtext DEFAULT NULL,
   `ruolo` varchar(50) DEFAULT 'USER',
   PRIMARY KEY (`email`),
   KEY `FK_studente_articolazione` (`idarticolazione`),
@@ -1045,8 +1046,8 @@ CREATE TABLE IF NOT EXISTS `studente` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- Dump dei dati della tabella network.studente: ~1 rows (circa)
-INSERT INTO `studente` (`email`, `password`, `cognome`, `nome`, `genere`, `telefono`, `indirizzo`, `cap`, `citta`, `datanascita`, `disponibile`, `curriculum`, `dataregistrazione`, `ultimoaccesso`, `idarticolazione`, `ruolo`) VALUES
-	('po@iisbadoni.edu.it', '{bcrypt}$2a$10$GMAiI.0k.SeVyJ29bwSyNOXPWudUFFjnucLH0srAv733NWro/RnQm', ' A', 'A', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'USER');
+INSERT INTO `studente` (`email`, `password`, `cognome`, `nome`, `genere`, `telefono`, `indirizzo`, `cap`, `citta`, `datanascita`, `disponibile`, `curriculum`, `dataregistrazione`, `ultimoaccesso`, `idarticolazione`, `note`, `ruolo`) VALUES
+	('po@iisbadoni.edu.it', '{bcrypt}$2a$10$GMAiI.0k.SeVyJ29bwSyNOXPWudUFFjnucLH0srAv733NWro/RnQm', ' A', 'A', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'USER');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
