@@ -119,8 +119,12 @@ public class ApiController {
 
     @GetMapping("/get-all-studenti")
     public ResponseEntity<List<Utente>> getAllStudenti() {
-        List<Utente> utente = utenteRepository.findAll();
-        return ResponseEntity.ok(utente);
+        List<Utente> utenti = utenteRepository.findAll();
+
+        for (Utente utente : utenti) {
+            utente.setPassword(null);
+        }
+        return ResponseEntity.ok(utenti);
     }
 
     @GetMapping("/get-all-aziende_waiting")
