@@ -13,6 +13,7 @@ import lombok.*;
 public class CompetenzeStudenti{
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String email;
     private int idcompetenza;

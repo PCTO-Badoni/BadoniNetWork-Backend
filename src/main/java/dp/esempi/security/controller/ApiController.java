@@ -174,12 +174,16 @@ public class ApiController {
     public ResponseEntity<String> setUserCompetences(@RequestBody List<Map<String, String>> payload) {
         try {
             for (Map<String, String> competence : payload) {
-                int id = Integer.parseInt(competence.get("idcompetenza"));
+                int idCompetenza = Integer.parseInt(competence.get("idcompetenza"));
                 String email = competence.get("email");
-                String livello = competence.get("idlivello");
+                String idLivello = competence.get("idlivello");
 
-                CompetenzeStudenti competenze_studenti = new CompetenzeStudenti(1, email, id, livello);
-                competenzeStudentiRepository.save(competenze_studenti);
+                CompetenzeStudenti competenzeStudenti = new CompetenzeStudenti();
+                competenzeStudenti.setEmail(email);
+                competenzeStudenti.setIdcompetenza(idCompetenza);
+                competenzeStudenti.setIdlivello(idLivello);
+
+                competenzeStudentiRepository.save(competenzeStudenti);
             }
 
             return ResponseEntity.ok().body("{\"message\": \"Competenze salvate\"}");
@@ -187,5 +191,23 @@ public class ApiController {
             return ResponseEntity.ok().body("{\"message\": \"Errore nel salvataggio\"}");
         }
     }
+
+    // @PostMapping("/send-user-languages")
+    // public ResponseEntity<String> setUserLanguages(@RequestBody List<Map<String, String>> payload) {
+    //     try {
+    //         for (Map<String, String> language : payload) {
+    //             int id = Integer.parseInt(language.get("idcompetenza"));
+    //             String email = language.get("email");
+    //             String livello = language.get("idlivello");
+
+    //             LingueStudenti lingue_studenti = new LingueStudenti(1, email, id, livello);
+    //             lingueStudentiRepository.save(lingue_studenti);
+    //         }
+
+    //         return ResponseEntity.ok().body("{\"message\": \"Lingue salvate\"}");
+    //     } catch (Exception e) {
+    //         return ResponseEntity.ok().body("{\"message\": \"Errore nel salvataggio\"}");
+    //     }
+    // }
     
 }
