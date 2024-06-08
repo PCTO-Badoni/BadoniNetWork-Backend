@@ -37,6 +37,7 @@ import dp.esempi.security.repository.UtenteRepository;
 
 
 
+
 @RequestMapping("/api")
 @CrossOrigin (origins = {"http://localhost:3001", "http://127.0.0.1:3001"})
 @RestController
@@ -168,4 +169,23 @@ public class ApiController {
         List<LingueStudenti> lingue_studenti = lingueStudentiRepository.findAll();
         return ResponseEntity.ok(lingue_studenti);
     }
+
+    @PostMapping("/send-user-competences")
+    public ResponseEntity<String> setUserCompetences(@RequestBody List<Map<String, String>> payload) {
+        try {
+            for (Map<String, String> competence : payload) {
+                int id = Integer.parseInt(competence.get("idcompetenza"));
+                String email = competence.get("email");
+                String livello = competence.get("idlivello");
+
+                CompetenzeStudenti competenze_studenti = new CompetenzeStudenti(1, email, id, livello);
+                competenzeStudentiRepository.save(competenze_studenti);
+            }
+
+            return ResponseEntity.ok().body("{\"message\": \"Competenze salvate\"}");
+        } catch (Exception e) {
+            return ResponseEntity.ok().body("{\"message\": \"Errore nel salvataggio\"}");
+        }
+    }
+    
 }
