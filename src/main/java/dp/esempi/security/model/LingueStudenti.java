@@ -13,6 +13,7 @@ import lombok.*;
 public class LingueStudenti{
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private int idlingua;
     private String username;

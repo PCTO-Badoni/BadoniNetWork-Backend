@@ -13,6 +13,7 @@ import lombok.*;
 public class AltreSedi{
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idsedi;
     private String email;
     private String indirizzo;

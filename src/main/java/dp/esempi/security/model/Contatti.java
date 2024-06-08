@@ -15,6 +15,7 @@ import lombok.*;
 public class Contatti{
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idcontatto;
     private String emailstudente;
     private String emailazienda;
