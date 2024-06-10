@@ -170,7 +170,7 @@ public class ApiController {
         return ResponseEntity.ok(lingue_studenti);
     }
 
-    @PostMapping("/send-user-competences")
+    @PostMapping("/set-user-competences")
     public ResponseEntity<String> setUserCompetences(@RequestBody List<Map<String, String>> payload) {
         try {
             for (Map<String, String> competence : payload) {
@@ -192,22 +192,48 @@ public class ApiController {
         }
     }
 
-    // @PostMapping("/send-user-languages")
-    // public ResponseEntity<String> setUserLanguages(@RequestBody List<Map<String, String>> payload) {
-    //     try {
-    //         for (Map<String, String> language : payload) {
-    //             int id = Integer.parseInt(language.get("idcompetenza"));
-    //             String email = language.get("email");
-    //             String livello = language.get("idlivello");
+    @PostMapping("/set-user-languages")
+    public ResponseEntity<String> setUserLanguages(@RequestBody List<Map<String, String>> payload) {
+        try {
+            for (Map<String, String> language : payload) {
+                int lingua = Integer.parseInt(language.get("idlingua"));
+                String email = language.get("email");
+                String livello = language.get("idlivello");
 
-    //             LingueStudenti lingue_studenti = new LingueStudenti(1, email, id, livello);
-    //             lingueStudentiRepository.save(lingue_studenti);
-    //         }
+                LingueStudenti lingue_studenti = new LingueStudenti();
+                lingue_studenti.setIdlingua(lingua);
+                lingue_studenti.setUsername(email);
+                lingue_studenti.setIdlivello(livello);
+                lingueStudentiRepository.save(lingue_studenti);
+            }
 
-    //         return ResponseEntity.ok().body("{\"message\": \"Lingue salvate\"}");
-    //     } catch (Exception e) {
-    //         return ResponseEntity.ok().body("{\"message\": \"Errore nel salvataggio\"}");
-    //     }
-    // }
+            return ResponseEntity.ok().body("{\"message\": \"Lingue salvate\"}");
+        } catch (Exception e) {
+            return ResponseEntity.ok().body("{\"message\": \"Errore nel salvataggio\"}");
+        }
+    }
+
+    @PostMapping("/set-other-places")
+    public ResponseEntity<String> setOtherPlaces(@RequestBody List<Map<String, String>> payload) {
+        try {
+            for (Map<String, String> altresedi : payload) {
+                String indirizzo = altresedi.get("indirizzo");
+                String email = altresedi.get("email");
+                String cap = altresedi.get("cap");
+                String citta = altresedi.get("citta");
+
+                AltreSedi altre_sedi = new AltreSedi();
+                altre_sedi.setEmail(email);
+                altre_sedi.setIndirizzo(indirizzo);
+                altre_sedi.setCap(cap);
+                altre_sedi.setCitta(citta);
+                altreSediRepository.save(altre_sedi);
+            }
+
+            return ResponseEntity.ok().body("{\"message\": \"Sedi salvate\"}");
+        } catch (Exception e) {
+            return ResponseEntity.ok().body("{\"message\": \"Errore nel salvataggio\"}");
+        }
+    }
     
 }
