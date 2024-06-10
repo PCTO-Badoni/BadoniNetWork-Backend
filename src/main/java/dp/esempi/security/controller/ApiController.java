@@ -235,5 +235,38 @@ public class ApiController {
             return ResponseEntity.ok().body("{\"message\": \"Errore nel salvataggio\"}");
         }
     }
+
+    @PostMapping("/get-user-competences")
+    public ResponseEntity<?> getUserCompetences(@RequestBody Map<String, String> payload) {
+        try {
+            String email = payload.get("email");
+            List<CompetenzeStudenti> competenze = competenzeStudentiRepository.findByEmail(email);
+            return ResponseEntity.ok().body(competenze);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Errore nel caricamento\"}");
+        }
+    }
+
+    @PostMapping("/get-user-languages")
+    public ResponseEntity<?> getUserLanguages(@RequestBody Map<String, String> payload) {
+        try {
+            String email = payload.get("email");
+            List<LingueStudenti> lingue = lingueStudentiRepository.findByUsername(email);
+            return ResponseEntity.ok().body(lingue);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Errore nel caricamento\"}");
+        }
+    }
+
+    @PostMapping("/get-other-places")
+    public ResponseEntity<?> getOtherPlaces(@RequestBody Map<String, String> payload) {
+        try {
+            String email = payload.get("email");
+            List<AltreSedi> sedi = altreSediRepository.findByEmail(email);
+            return ResponseEntity.ok().body(sedi);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Errore nel caricamento\"}");
+        }
+    }
     
 }
