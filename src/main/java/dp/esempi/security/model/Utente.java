@@ -37,15 +37,3 @@ public class Utente {
     private String idarticolazione; 
     private String ruolo;
 }
-
-enum Genere {
-    M,
-    F,
-    NB
-}
-
-enum Disponibile {
-    Y,
-    N,
-    P
-}
