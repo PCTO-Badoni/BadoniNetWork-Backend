@@ -26,13 +26,3 @@ public class Contatti{
     private Visualizzato visualizzato;
     private String messaggio;
 }
-
-enum Tipo {
-    AS,
-    SA
-}
-
-enum Visualizzato {
-    Y,
-    N,
-}

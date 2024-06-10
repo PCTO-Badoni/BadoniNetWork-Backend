@@ -1,5 +1,7 @@
 package dp.esempi.security.controller;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,7 +22,9 @@ import dp.esempi.security.model.Contatti;
 import dp.esempi.security.model.Lingua;
 import dp.esempi.security.model.LingueStudenti;
 import dp.esempi.security.model.LivelloCompetenze;
+import dp.esempi.security.model.Tipo;
 import dp.esempi.security.model.Utente;
+import dp.esempi.security.model.Visualizzato;
 import dp.esempi.security.repository.AltreSediRepository;
 import dp.esempi.security.repository.AreaRepository;
 import dp.esempi.security.repository.ArticolazioneRepository;
@@ -266,6 +270,37 @@ public class ApiController {
             return ResponseEntity.ok().body(sedi);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Errore nel caricamento\"}");
+        }
+    }
+
+    @PostMapping("/add-contatto")
+    public ResponseEntity<String> addContatto(@RequestBody Map<String, String> payload) {
+        try {
+                String emailazienda = payload.get("emailazienda");
+                String emailstudente = payload.get("emailstudente");
+                String dataoraStr  = payload.get("dataora");
+                String visualizzatoStr = payload.get("visualizzato");
+                String tipoStr = payload.get("tipo");
+                String messaggio = payload.get("messaggio");
+
+                DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+                LocalDateTime dataora = LocalDateTime.parse(dataoraStr, formatter);
+
+                Visualizzato visualizzatoEnum = Visualizzato.valueOf(visualizzatoStr);
+                Tipo tipoEnum = Tipo.valueOf(tipoStr);
+
+                Contatti contatto = new Contatti();
+                contatto.setEmailazienda(emailazienda);
+                contatto.setEmailstudente(emailstudente);
+                contatto.setMessaggio(messaggio);
+                contatto.setDataora(dataora);
+                contatto.setTipo(tipoEnum);
+                contatto.setVisualizzato(visualizzatoEnum);
+
+                contattiRepository.save(contatto);
+            return ResponseEntity.ok().body("{\"message\": \"Contatto salvato\"}");
+        } catch (Exception e) {
+            return ResponseEntity.ok().body("{\"message\": \"Errore nel salvataggio\"}");
         }
     }
     
