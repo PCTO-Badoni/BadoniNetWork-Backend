@@ -303,5 +303,50 @@ public class ApiController {
             return ResponseEntity.ok().body("{\"message\": \"Errore nel salvataggio\"}");
         }
     }
+
+    @PostMapping("/add-competenza")
+    public ResponseEntity<String> addCompetenza(@RequestBody Map<String, String> payload) {
+        try {
+                String descrizione = payload.get("descrizione");
+
+                Competenza competenza = new Competenza();
+                competenza.setDescrizione(descrizione);
+
+                competenzaRepository.save(competenza);
+            return ResponseEntity.ok().body("{\"message\": \"competenza aggiunta\"}");
+        } catch (Exception e) {
+            return ResponseEntity.ok().body("{\"message\": \"Errore nel salvataggio\"}");
+        }
+    }
+
+    @PostMapping("/add-lingua")
+    public ResponseEntity<String> addLingua(@RequestBody Map<String, String> payload) {
+        try {
+                String descrizione = payload.get("descrizione");
+
+                Lingua lingua = new Lingua();
+                lingua.setDescrizione(descrizione);
+
+                linguaRepository.save(lingua);
+            return ResponseEntity.ok().body("{\"message\": \"lingua aggiunta\"}");
+        } catch (Exception e) {
+            return ResponseEntity.ok().body("{\"message\": \"Errore nel salvataggio\"}");
+        }
+    }
+
+    @PostMapping("/add-livello-competenze")
+    public ResponseEntity<String> addLivelloCompetenze(@RequestBody Map<String, String> payload) {
+        try {
+                String descrizione = payload.get("descrizione");
+
+                LivelloCompetenze livello = new LivelloCompetenze();
+                livello.setDescrizione(descrizione);
+
+                livelloCompentezeRepository.save(livello);
+            return ResponseEntity.ok().body("{\"message\": \"lingua aggiunta\"}");
+        } catch (Exception e) {
+            return ResponseEntity.ok().body("{\"message\": \"Errore nel salvataggio\"}");
+        }
+    }
     
 }
