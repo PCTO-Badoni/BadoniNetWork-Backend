@@ -894,7 +894,7 @@ CREATE TABLE IF NOT EXISTS `aziende_waiting` (
   PRIMARY KEY (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Dump dei dati della tabella network.aziende_waiting: ~0 rows (circa)
+-- Dump dei dati della tabella network.aziende_waiting: ~1 rows (circa)
 INSERT INTO `aziende_waiting` (`email`, `ragionesociale`, `indirizzo`, `telefono`, `codice`) VALUES
 	('iii@iaa', 'pipo', 'aaaaaaaa', '23113213', NULL);
 
@@ -1045,7 +1045,7 @@ CREATE TABLE IF NOT EXISTS `studente` (
   `password` varchar(256) DEFAULT NULL,
   `cognome` varchar(100) DEFAULT NULL,
   `nome` varchar(100) DEFAULT NULL,
-  `genere` enum('M','F','NB') DEFAULT NULL,
+  `pronomi` enum('he_him','she_her','they_them','altro') DEFAULT NULL,
   `telefono` varchar(50) DEFAULT NULL,
   `indirizzo` varchar(200) DEFAULT NULL,
   `cap` varchar(30) DEFAULT NULL,
@@ -1064,7 +1064,7 @@ CREATE TABLE IF NOT EXISTS `studente` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- Dump dei dati della tabella network.studente: ~0 rows (circa)
-INSERT INTO `studente` (`email`, `password`, `cognome`, `nome`, `genere`, `telefono`, `indirizzo`, `cap`, `citta`, `datanascita`, `disponibile`, `curriculum`, `dataregistrazione`, `ultimoaccesso`, `idarticolazione`, `note`, `ruolo`) VALUES
+INSERT INTO `studente` (`email`, `password`, `cognome`, `nome`, `pronomi`, `telefono`, `indirizzo`, `cap`, `citta`, `datanascita`, `disponibile`, `curriculum`, `dataregistrazione`, `ultimoaccesso`, `idarticolazione`, `note`, `ruolo`) VALUES
 	('po@iisbadoni.edu.it', '{bcrypt}$2a$10$GMAiI.0k.SeVyJ29bwSyNOXPWudUFFjnucLH0srAv733NWro/RnQm', ' A', 'A', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'USER');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;

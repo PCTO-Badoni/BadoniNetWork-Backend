@@ -23,7 +23,7 @@ public class Utente {
     private String cognome;
     private String password;
     @Enumerated(EnumType.STRING)
-    private Genere genere;
+    private Pronome pronomi;
     private String telefono;
     private String indirizzo;
     private String cap;
