@@ -34,6 +34,7 @@ public class Utente {
     private String curriculum;
     private LocalDateTime dataregistrazione;
     private LocalDate ultimoaccesso;
-    private String idarticolazione; 
+    private String idarticolazione;
+    private String note;
     private String ruolo;
 }
