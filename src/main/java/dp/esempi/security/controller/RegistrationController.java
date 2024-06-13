@@ -87,6 +87,12 @@ public class RegistrationController {
                 
             } else if (errors.getAllErrors().toString().contains("Password insicura")) {
                 return ResponseEntity.badRequest().body("{\"message\": \"Password insicura\"}");
+
+            } else if (errors.getAllErrors().toString().contains("Email inesistente nella validazione")) {
+                return ResponseEntity.badRequest().body("{\"message\": \"Email inesistente nella validazione\"}");
+                
+            } else if (errors.getAllErrors().toString().contains("Email non verificata")) {
+                return ResponseEntity.badRequest().body("{\"message\": \"Email non verificata\"}");
             }
         }
 

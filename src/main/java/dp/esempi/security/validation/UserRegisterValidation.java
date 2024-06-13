@@ -1,10 +1,14 @@
 package dp.esempi.security.validation;
 
+import dp.esempi.security.model.Booleano;
 import dp.esempi.security.model.Utente;
+import dp.esempi.security.model.VerificaEmailStudenti;
 import dp.esempi.security.repository.UtenteRepository;
+import dp.esempi.security.repository.VerificaEmailStudentiRepository;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
@@ -16,6 +20,9 @@ public class UserRegisterValidation implements ConstraintValidator<UtenteValido,
 
     private static final UserRegisterValidation holder=new UserRegisterValidation();
     private UtenteRepository utenteRepository;
+
+    @Autowired
+    private VerificaEmailStudentiRepository verificaEmailStudentiRepository;
 
     @Bean(name = "user_validator")
     public static UserRegisterValidation bean(UtenteRepository utenteRepository) {
@@ -73,6 +80,24 @@ public class UserRegisterValidation implements ConstraintValidator<UtenteValido,
                     .addPropertyNode("cognome")
                     .addConstraintViolation();
             valido = false;
+        }
+
+        VerificaEmailStudenti verifica = verificaEmailStudentiRepository.findByEmail(u.getEmail()).orElse(null);
+
+        if (verifica == null) {
+            valido = false;
+            constraintValidatorContext.disableDefaultConstraintViolation();
+            constraintValidatorContext.buildConstraintViolationWithTemplate("Email inesistente nella validazione")
+                    .addPropertyNode("verifica")
+                    .addConstraintViolation();
+        } else {
+            if (verifica.getVerificato().equals(Booleano.N)) {
+                valido = false;
+                constraintValidatorContext.disableDefaultConstraintViolation();
+                constraintValidatorContext.buildConstraintViolationWithTemplate("Email non verificata")
+                        .addPropertyNode("verifica")
+                        .addConstraintViolation();
+            }
         }
 
         return valido;

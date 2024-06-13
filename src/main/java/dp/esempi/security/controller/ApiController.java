@@ -103,7 +103,7 @@ public class ApiController {
         return ResponseEntity.ok().body("{\"message\": \"Email valida\"}");
     }
 
-    @PostMapping("/send-verify-otp")
+    @PostMapping("/send-student-otp")
     public ResponseEntity<String> sendVerifyOTP(@RequestBody Map<String, String> payload) throws MessagingException, IOException {
         String email = payload.get("email");
         
@@ -128,7 +128,7 @@ public class ApiController {
         return ResponseEntity.ok().body("{\"message\": \"Verifica inviata\"}");
     }
 
-    @PostMapping("/verify-otp-code")
+    @PostMapping("/verify-student-otp")
     public ResponseEntity<?> validateOTP(HttpSession httpSession, @RequestBody Map<String, String> requestBody) {
         int tries=-1;
 
@@ -157,6 +157,8 @@ public class ApiController {
             return ResponseEntity.badRequest().body("{\"message\": \"Codice invalido\"}");
         }
 
+        verifica.setVerificato(Booleano.Y);
+        verificaEmailStudentiRepository.save(verifica);
         return ResponseEntity.badRequest().body("{\"message\": \"Codice valido\"}");
     }
     
