@@ -894,9 +894,11 @@ CREATE TABLE IF NOT EXISTS `aziende_waiting` (
   PRIMARY KEY (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Dump dei dati della tabella network.aziende_waiting: ~0 rows (circa)
+-- Dump dei dati della tabella network.aziende_waiting: ~3 rows (circa)
 INSERT INTO `aziende_waiting` (`email`, `ragionesociale`, `indirizzo`, `telefono`, `codice`) VALUES
-	('iii@iaa', 'pipo', 'aaaaaaaa', '23113213', NULL);
+	('a@a', 'Pippo', 'aa', '34343434', NULL),
+	('iii@iaa', 'pipo', 'aaaaaaaa', '23113213', NULL),
+	('iii@idffaa', 'pipo', 'aaaaaaaa', '23113213', NULL);
 
 -- Dump della struttura di tabella network.competenze
 CREATE TABLE IF NOT EXISTS `competenze` (
@@ -1048,8 +1050,6 @@ CREATE TABLE IF NOT EXISTS `studente` (
   `pronomi` enum('he_him','she_her','they_them','altro') DEFAULT NULL,
   `telefono` varchar(50) DEFAULT NULL,
   `indirizzo` varchar(200) DEFAULT NULL,
-  `cap` varchar(30) DEFAULT NULL,
-  `citta` varchar(50) DEFAULT NULL,
   `datanascita` date DEFAULT NULL,
   `disponibile` enum('Y','N','P') DEFAULT 'Y' COMMENT 'P=Pausa - Utenti non contattabili ora',
   `curriculum` varchar(100) DEFAULT NULL,
@@ -1063,12 +1063,11 @@ CREATE TABLE IF NOT EXISTS `studente` (
   CONSTRAINT `FK_studente_articolazione` FOREIGN KEY (`idarticolazione`) REFERENCES `articolazione` (`idarticolazione`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Dump dei dati della tabella network.studente: ~4 rows (circa)
-INSERT INTO `studente` (`email`, `password`, `cognome`, `nome`, `pronomi`, `telefono`, `indirizzo`, `cap`, `citta`, `datanascita`, `disponibile`, `curriculum`, `dataregistrazione`, `ultimoaccesso`, `idarticolazione`, `note`, `ruolo`) VALUES
-	('po@iisbadoni.edu.it', '{bcrypt}$2a$10$GMAiI.0k.SeVyJ29bwSyNOXPWudUFFjnucLH0srAv733NWro/RnQm', ' A', 'A', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'USER'),
-	('poppo@iisbadoni.edu.it', '{bcrypt}$2a$10$Qidgq9m8CmEh69rJomGLZ.H.eArmSrguob5Pc8laeQmaPkMUhlBeW', 'Giannola', 'Gianni', 'he_him', '23113213', 'aaaaaaaa', '22021', 'Bellagio', '2006-09-13', 'Y', 'Mamma', '2023-06-10 12:30:00', '2023-06-10', 'INF', 'sono un figo', 'USER'),
-	('poppolino@iisbadoni.edu.it', '{bcrypt}$2a$10$iL9O4HSdRDBBaSAEQamQFOjlkpLluOBEOFEomrMY7VNbxYB1pNSUC', 'Giannola', 'Gianni', 'he_him', '23113213', 'aaaaaaaa', '22021', 'Bellagio', '2006-09-13', 'Y', 'Mamma', '2023-06-10 12:30:00', '2023-06-10', 'INF', 'sono un figo', 'USER'),
-	('srmndr06p13e507g@iisbadoni.edu.it', '{bcrypt}$2a$10$BQl92cRFNi7QbA9wrd6sNOcRtkJzK9PBOlNv70RYFYULHF31sD4Wa', 'Giannola', 'Gianni', 'he_him', '23113213', 'aaaaaaaa', '22021', 'Bellagio', '2006-09-13', 'Y', 'Mamma', '2023-06-10 12:30:00', '2023-06-10', 'INF', 'sono un figo', 'USER');
+-- Dump dei dati della tabella network.studente: ~3 rows (circa)
+INSERT INTO `studente` (`email`, `password`, `cognome`, `nome`, `pronomi`, `telefono`, `indirizzo`, `datanascita`, `disponibile`, `curriculum`, `dataregistrazione`, `ultimoaccesso`, `idarticolazione`, `note`, `ruolo`) VALUES
+	('po@iisbadoni.edu.it', '{bcrypt}$2a$10$GMAiI.0k.SeVyJ29bwSyNOXPWudUFFjnucLH0srAv733NWro/RnQm', ' A', 'A', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'USER'),
+	('poppo@iisbadoni.edu.it', '{bcrypt}$2a$10$Qidgq9m8CmEh69rJomGLZ.H.eArmSrguob5Pc8laeQmaPkMUhlBeW', 'Giannola', 'Gianni', 'he_him', '23113213', 'aaaaaaaa', '2006-09-13', 'Y', 'Mamma', '2023-06-10 12:30:00', '2023-06-10', 'INF', 'sono un figo', 'USER'),
+	('poppolino@iisbadoni.edu.it', '{bcrypt}$2a$10$iL9O4HSdRDBBaSAEQamQFOjlkpLluOBEOFEomrMY7VNbxYB1pNSUC', 'Giannola', 'Gianni', 'he_him', '23113213', 'aaaaaaaa', '2006-09-13', 'Y', 'Mamma', '2023-06-10 12:30:00', '2023-06-10', 'INF', 'sono un figo', 'USER');
 
 -- Dump della struttura di tabella network.verificaemail_studenti
 CREATE TABLE IF NOT EXISTS `verificaemail_studenti` (
@@ -1080,7 +1079,7 @@ CREATE TABLE IF NOT EXISTS `verificaemail_studenti` (
 
 -- Dump dei dati della tabella network.verificaemail_studenti: ~1 rows (circa)
 INSERT INTO `verificaemail_studenti` (`email`, `codice`, `verificato`) VALUES
-	('srmndr06p13e507g@iisbadoni.edu.it', '967032', 'N');
+	('srmndr06p13e507g@iisbadoni.edu.it', '869045', 'Y');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
