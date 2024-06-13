@@ -1,6 +1,6 @@
 package dp.esempi.security.model;
 
-public enum Visualizzato {
+public enum Booleano {
     Y,
-    N,
+    N
 }

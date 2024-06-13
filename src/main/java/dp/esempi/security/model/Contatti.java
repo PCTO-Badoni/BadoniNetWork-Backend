@@ -23,6 +23,6 @@ public class Contatti{
     private Tipo tipo;
     private LocalDateTime dataora;
     @Enumerated(EnumType.STRING)
-    private Visualizzato visualizzato;
+    private Booleano visualizzato;
     private String messaggio;
 }

@@ -6,6 +6,7 @@ import dp.esempi.security.model.AziendaWaiting;
 import dp.esempi.security.repository.AziendaApprovedRepository;
 import dp.esempi.security.repository.AziendaWaitingRepository;
 import dp.esempi.security.service.EmailService;
+import dp.esempi.security.service.Methods;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 @RestController
 @CrossOrigin
 public class MainController {
@@ -31,8 +31,9 @@ public class MainController {
 
     @Autowired
     private AziendaApprovedRepository aziendaApprovedRepository;
-    
-    private Random random = new Random();
+
+    @Autowired
+    private Methods methods;
 
 
     @GetMapping("/accept-request/{email}")
@@ -80,7 +81,7 @@ public class MainController {
         }
     
         // Genera un nuovo codice
-        String codice = generateCode();
+        String codice = methods.generateCode();
     
         if (codice.equals("error")) {
             return ResponseEntity.badRequest().body("{\"message\": \"Errore nella generazione del codice\"}");
@@ -101,33 +102,6 @@ public class MainController {
     
         return ResponseEntity.ok().body("{\"message\": \"Richiesta accettata");
     }
-    
 
-    private String generateCode() {
-        Optional<AziendaWaiting> aziendaFind;
-        Optional<AziendaApproved> aziendaApprovedFind;
-        String codice;
-        int contatore = 0;
-        int max_tentativi = 1000;
-
-        do {
-            contatore++;
-
-            int min = 100000;
-            int max = 999999;
-            int randomNumber = min + random.nextInt(max - min + 1);
-            codice = String.valueOf(randomNumber);
-    
-            aziendaFind = aziendaWaitingRepository.findByCodice(codice);
-            aziendaApprovedFind = aziendaApprovedRepository.findByCodice(codice);
-
-        } while (aziendaFind.isPresent() && aziendaApprovedFind.isPresent() && contatore < max_tentativi);
-
-        if (contatore>=max_tentativi) {
-            return "error";
-        }
-
-        return codice;
-    }
 }
 

@@ -1,7 +1,9 @@
 package dp.esempi.security.controller;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -16,6 +18,7 @@ import dp.esempi.security.model.Articolazione;
 import dp.esempi.security.model.Azienda;
 import dp.esempi.security.model.AziendaApproved;
 import dp.esempi.security.model.AziendaWaiting;
+import dp.esempi.security.model.Booleano;
 import dp.esempi.security.model.Competenza;
 import dp.esempi.security.model.CompetenzeStudenti;
 import dp.esempi.security.model.Contatti;
@@ -24,7 +27,7 @@ import dp.esempi.security.model.LingueStudenti;
 import dp.esempi.security.model.LivelloCompetenze;
 import dp.esempi.security.model.Tipo;
 import dp.esempi.security.model.Utente;
-import dp.esempi.security.model.Visualizzato;
+import dp.esempi.security.model.VerificaEmailStudenti;
 import dp.esempi.security.repository.AltreSediRepository;
 import dp.esempi.security.repository.AreaRepository;
 import dp.esempi.security.repository.ArticolazioneRepository;
@@ -38,9 +41,10 @@ import dp.esempi.security.repository.LinguaRepository;
 import dp.esempi.security.repository.LingueStudentiRepository;
 import dp.esempi.security.repository.LivelloCompentezeRepository;
 import dp.esempi.security.repository.UtenteRepository;
-
-
-
+import dp.esempi.security.repository.VerificaEmailStudentiRepository;
+import dp.esempi.security.service.EmailService;
+import dp.esempi.security.service.Methods;
+import jakarta.mail.MessagingException;
 
 @RequestMapping("/api")
 @CrossOrigin (origins = {"http://localhost:3001", "http://127.0.0.1:3001"})
@@ -73,10 +77,16 @@ public class ApiController {
     private ContattiRepository contattiRepository;
     @Autowired
     private LingueStudentiRepository lingueStudentiRepository;
+    @Autowired
+    private VerificaEmailStudentiRepository verificaEmailStudentiRepository;
+    @Autowired
+    private EmailService emailService;
+    @Autowired
+    private Methods methods;
 
 
     @PostMapping("/verify-email")
-    public ResponseEntity<String> postMethodName(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<String> verifyEmail(@RequestBody Map<String, String> payload) {
         String email = payload.get("email");
         
         if (!email.endsWith("iisbadoni.edu.it")) {
@@ -91,6 +101,32 @@ public class ApiController {
         
         return ResponseEntity.ok().body("{\"message\": \"Email valida\"}");
     }
+
+    @PostMapping("/send-verify-otp")
+    public ResponseEntity<String> sendVerifyOTP(@RequestBody Map<String, String> payload) throws MessagingException, IOException {
+        String email = payload.get("email");
+        
+        String codice = methods.generateCode();
+
+        if (codice.equals("error")) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Errore nella generazione del codice\"}");
+        }
+
+        VerificaEmailStudenti obj = new VerificaEmailStudenti();
+        obj.setEmail(email);
+        obj.setCodice(codice);
+        obj.setVerificato(Booleano.N);
+
+        verificaEmailStudentiRepository.save(obj);
+
+        Map<String, Object> templateModel = new HashMap<>();
+        templateModel.put("codice", codice);
+        emailService.sendHtmlMessage(email, "Verifica email", templateModel, "verify-response-template");
+
+
+        return ResponseEntity.ok().body("{\"message\": \"Verifica inviata\"}");
+    }
+    
 
     @GetMapping("/get-all-competenze")
     public ResponseEntity<List<Competenza>> getAllCompetences() {
@@ -286,7 +322,7 @@ public class ApiController {
                 DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
                 LocalDateTime dataora = LocalDateTime.parse(dataoraStr, formatter);
 
-                Visualizzato visualizzatoEnum = Visualizzato.valueOf(visualizzatoStr);
+                Booleano visualizzatoEnum = Booleano.valueOf(visualizzatoStr);
                 Tipo tipoEnum = Tipo.valueOf(tipoStr);
 
                 Contatti contatto = new Contatti();
