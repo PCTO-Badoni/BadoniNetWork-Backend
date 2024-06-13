@@ -159,7 +159,7 @@ public class ApiController {
 
         verifica.setVerificato(Booleano.Y);
         verificaEmailStudentiRepository.save(verifica);
-        return ResponseEntity.badRequest().body("{\"message\": \"Codice valido\"}");
+        return ResponseEntity.ok().body("{\"message\": \"Codice valido\"}");
     }
     
 
