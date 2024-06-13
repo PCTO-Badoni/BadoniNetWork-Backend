@@ -45,6 +45,7 @@ import dp.esempi.security.repository.VerificaEmailStudentiRepository;
 import dp.esempi.security.service.EmailService;
 import dp.esempi.security.service.Methods;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpSession;
 
 @RequestMapping("/api")
 @CrossOrigin (origins = {"http://localhost:3001", "http://127.0.0.1:3001"})
@@ -125,6 +126,38 @@ public class ApiController {
 
 
         return ResponseEntity.ok().body("{\"message\": \"Verifica inviata\"}");
+    }
+
+    @PostMapping("/verify-otp-code")
+    public ResponseEntity<?> validateOTP(HttpSession httpSession, @RequestBody Map<String, String> requestBody) {
+        int tries=-1;
+
+        if (httpSession.getAttribute("tries") == null) {
+            httpSession.setAttribute("tries", 1);
+        } else {
+            tries = (int) httpSession.getAttribute("tries")+1;
+            httpSession.setAttribute("tries", tries);
+        }
+
+        if (tries>=5) {
+            httpSession.removeAttribute("tries");
+            //! Implementare un meccanismo
+            return ResponseEntity.badRequest().body("{\"message\": \"Tentativi esauriti\"}");
+        }
+
+        VerificaEmailStudenti verifica;
+
+        verifica = verificaEmailStudentiRepository.findByEmail(requestBody.get("email")).orElse(null);
+
+        if (verifica == null) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Email invalida\"}");
+        }
+
+        if (!verifica.getCodice().equals(requestBody.get("codice"))) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Codice invalido\"}");
+        }
+
+        return ResponseEntity.badRequest().body("{\"message\": \"Codice valido\"}");
     }
     
 
