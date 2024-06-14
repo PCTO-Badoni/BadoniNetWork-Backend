@@ -2,6 +2,7 @@ package dp.esempi.security.model;
 
 import java.time.LocalDate;
 
+import dp.esempi.security.validation.AziendaValida;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,9 +13,14 @@ import lombok.*;
 @NoArgsConstructor
 @Entity
 @Table(name="azienda")
-//@AziendaWaitingValida
-public class Azienda extends AziendaBase {
+@AziendaValida
+public class Azienda {
 
+    @Id
+    private String email;
+    private String ragionesociale;
+    private String telefono;
+    private String indirizzo;
     private String password;
     private String citta;
     private String cap;
@@ -25,4 +31,6 @@ public class Azienda extends AziendaBase {
     private int idarea;
     private LocalDate ultimoaccesso;
     private String ruolo;
+    private String codice;
+    private TipoAzienda type;
 }

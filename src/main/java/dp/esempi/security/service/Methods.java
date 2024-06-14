@@ -6,26 +6,22 @@ import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import dp.esempi.security.model.AziendaApproved;
-import dp.esempi.security.model.AziendaWaiting;
+import dp.esempi.security.model.Azienda;
 import dp.esempi.security.model.VerificaEmailStudenti;
-import dp.esempi.security.repository.AziendaApprovedRepository;
-import dp.esempi.security.repository.AziendaWaitingRepository;
+import dp.esempi.security.repository.AziendaRepository;
 import dp.esempi.security.repository.VerificaEmailStudentiRepository;
 
 @Service
 public class Methods {
+
     @Autowired
-    private AziendaWaitingRepository aziendaWaitingRepository;
-    @Autowired
-    private AziendaApprovedRepository aziendaApprovedRepository;
+    private AziendaRepository aziendaRepository;
     @Autowired
     private VerificaEmailStudentiRepository verificaEmailStudentiRepository;
     private Random random = new Random();
 
     public String generateCode() {
-        Optional<AziendaWaiting> aziendaFind;
-        Optional<AziendaApproved> aziendaApprovedFind;
+        Optional<Azienda> aziendaFind;
         Optional<VerificaEmailStudenti> verificaEmailStudentiFind;
         String codice;
         int contatore = 0;
@@ -39,11 +35,10 @@ public class Methods {
             int randomNumber = min + random.nextInt(max - min + 1);
             codice = String.valueOf(randomNumber);
     
-            aziendaFind = aziendaWaitingRepository.findByCodice(codice);
-            aziendaApprovedFind = aziendaApprovedRepository.findByCodice(codice);
+            aziendaFind = aziendaRepository.findByCodice(codice);
             verificaEmailStudentiFind = verificaEmailStudentiRepository.findByCodice(codice);
 
-        } while (aziendaFind.isPresent() && aziendaApprovedFind.isPresent() && verificaEmailStudentiFind.isPresent() && contatore < max_tentativi);
+        } while (aziendaFind.isPresent() && verificaEmailStudentiFind.isPresent() && contatore < max_tentativi);
 
         if (contatore>=max_tentativi) {
             return "error";

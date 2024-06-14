@@ -1,10 +1,8 @@
 package dp.esempi.security.controller;
 
-import dp.esempi.security.model.AziendaApproved;
-import dp.esempi.security.model.AziendaPending;
-import dp.esempi.security.model.AziendaWaiting;
-import dp.esempi.security.repository.AziendaApprovedRepository;
-import dp.esempi.security.repository.AziendaWaitingRepository;
+import dp.esempi.security.model.Azienda;
+import dp.esempi.security.model.TipoAzienda;
+import dp.esempi.security.repository.AziendaRepository;
 import dp.esempi.security.service.EmailService;
 import dp.esempi.security.service.Methods;
 import jakarta.mail.MessagingException;
@@ -27,10 +25,7 @@ public class MainController {
     private EmailService emailService;
 
     @Autowired
-    private AziendaWaitingRepository aziendaWaitingRepository;
-
-    @Autowired
-    private AziendaApprovedRepository aziendaApprovedRepository;
+    private AziendaRepository aziendaRepository;
 
     @Autowired
     private Methods methods;
@@ -38,45 +33,15 @@ public class MainController {
 
     @GetMapping("/accept-request/{email}")
     public ResponseEntity<String> acceptRequest(@PathVariable String email) throws MessagingException, IOException {
-        Optional<AziendaWaiting> azienda = aziendaWaitingRepository.findByEmail(email);
-    
-        return dataProcess(azienda);
-    }
-
-    @GetMapping("/accept-approved-request/{email}")
-    public ResponseEntity<String> acceptApprovedRequest(@PathVariable String email) throws MessagingException, IOException {
-        Optional<AziendaApproved> azienda = aziendaApprovedRepository.findByEmail(email);
-    
-        return dataProcess(azienda);
-    }
-
-    @GetMapping("/deny-request/{email}")
-    public ResponseEntity<String> denyRequest(@PathVariable String email) throws MessagingException, IOException {
-        Optional<AziendaWaiting> azienda = aziendaWaitingRepository.findByEmail(email);
+        Optional<Azienda> azienda = aziendaRepository.findByEmail(email);
     
         if (azienda.isEmpty()) {
             return ResponseEntity.badRequest().body("{\"message\": \"Azienda non trovata\"}");
         }
-
-        AziendaWaiting aziendadb = azienda.get();
-
-        aziendaWaitingRepository.delete(aziendadb);
-
-        Map<String, Object> templateModel = new HashMap<>();
-        emailService.sendHtmlMessage(email, "Richiesta account Badoni NetWork", templateModel, "request-deny-template");
-        
-        return ResponseEntity.ok().body("{\"message\": \"Richiesta rifiutata");
-    }
-
-
-    private ResponseEntity<String> dataProcess(Optional<? extends AziendaPending> azienda) throws MessagingException, IOException {
-        if (azienda.isEmpty()) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Azienda non trovata\"}");
-        }
     
-        AziendaPending aziendaget = azienda.get();
+        Azienda aziendaget = azienda.get();
 
-        if (aziendaget.getCodice() != null) {
+        if (aziendaget.getCodice() != null || !aziendaget.getType().equals(TipoAzienda.W)) {
             return ResponseEntity.badRequest().body("{\"message\": \"Azienda già accettata\"}");
         }
     
@@ -89,11 +54,7 @@ public class MainController {
 
         aziendaget.setCodice(codice);
 
-        if (aziendaget instanceof AziendaWaiting) {
-            aziendaWaitingRepository.save((AziendaWaiting) aziendaget);
-        } else if (aziendaget instanceof AziendaApproved) {
-            aziendaApprovedRepository.save((AziendaApproved) aziendaget);
-        }
+        aziendaRepository.save(aziendaget);
     
         // Invia la mail di accettazione
         Map<String, Object> templateModel = new HashMap<>();
@@ -103,5 +64,26 @@ public class MainController {
         return ResponseEntity.ok().body("{\"message\": \"Richiesta accettata");
     }
 
+    @GetMapping("/deny-request/{email}")
+    public ResponseEntity<String> denyRequest(@PathVariable String email) throws MessagingException, IOException {
+        Optional<Azienda> azienda = aziendaRepository.findByEmail(email);
+    
+        if (azienda.isEmpty()) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Azienda non trovata\"}");
+        }
+
+        Azienda aziendadb = azienda.get();
+
+        if (!aziendadb.getType().equals(TipoAzienda.W)) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Hai già preso provvedimenti per questa richiesta\"}");
+        }
+
+        aziendaRepository.delete(aziendadb);
+
+        Map<String, Object> templateModel = new HashMap<>();
+        emailService.sendHtmlMessage(email, "Richiesta account Badoni NetWork", templateModel, "request-deny-template");
+        
+        return ResponseEntity.ok().body("{\"message\": \"Richiesta rifiutata");
+    }
 }
 

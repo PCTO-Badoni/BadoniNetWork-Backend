@@ -1,13 +1,10 @@
 package dp.esempi.security.controller;
 
 import dp.esempi.security.model.Azienda;
-import dp.esempi.security.model.AziendaPending;
-import dp.esempi.security.model.AziendaWaiting;
 import dp.esempi.security.model.Disponibile;
+import dp.esempi.security.model.TipoAzienda;
 import dp.esempi.security.model.Utente;
-import dp.esempi.security.repository.AziendaApprovedRepository;
 import dp.esempi.security.repository.AziendaRepository;
-import dp.esempi.security.repository.AziendaWaitingRepository;
 import dp.esempi.security.repository.UtenteRepository;
 import dp.esempi.security.service.EmailService;
 import jakarta.mail.MessagingException;
@@ -23,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 
 
@@ -33,10 +31,6 @@ public class RegistrationController {
     @Autowired
     private UtenteRepository utenteRepository;
     @Autowired
-    private AziendaWaitingRepository aziendaWaitingRepository;
-    @Autowired
-    private AziendaApprovedRepository aziendaApprovedRepository;
-    @Autowired
     private AziendaRepository aziendaRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -44,7 +38,7 @@ public class RegistrationController {
     private EmailService emailService;
 
     @PostMapping("/azienda")
-    public ResponseEntity<?> createCompany(@RequestBody @Valid AziendaWaiting azienda, Errors errors, HttpServletResponse response) throws MessagingException, IOException {
+    public ResponseEntity<?> createCompany(@RequestBody @Valid Azienda azienda, Errors errors, HttpServletResponse response) throws MessagingException, IOException {
         if(errors.hasErrors()) {
             if (errors.getAllErrors().toString().contains("Richiesta già inviata")) {
                 return ResponseEntity.badRequest().body("{\"message\": \"Richiesta già inviata\"}");   
@@ -58,13 +52,17 @@ public class RegistrationController {
         }
 
         //Operazioni per approvare automaticamente l'azienda
-        if (aziendaApprovedRepository.findByEmail(azienda.getEmail()).isPresent()) {
-            response.sendRedirect("http://localhost:8080/accept-approved-request/"+azienda.getEmail());
+        Optional<Azienda> a = aziendaRepository.findByEmail(azienda.getEmail());
+
+        if (a.isPresent()) {
+            if (a.get().getType().equals(TipoAzienda.A))
+            response.sendRedirect("http://localhost:8080/accept-request/"+azienda.getEmail());
             return ResponseEntity.ok(null);
         }
 
+        a.get().setType(TipoAzienda.W);
         //Operazioni per aggiungere l'azienda al waiting
-        aziendaWaitingRepository.save(azienda);
+        aziendaRepository.save(azienda);
             
         sendEmail(azienda.getRagionesociale(),azienda.getEmail(),azienda.getTelefono(),azienda.getIndirizzo());
         
@@ -127,16 +125,12 @@ public class RegistrationController {
             return ResponseEntity.badRequest().body("{\"message\": \"Tentativi esauriti\"}");
         }
 
-        AziendaPending azienda;
+        Azienda azienda;
 
-        azienda = aziendaWaitingRepository.findByCodice(requestBody.get("codice")).orElse(null);
+        azienda = aziendaRepository.findByCodice(requestBody.get("codice")).orElse(null);
 
         if (azienda == null) {
-            azienda = aziendaApprovedRepository.findByCodice(requestBody.get("codice")).orElse(null);
-
-            if (azienda == null) {
-                return ResponseEntity.badRequest().body("{\"message\": \"Codice invalido\"}");
-            }
+            return ResponseEntity.badRequest().body("{\"message\": \"Codice invalido\"}");
         }
 
         return ResponseEntity.ok(azienda);
@@ -146,6 +140,7 @@ public class RegistrationController {
     @PostMapping("/confirm-azienda")
     public ResponseEntity<String> confirmCompany(@RequestBody Azienda azienda, Errors errors) {
 
+        azienda.setType(TipoAzienda.R);
         aziendaRepository.save(azienda);
 
         return ResponseEntity.ok("{\"message\": \"Account creato\"}");

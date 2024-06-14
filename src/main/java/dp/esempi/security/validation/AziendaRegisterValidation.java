@@ -1,8 +1,8 @@
 package dp.esempi.security.validation;
 
-import dp.esempi.security.model.AziendaWaiting;
+import dp.esempi.security.model.Azienda;
+import dp.esempi.security.model.TipoAzienda;
 import dp.esempi.security.repository.AziendaRepository;
-import dp.esempi.security.repository.AziendaWaitingRepository;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,23 +11,24 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
-public class AziendaWaitingRegisterValidation implements ConstraintValidator<AziendaWaitingValida, AziendaWaiting> {
-
-    @Autowired
-    private AziendaWaitingRepository aziendaWaitingRepository;
+public class AziendaRegisterValidation implements ConstraintValidator<AziendaValida, Azienda> {
 
     @Autowired
     private AziendaRepository aziendaRepository;
 
     @Override
-    public void initialize(AziendaWaitingValida constraintAnnotation) {
+    public void initialize(AziendaValida constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
     }
 
     @Override
-    public boolean isValid(AziendaWaiting a, ConstraintValidatorContext constraintValidatorContext) {
+    public boolean isValid(Azienda a, ConstraintValidatorContext constraintValidatorContext) {
+        if (!a.getType().equals(TipoAzienda.W)) {
+            return true;
+        }
+
         boolean valido = true;
-        Optional<AziendaWaiting> aziendaFind = aziendaWaitingRepository.findByEmail(a.getEmail());
+        Optional<Azienda> aziendaFind = aziendaRepository.findByEmail(a.getEmail());
         if (aziendaFind.isPresent()) {
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate("Email già esistente")

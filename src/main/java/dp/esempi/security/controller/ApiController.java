@@ -16,8 +16,6 @@ import dp.esempi.security.model.AltreSedi;
 import dp.esempi.security.model.Area;
 import dp.esempi.security.model.Articolazione;
 import dp.esempi.security.model.Azienda;
-import dp.esempi.security.model.AziendaApproved;
-import dp.esempi.security.model.AziendaWaiting;
 import dp.esempi.security.model.Booleano;
 import dp.esempi.security.model.Competenza;
 import dp.esempi.security.model.CompetenzeStudenti;
@@ -26,14 +24,13 @@ import dp.esempi.security.model.Lingua;
 import dp.esempi.security.model.LingueStudenti;
 import dp.esempi.security.model.LivelloCompetenze;
 import dp.esempi.security.model.Tipo;
+import dp.esempi.security.model.TipoAzienda;
 import dp.esempi.security.model.Utente;
 import dp.esempi.security.model.VerificaEmailStudenti;
 import dp.esempi.security.repository.AltreSediRepository;
 import dp.esempi.security.repository.AreaRepository;
 import dp.esempi.security.repository.ArticolazioneRepository;
-import dp.esempi.security.repository.AziendaApprovedRepository;
 import dp.esempi.security.repository.AziendaRepository;
-import dp.esempi.security.repository.AziendaWaitingRepository;
 import dp.esempi.security.repository.CompetenzaRepository;
 import dp.esempi.security.repository.CompetenzeStudentiRepository;
 import dp.esempi.security.repository.ContattiRepository;
@@ -64,10 +61,6 @@ public class ApiController {
     private LinguaRepository linguaRepository;
     @Autowired
     private LivelloCompentezeRepository livelloCompentezeRepository;
-    @Autowired
-    private AziendaWaitingRepository aziendaWaitingRepository;
-    @Autowired
-    private AziendaApprovedRepository aziendaApprovedRepository;
     @Autowired
     private AziendaRepository aziendaRepository;
     @Autowired
@@ -204,15 +197,15 @@ public class ApiController {
     }
 
     @GetMapping("/get-all-aziende_waiting")
-    public ResponseEntity<List<AziendaWaiting>> getAllAziendaWaiting() {
-        List<AziendaWaiting> azienda_waiting = aziendaWaitingRepository.findAll();
-        return ResponseEntity.ok(azienda_waiting);
+    public ResponseEntity<List<Azienda>> getAllAziendaWaiting() {
+        List<Azienda> aziendaWaiting = aziendaRepository.findByType(TipoAzienda.W);
+        return ResponseEntity.ok(aziendaWaiting);
     }
 
     @GetMapping("/get-all-aziende_approved")
-    public ResponseEntity<List<AziendaApproved>> getAllAziendaApproved() {
-        List<AziendaApproved> azienda_approved = aziendaApprovedRepository.findAll();
-        return ResponseEntity.ok(azienda_approved);
+    public ResponseEntity<List<Azienda>> getAllAziendaApproved() {
+        List<Azienda> aziendaApproved = aziendaRepository.findByType(TipoAzienda.A);
+        return ResponseEntity.ok(aziendaApproved);
     }
 
     @GetMapping("/get-all-aziende")
