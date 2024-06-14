@@ -60,7 +60,7 @@ public class RegistrationController {
             return ResponseEntity.ok(null);
         }
 
-        a.get().setType(TipoAzienda.W);
+        azienda.setType(TipoAzienda.W);
         //Operazioni per aggiungere l'azienda al waiting
         aziendaRepository.save(azienda);
             

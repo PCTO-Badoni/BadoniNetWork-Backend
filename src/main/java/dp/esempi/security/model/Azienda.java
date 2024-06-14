@@ -30,5 +30,6 @@ public class Azienda {
     private LocalDate ultimoaccesso;
     private String ruolo;
     private String codice;
+    @Enumerated(EnumType.STRING)
     private TipoAzienda type;
 }

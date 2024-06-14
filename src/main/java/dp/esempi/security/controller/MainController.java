@@ -41,7 +41,7 @@ public class MainController {
     
         Azienda aziendaget = azienda.get();
 
-        if (aziendaget.getCodice() != null || !aziendaget.getType().equals(TipoAzienda.W)) {
+        if (aziendaget.getCodice() != null || aziendaget.getType().equals(TipoAzienda.R)) {
             return ResponseEntity.badRequest().body("{\"message\": \"Azienda già accettata\"}");
         }
     
