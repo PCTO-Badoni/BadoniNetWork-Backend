@@ -1,19 +1,16 @@
 package dp.esempi.security.controller;
 
-import dp.esempi.security.model.AziendaApproved;
-import dp.esempi.security.model.AziendaPending;
-import dp.esempi.security.model.AziendaWaiting;
+import dp.esempi.security.model.*;
 import dp.esempi.security.repository.AziendaApprovedRepository;
+import dp.esempi.security.repository.AziendaRepository;
 import dp.esempi.security.repository.AziendaWaitingRepository;
+import dp.esempi.security.repository.UtenteRepository;
 import dp.esempi.security.service.EmailService;
 import dp.esempi.security.service.Methods;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -31,6 +28,12 @@ public class MainController {
 
     @Autowired
     private AziendaApprovedRepository aziendaApprovedRepository;
+
+    @Autowired
+    private AziendaRepository aziendaRepository;
+
+    @Autowired
+    private UtenteRepository utenteRepository;
 
     @Autowired
     private Methods methods;
@@ -68,6 +71,20 @@ public class MainController {
         return ResponseEntity.ok().body("{\"message\": \"Richiesta rifiutata");
     }
 
+    @PostMapping("/password-recovery")
+    public ResponseEntity<String> passwordRecovery(@RequestBody Map<String, String> payload) throws MessagingException, IOException {
+        String email = payload.get("email");
+        Map<String, Object> templateModel = new HashMap<>();
+
+        Optional<Azienda> azienda = aziendaRepository.findByEmail(email);
+        Optional<Utente> studente = utenteRepository.findByEmail(email);
+
+        if (azienda.isEmpty() && studente.isEmpty()){
+            return ResponseEntity.badRequest().body("{\"message\": \"Account non trovato\"}");
+        }
+        emailService.sendHtmlMessage(email, "Recupero Password", templateModel, "password-recovery-template");
+        return ResponseEntity.ok().body("{\"message\": \"Controlla la casella di posta\"}");
+    }
 
     private ResponseEntity<String> dataProcess(Optional<? extends AziendaPending> azienda) throws MessagingException, IOException {
         if (azienda.isEmpty()) {

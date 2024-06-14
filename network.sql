@@ -1044,7 +1044,7 @@ INSERT INTO `livellocompetenze` (`idlivello`, `descrizione`) VALUES
 -- Dump della struttura di tabella network.studente
 CREATE TABLE IF NOT EXISTS `studente` (
   `email` varchar(100) NOT NULL,
-  `emailbadoni` varchar(255) DEFAULT NULL,
+  `emailbadoni` VARCHAR(100) DEFAULT NULL,
   `password` varchar(256) DEFAULT NULL,
   `cognome` varchar(100) DEFAULT NULL,
   `nome` varchar(100) DEFAULT NULL,

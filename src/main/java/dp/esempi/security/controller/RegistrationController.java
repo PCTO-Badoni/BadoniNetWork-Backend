@@ -136,7 +136,6 @@ public class RegistrationController {
                 return ResponseEntity.badRequest().body("{\"message\": \"Codice invalido\"}");
             }
         }
-
         return ResponseEntity.ok(azienda);
     }
     
@@ -158,6 +157,6 @@ public class RegistrationController {
         templateModel.put("indirizzo", indirizzo);
         templateModel.put("id", email);
 
-        emailService.sendHtmlMessage("srmndr06p13e507g@iisbadoni.edu.it", "Richiesta account Badoni NetWork", templateModel, "account-request-template");
+        emailService.sendHtmlMessage("cfrgnn06m28e507h@iisbadoni.edu.it", "Richiesta account Badoni NetWork", templateModel, "account-request-template");
     }
 }
