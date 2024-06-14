@@ -22,8 +22,6 @@ public class Azienda {
     private String telefono;
     private String indirizzo;
     private String password;
-    private String citta;
-    private String cap;
     private String cognomereferente;
     private String nomereferente;
     private String telreferente;
