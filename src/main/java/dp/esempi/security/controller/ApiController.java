@@ -210,7 +210,7 @@ public class ApiController {
 
     @GetMapping("/get-all-aziende")
     public ResponseEntity<List<Azienda>> getAllAzienda() {
-        List<Azienda> azienda = aziendaRepository.findAll();
+        List<Azienda> azienda = aziendaRepository.findByType(TipoAzienda.R);
         return ResponseEntity.ok(azienda);
     }
 
