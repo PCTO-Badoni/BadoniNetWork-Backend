@@ -19,6 +19,7 @@ public class Utente {
 
     @Id
     private String email;
+    private String emailbadoni;
     private String nome;
     private String cognome;
     private String password;
@@ -26,8 +27,6 @@ public class Utente {
     private Pronome pronomi;
     private String telefono;
     private String indirizzo;
-    private String cap;
-    private String citta;
     private LocalDate datanascita;
     @Enumerated(EnumType.STRING)
     private Disponibile disponibile;
