@@ -1044,6 +1044,7 @@ INSERT INTO `livellocompetenze` (`idlivello`, `descrizione`) VALUES
 -- Dump della struttura di tabella network.studente
 CREATE TABLE IF NOT EXISTS `studente` (
   `email` varchar(100) NOT NULL,
+  `emailbadoni` varchar(255) DEFAULT NULL,
   `password` varchar(256) DEFAULT NULL,
   `cognome` varchar(100) DEFAULT NULL,
   `nome` varchar(100) DEFAULT NULL,
@@ -1063,11 +1064,12 @@ CREATE TABLE IF NOT EXISTS `studente` (
   CONSTRAINT `FK_studente_articolazione` FOREIGN KEY (`idarticolazione`) REFERENCES `articolazione` (`idarticolazione`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Dump dei dati della tabella network.studente: ~3 rows (circa)
-INSERT INTO `studente` (`email`, `password`, `cognome`, `nome`, `pronomi`, `telefono`, `indirizzo`, `datanascita`, `disponibile`, `curriculum`, `dataregistrazione`, `ultimoaccesso`, `idarticolazione`, `note`, `ruolo`) VALUES
-	('po@iisbadoni.edu.it', '{bcrypt}$2a$10$GMAiI.0k.SeVyJ29bwSyNOXPWudUFFjnucLH0srAv733NWro/RnQm', ' A', 'A', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'USER'),
-	('poppo@iisbadoni.edu.it', '{bcrypt}$2a$10$Qidgq9m8CmEh69rJomGLZ.H.eArmSrguob5Pc8laeQmaPkMUhlBeW', 'Giannola', 'Gianni', 'he_him', '23113213', 'aaaaaaaa', '2006-09-13', 'Y', 'Mamma', '2023-06-10 12:30:00', '2023-06-10', 'INF', 'sono un figo', 'USER'),
-	('poppolino@iisbadoni.edu.it', '{bcrypt}$2a$10$iL9O4HSdRDBBaSAEQamQFOjlkpLluOBEOFEomrMY7VNbxYB1pNSUC', 'Giannola', 'Gianni', 'he_him', '23113213', 'aaaaaaaa', '2006-09-13', 'Y', 'Mamma', '2023-06-10 12:30:00', '2023-06-10', 'INF', 'sono un figo', 'USER');
+-- Dump dei dati della tabella network.studente: ~4 rows (circa)
+INSERT INTO `studente` (`email`, `emailbadoni`, `password`, `cognome`, `nome`, `pronomi`, `telefono`, `indirizzo`, `datanascita`, `disponibile`, `curriculum`, `dataregistrazione`, `ultimoaccesso`, `idarticolazione`, `note`, `ruolo`) VALUES
+	('po@iisbadoni.edu.it', NULL, '{bcrypt}$2a$10$GMAiI.0k.SeVyJ29bwSyNOXPWudUFFjnucLH0srAv733NWro/RnQm', ' A', 'A', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'USER'),
+	('poppo@iisbadoni.edu.it', NULL, '{bcrypt}$2a$10$Qidgq9m8CmEh69rJomGLZ.H.eArmSrguob5Pc8laeQmaPkMUhlBeW', 'Giannola', 'Gianni', 'he_him', '23113213', 'aaaaaaaa', '2006-09-13', 'Y', 'Mamma', '2023-06-10 12:30:00', '2023-06-10', 'INF', 'sono un figo', 'USER'),
+	('poppolino@iisbadoni.edu.it', NULL, '{bcrypt}$2a$10$iL9O4HSdRDBBaSAEQamQFOjlkpLluOBEOFEomrMY7VNbxYB1pNSUC', 'Giannola', 'Gianni', 'he_him', '23113213', 'aaaaaaaa', '2006-09-13', 'Y', 'Mamma', '2023-06-10 12:30:00', '2023-06-10', 'INF', 'sono un figo', 'USER'),
+	('srmndr06p13e507g@iisbadoni.edu.it', NULL, '{bcrypt}$2a$10$fM.72qQWF7eyC2/BIz.mPeH15RVh9vOS4yMu8vCyOpO4.BYeJ5zTW', 'Sormani', 'Andrea', 'he_him', '3342260991', 'Via Valassina 140, 22021 Bellagio', '2006-06-01', NULL, NULL, '2024-06-14 07:09:24', NULL, NULL, NULL, 'USER');
 
 -- Dump della struttura di tabella network.verificaemail_studenti
 CREATE TABLE IF NOT EXISTS `verificaemail_studenti` (
@@ -1077,9 +1079,9 @@ CREATE TABLE IF NOT EXISTS `verificaemail_studenti` (
   PRIMARY KEY (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Dump dei dati della tabella network.verificaemail_studenti: ~1 rows (circa)
+-- Dump dei dati della tabella network.verificaemail_studenti: ~0 rows (circa)
 INSERT INTO `verificaemail_studenti` (`email`, `codice`, `verificato`) VALUES
-	('srmndr06p13e507g@iisbadoni.edu.it', '869045', 'Y');
+	('srmndr06p13e507g@iisbadoni.edu.it', '329673', 'Y');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
