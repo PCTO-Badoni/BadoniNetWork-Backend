@@ -97,6 +97,8 @@ public class UserRegisterValidation implements ConstraintValidator<UtenteValido,
                 constraintValidatorContext.buildConstraintViolationWithTemplate("Email non verificata")
                         .addPropertyNode("verifica")
                         .addConstraintViolation();
+            } else {
+                verificaEmailStudentiRepository.delete(verifica);
             }
         }
 

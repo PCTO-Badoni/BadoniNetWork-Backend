@@ -3,6 +3,7 @@ package dp.esempi.security.controller;
 import dp.esempi.security.model.Azienda;
 import dp.esempi.security.model.AziendaPending;
 import dp.esempi.security.model.AziendaWaiting;
+import dp.esempi.security.model.Disponibile;
 import dp.esempi.security.model.Utente;
 import dp.esempi.security.repository.AziendaApprovedRepository;
 import dp.esempi.security.repository.AziendaRepository;
@@ -98,6 +99,7 @@ public class RegistrationController {
 
         utente.setPassword(passwordEncoder.encode(utente.getPassword()));
         utente.setRuolo("USER");
+        utente.setDisponibile(Disponibile.Y);
         utenteRepository.save(utente);
         
         return ResponseEntity.ok("{\"message\": \"Account creato con successo\"}");

@@ -19,7 +19,7 @@ public class Utente {
 
     @Id
     private String email;
-    private String emailbadoni;
+    private String emailpersonale;
     private String nome;
     private String cognome;
     private String password;
