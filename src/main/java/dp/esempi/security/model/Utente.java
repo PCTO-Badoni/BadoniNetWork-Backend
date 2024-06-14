@@ -32,7 +32,7 @@ public class Utente {
     private Disponibile disponibile;
     private String curriculum;
     private LocalDateTime dataregistrazione;
-    private LocalDate ultimoaccesso;
+    private LocalDateTime ultimoaccesso;
     private String idarticolazione;
     private String note;
     private String ruolo;
