@@ -124,6 +124,7 @@ public class RegistrationController {
     @PostMapping("/confirm-azienda")
     public ResponseEntity<String> confirmCompany(@RequestBody Azienda azienda, Errors errors) {
 
+        azienda.setPassword(passwordEncoder.encode(azienda.getPassword()));
         azienda.setType(TipoAzienda.R);
         aziendaRepository.save(azienda);
 
