@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.Errors;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -40,14 +41,8 @@ public class RegistrationController {
     @PostMapping("/azienda")
     public ResponseEntity<?> createCompany(@RequestBody @Valid Azienda azienda, Errors errors, HttpServletResponse response) throws MessagingException, IOException {
         if(errors.hasErrors()) {
-            if (errors.getAllErrors().toString().contains("Richiesta già inviata")) {
-                return ResponseEntity.badRequest().body("{\"message\": \"Richiesta già inviata\"}");   
-                
-            } else if (errors.getAllErrors().toString().contains("Account esistente")) {
-                return ResponseEntity.badRequest().body("{\"message\": \"Account già esistente\"}");
-
-            } else if (errors.getAllErrors().toString().contains("Telefono invalido")) {
-                return ResponseEntity.badRequest().body("{\"message\": \"Numero di telefono non valido\"}");
+            for (ObjectError error : errors.getAllErrors()) {
+                return ResponseEntity.badRequest().body("{\"message\": "+error.getDefaultMessage()+"}");
             }
         }
 
@@ -79,26 +74,9 @@ public class RegistrationController {
     @PostMapping("/utente")
     public ResponseEntity<String> createUser(@RequestBody @Valid Utente utente, Errors errors) {
         if(errors.hasErrors()) {
-            if (errors.getAllErrors().toString().contains("Nome invalido")) {
-                return ResponseEntity.badRequest().body("{\"message\": \"Nome non valido\"}");
-
-            } else if (errors.getAllErrors().toString().contains("Cognome invalido")) {
-                return ResponseEntity.badRequest().body("{\"message\": \"Cognome non valido\"}");
-                
-            } else if (errors.getAllErrors().toString().contains("Email invalida")) {
-                return ResponseEntity.badRequest().body("{\"message\": \"Email non valida\"}");
-                
-            } else if (errors.getAllErrors().toString().contains("Email già esistente")) {
-                return ResponseEntity.badRequest().body("{\"message\": \"Account già esistente\"}");
-                
-            } else if (errors.getAllErrors().toString().contains("Password insicura")) {
-                return ResponseEntity.badRequest().body("{\"message\": \"Password insicura\"}");
-
-            } else if (errors.getAllErrors().toString().contains("Email inesistente nella validazione")) {
-                return ResponseEntity.badRequest().body("{\"message\": \"Email inesistente nella validazione\"}");
-                
-            } else if (errors.getAllErrors().toString().contains("Email non verificata")) {
-                return ResponseEntity.badRequest().body("{\"message\": \"Email non verificata\"}");
+            for (ObjectError error : errors.getAllErrors()) {
+                System.out.println(error.getDefaultMessage());
+                return ResponseEntity.badRequest().body("{\"message\": "+error.getDefaultMessage()+"}");
             }
         }
 
