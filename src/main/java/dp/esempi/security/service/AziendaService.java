@@ -1,7 +1,7 @@
 package dp.esempi.security.service;
 
-import dp.esempi.security.model.Utente;
-import dp.esempi.security.repository.UtenteRepository;
+import dp.esempi.security.model.Azienda;
+import dp.esempi.security.repository.AziendaRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +18,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AziendaService implements UserDetailsService {
     @Autowired
-    private UtenteRepository utenteRepository;
+    private AziendaRepository aziendaRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<Utente> utente = utenteRepository.findByEmail(email);
+        Optional<Azienda> azienda = aziendaRepository.findByEmail(email);
 
-        if(utente.isPresent()) {
-            var user = utente.get();
+        if(azienda.isPresent()) {
+            var user = azienda.get();
             return User.builder()
                     .username(user.getEmail())
                     .password(user.getPassword())
@@ -35,10 +35,10 @@ public class AziendaService implements UserDetailsService {
         }
     }
 
-    public Optional<Utente> findByEmailAndPassword(String email, String rawPassword, PasswordEncoder passwordEncoder) {
-        Optional<Utente> user = utenteRepository.findByEmail(email);
-        if (user.isPresent() && passwordEncoder.matches(rawPassword, user.get().getPassword())) {
-            return user;
+    public Optional<Azienda> findByEmailAndPassword(String email, String rawPassword, PasswordEncoder passwordEncoder) {
+        Optional<Azienda> azienda = aziendaRepository.findByEmail(email);
+        if (azienda.isPresent() && passwordEncoder.matches(rawPassword, azienda.get().getPassword())) {
+            return azienda;
         }
         return Optional.empty();
     }

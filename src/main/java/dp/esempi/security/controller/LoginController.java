@@ -5,6 +5,7 @@ import dp.esempi.security.model.Azienda;
 import dp.esempi.security.service.AziendaService;
 import dp.esempi.security.service.UtenteService;
 
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,16 +26,22 @@ public class LoginController {
     private PasswordEncoder passwordEncoder;
     
     @PostMapping()
-    public ResponseEntity<?> findUser(@RequestBody Utente utente, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public ResponseEntity<?> loginEntity(@RequestBody Map<String, String> payload, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
-        
-        Optional<Utente> user = utenteService.findByEmailAndPassword(utente.getEmail(), utente.getPassword(), passwordEncoder);
-        // Optional<Azienda> company = aziendaService.findByEmailAndPassword(azienda.getEmail(), azienda.getPassword(), passwordEncoder);
-        
-        // if (user.isEmpty() && company.isEmpty()) {
-        //     return ResponseEntity.badRequest().body("{\"message\": \"Credenziali errate\"}");
-        // }
+        String email = payload.get("email");
+        String password = payload.get("password");
 
-        return ResponseEntity.ok().body(user.get());
+        Optional<Utente> user = utenteService.findByEmailAndPassword(email, password, passwordEncoder);
+        Optional<Azienda> company = aziendaService.findByEmailAndPassword(email, password, passwordEncoder);
+
+        if(user.isPresent()) {
+            return ResponseEntity.ok().body(user.get());
+        }
+
+        if (company.isPresent()) {
+            return ResponseEntity.ok().body(company.get());
+        }
+
+        return ResponseEntity.badRequest().body("{\"message\": \"Credenziali errate\"}");
     }
 }
