@@ -867,6 +867,16 @@ INSERT INTO `azienda` (`email`, `password`, `ragionesociale`, `indirizzo`, `tele
 	('www.cosmocollege.eu', NULL, 'COSMOCOLLEGE V.Z.W.', 'SPILLEMANSSTRAAT 10 , ANTWERP 2140', '032359720', NULL, NULL, NULL, NULL, NULL, -1, NULL, 'A', NULL),
 	('yves.loosen@foehrenbach.be', NULL, 'FOHRENBACH', 'Krijgsbaan 128 ,   Mortsel (Antwerp) 2640', '+32 (0)15 75 36 13', NULL, NULL, NULL, NULL, NULL, -1, NULL, 'A', NULL);
 
+-- Dump della struttura di tabella network.cambiopassword
+CREATE TABLE IF NOT EXISTS `cambiopassword` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `email` varchar(100) DEFAULT NULL,
+  `codice` varchar(6) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- Dump dei dati della tabella network.cambiopassword: ~0 rows (circa)
+
 -- Dump della struttura di tabella network.competenze
 CREATE TABLE IF NOT EXISTS `competenze` (
   `idcompetenza` int(11) NOT NULL AUTO_INCREMENT,
@@ -952,7 +962,7 @@ CREATE TABLE IF NOT EXISTS `contatti` (
   CONSTRAINT `FK_contatti_studente` FOREIGN KEY (`emailstudente`) REFERENCES `studente` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Dump dei dati della tabella network.contatti: ~0 rows (circa)
+-- Dump dei dati della tabella network.contatti: ~1 rows (circa)
 INSERT INTO `contatti` (`idcontatto`, `emailstudente`, `emailazienda`, `tipo`, `dataora`, `visualizzato`, `messaggio`) VALUES
 	(7, 'po@iisbadoni.edu.it', 'b@b', 'AS', '2023-06-10 12:30:00', 'N', 'Ciao ti va di lavorare per me');
 
@@ -1011,7 +1021,7 @@ INSERT INTO `livellocompetenze` (`idlivello`, `descrizione`) VALUES
 -- Dump della struttura di tabella network.studente
 CREATE TABLE IF NOT EXISTS `studente` (
   `email` varchar(100) NOT NULL,
-  `emailpersonale` varchar(255) DEFAULT NULL,
+  `emailbadoni` varchar(100) DEFAULT NULL,
   `password` varchar(256) DEFAULT NULL,
   `cognome` varchar(100) DEFAULT NULL,
   `nome` varchar(100) DEFAULT NULL,

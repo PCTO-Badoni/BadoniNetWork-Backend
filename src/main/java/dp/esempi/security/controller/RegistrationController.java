@@ -116,7 +116,6 @@ public class RegistrationController {
         if (azienda == null) {
             return ResponseEntity.badRequest().body("{\"message\": \"Codice invalido\"}");
         }
-
         return ResponseEntity.ok(azienda);
     }
     
