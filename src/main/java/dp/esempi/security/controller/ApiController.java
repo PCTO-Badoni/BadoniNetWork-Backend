@@ -45,7 +45,6 @@ import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpSession;
 
 @RequestMapping("/api")
-@CrossOrigin (origins = {"http://localhost:3001", "http://127.0.0.1:3001"})
 @RestController
 public class ApiController {
 

@@ -27,7 +27,6 @@ import java.util.Optional;
 
 @RequestMapping("/register")
 @RestController
-@CrossOrigin
 public class RegistrationController {
     @Autowired
     private UtenteRepository utenteRepository;
