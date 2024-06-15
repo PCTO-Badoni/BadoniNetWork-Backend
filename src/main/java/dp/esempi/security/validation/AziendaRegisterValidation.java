@@ -34,18 +34,19 @@ public class AziendaRegisterValidation implements ConstraintValidator<AziendaVal
         if (aziendaFind.isPresent()) {
             if (aziendaFind.get().getType().equals(TipoAzienda.W)) {
                 constraintValidatorContext.disableDefaultConstraintViolation();
-                constraintValidatorContext.buildConstraintViolationWithTemplate("Email già esistente")
-                        .addPropertyNode("email")
+                constraintValidatorContext.buildConstraintViolationWithTemplate("Richiesta già inviata")
+                        .addPropertyNode("errore")
                         .addConstraintViolation();
                 valido = false;
             }
-        }
 
-        if (!valido) {
-            constraintValidatorContext.disableDefaultConstraintViolation();
-            constraintValidatorContext.buildConstraintViolationWithTemplate("Richiesta già inviata")
-                    .addPropertyNode("errore")
-                    .addConstraintViolation();
+            if (aziendaFind.get().getType().equals(TipoAzienda.R)) {
+                constraintValidatorContext.disableDefaultConstraintViolation();
+                constraintValidatorContext.buildConstraintViolationWithTemplate("Account esistente")
+                        .addPropertyNode("errore")
+                        .addConstraintViolation();
+                valido = false;
+            }
         }
 
         String cellulare = "^(\\+39\\s?)?(\\d{2,4}\\s?\\d{6,8})$";
@@ -59,22 +60,6 @@ public class AziendaRegisterValidation implements ConstraintValidator<AziendaVal
             valido = false;
         }
 
-        boolean valido2 = checkEmailAzienda(a.getEmail(), constraintValidatorContext);
-
-        return valido && valido2;
-    }
-
-    private boolean checkEmailAzienda(String email, ConstraintValidatorContext constraintValidatorContext) {
-        Optional<Azienda> azienda = aziendaRepository.findByEmail(email);
-        if (azienda.isPresent()) {
-            if (azienda.get().getType().equals(TipoAzienda.R)) {
-                constraintValidatorContext.disableDefaultConstraintViolation();
-                constraintValidatorContext.buildConstraintViolationWithTemplate("Account esistente")
-                        .addPropertyNode("errore")
-                        .addConstraintViolation();
-                return false;
-            }
-        }
-        return true;
+        return valido;
     }
 }
