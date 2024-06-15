@@ -29,8 +29,7 @@ public class UtenteService implements UserDetailsService {
             return User.builder()
                     .username(user.getEmail())
                     .password(user.getPassword())
-                    .roles(getRoles(user)).build();
-
+                    .roles(user.getRuolo()).build();
         } else {
             throw new UsernameNotFoundException(email);
         }
@@ -42,12 +41,5 @@ public class UtenteService implements UserDetailsService {
             return user;
         }
         return Optional.empty();
-    }
-
-    private String[] getRoles(Utente user) {
-        if (user.getRuolo() == null) {
-            return new String[]{"USER"};
-        }
-        return user.getRuolo().split(",");
     }
 }
