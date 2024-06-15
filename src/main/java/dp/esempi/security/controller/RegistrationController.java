@@ -64,7 +64,14 @@ public class RegistrationController {
         //Operazioni per aggiungere l'azienda al waiting
         aziendaRepository.save(azienda);
             
-        sendEmail(azienda.getRagionesociale(),azienda.getEmail(),azienda.getTelefono(),azienda.getIndirizzo());
+        Map<String, Object> templateModel = new HashMap<>();
+        templateModel.put("ragionesociale", azienda.getRagionesociale());
+        templateModel.put("email", azienda.getEmail());
+        templateModel.put("telefono", azienda.getTelefono());
+        templateModel.put("indirizzo", azienda.getIndirizzo());
+        templateModel.put("id", azienda.getEmail());
+
+        emailService.sendHtmlMessage("srmndr06p13e507g@iisbadoni.edu.it", "Richiesta account Badoni NetWork", templateModel, "account-request-template");
         
         return ResponseEntity.ok("{\"message\": \"Email inviata\"}");
     }
@@ -144,17 +151,5 @@ public class RegistrationController {
         aziendaRepository.save(azienda);
 
         return ResponseEntity.ok("{\"message\": \"Account creato\"}");
-    }
-
-    private void sendEmail(String ragionesociale, String email, String telefono,String indirizzo) throws MessagingException, IOException {
-
-        Map<String, Object> templateModel = new HashMap<>();
-        templateModel.put("ragionesociale", ragionesociale);
-        templateModel.put("email", email);
-        templateModel.put("telefono", telefono);
-        templateModel.put("indirizzo", indirizzo);
-        templateModel.put("id", email);
-
-        emailService.sendHtmlMessage("srmndr06p13e507g@iisbadoni.edu.it", "Richiesta account Badoni NetWork", templateModel, "account-request-template");
     }
 }
