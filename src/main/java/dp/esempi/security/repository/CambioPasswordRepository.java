@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface CambioPasswordRepository extends JpaRepository<CambioPassword, String> {
+public interface CambioPasswordRepository extends JpaRepository<CambioPassword, Integer> {
 
     Optional<CambioPassword> findByEmail(String email);
     Optional<CambioPassword> findByCodice(String codice);
