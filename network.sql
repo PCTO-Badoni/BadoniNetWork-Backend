@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS `azienda` (
   PRIMARY KEY (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Dump dei dati della tabella network.azienda: ~775 rows (circa)
+-- Dump dei dati della tabella network.azienda: ~776 rows (circa)
 INSERT INTO `azienda` (`email`, `password`, `ragionesociale`, `indirizzo`, `telefono`, `cognomereferente`, `nomereferente`, `telreferente`, `emailreferente`, `ultimoaccesso`, `idarea`, `ruolo`, `type`, `codice`) VALUES
 	('2FaouziFatimaInformation TecnologiesVTI LierBE0448', NULL, 'VTI Lier', 'Kruisbogenhofstraat 7 ,  Lier  2500', '0032(0)34800162', NULL, NULL, NULL, NULL, NULL, -1, NULL, 'A', NULL),
 	('44giorgio@gmail.com', NULL, 'Negri Giorgio Rettifica Motori', 'Via Roma 72, Malgrate 23864', '0341283164', NULL, NULL, NULL, NULL, NULL, -1, NULL, 'A', NULL),
@@ -101,6 +101,7 @@ INSERT INTO `azienda` (`email`, `password`, `ragionesociale`, `indirizzo`, `tele
 	('a.mazza.1900@gmail.com', NULL, 'AM CONSULTING di MAZZA ALESSANDRO', 'VIA ALLA ROVINATA 37 , LECCO 23900', '347 8588281', NULL, NULL, NULL, NULL, NULL, -1, NULL, 'A', NULL),
 	('a.selva@tin.it', NULL, 'SELVA ANTONIO GEOMETRA', 'VIA ROMA 6 , CASARGO 23831', '3484406674', NULL, NULL, NULL, NULL, NULL, -1, NULL, 'A', NULL),
 	('a.stefanoni90@gmail.com', NULL, 'CENTRO FISIOTERAPICO di STEFANONI ALESSIO', 'CORSO EMANUELE FILIBERTO 16 16, LECCO 23900', '339 5605263', NULL, NULL, NULL, NULL, NULL, -1, NULL, 'A', NULL),
+	('aa@aa', '{bcrypt}$2a$10$.ycUyJZlBC8w8dkvt7mY4.LM4vzj4Bvko1EbfL4S4bK8Rrk0/nD9G', 'pippo', 'via pluto 2', '123456', 'pizzo', 'giovanni', '7891011', 'ko@k', NULL, 1, 'AZIENDA', 'R', NULL),
 	('abalossi@unicalce.it', NULL, 'UNICALCE SPA', 'VIA PONTI 18 , VAL BREMBILLA  24012', '0341 2571', NULL, NULL, NULL, NULL, NULL, -1, NULL, 'A', NULL),
 	('abarini@atvspa.com', NULL, 'ATV SPA', 'VIA OMBRIANO 2, COLICO 23823', '0341 932111', NULL, NULL, NULL, NULL, NULL, -1, NULL, 'A', NULL),
 	('academy@sharebot.it', NULL, 'SHAREBOT SRL', 'VIA MONTELLO 18 , NIBIONNO 23895', '031 692132', NULL, NULL, NULL, NULL, NULL, -1, NULL, 'A', NULL),
@@ -867,16 +868,6 @@ INSERT INTO `azienda` (`email`, `password`, `ragionesociale`, `indirizzo`, `tele
 	('www.cosmocollege.eu', NULL, 'COSMOCOLLEGE V.Z.W.', 'SPILLEMANSSTRAAT 10 , ANTWERP 2140', '032359720', NULL, NULL, NULL, NULL, NULL, -1, NULL, 'A', NULL),
 	('yves.loosen@foehrenbach.be', NULL, 'FOHRENBACH', 'Krijgsbaan 128 ,   Mortsel (Antwerp) 2640', '+32 (0)15 75 36 13', NULL, NULL, NULL, NULL, NULL, -1, NULL, 'A', NULL);
 
--- Dump della struttura di tabella network.cambiopassword
-CREATE TABLE IF NOT EXISTS `cambiopassword` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `email` varchar(100) DEFAULT NULL,
-  `codice` varchar(6) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
--- Dump dei dati della tabella network.cambiopassword: ~0 rows (circa)
-
 -- Dump della struttura di tabella network.competenze
 CREATE TABLE IF NOT EXISTS `competenze` (
   `idcompetenza` int(11) NOT NULL AUTO_INCREMENT,
@@ -939,12 +930,14 @@ CREATE TABLE IF NOT EXISTS `competenzestudenti` (
   CONSTRAINT `FK_competenzestudenti_competenze` FOREIGN KEY (`idcompetenza`) REFERENCES `competenze` (`idcompetenza`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_competenzestudenti_livellocompetenze` FOREIGN KEY (`idlivello`) REFERENCES `livellocompetenze` (`idlivello`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_competenzestudenti_studente` FOREIGN KEY (`email`) REFERENCES `studente` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Dump dei dati della tabella network.competenzestudenti: ~2 rows (circa)
+-- Dump dei dati della tabella network.competenzestudenti: ~4 rows (circa)
 INSERT INTO `competenzestudenti` (`id`, `email`, `idcompetenza`, `idlivello`) VALUES
 	(3, 'po@iisbadoni.edu.it', 1, 'A'),
-	(4, 'po@iisbadoni.edu.it', 2, 'B');
+	(4, 'po@iisbadoni.edu.it', 2, 'B'),
+	(5, 'po@iisbadoni.edu.it', 1, 'A'),
+	(6, 'po@iisbadoni.edu.it', 2, 'B');
 
 -- Dump della struttura di tabella network.contatti
 CREATE TABLE IF NOT EXISTS `contatti` (
@@ -1021,13 +1014,15 @@ INSERT INTO `livellocompetenze` (`idlivello`, `descrizione`) VALUES
 -- Dump della struttura di tabella network.studente
 CREATE TABLE IF NOT EXISTS `studente` (
   `email` varchar(100) NOT NULL,
-  `emailbadoni` varchar(100) DEFAULT NULL,
+  `emailpersonale` varchar(255) DEFAULT NULL,
   `password` varchar(256) DEFAULT NULL,
   `cognome` varchar(100) DEFAULT NULL,
   `nome` varchar(100) DEFAULT NULL,
   `pronomi` enum('he_him','she_her','they_them','altro') DEFAULT NULL,
   `telefono` varchar(50) DEFAULT NULL,
   `indirizzo` varchar(200) DEFAULT NULL,
+  `citta` varchar(50) DEFAULT NULL,
+  `cap` int(11) DEFAULT NULL,
   `datanascita` date DEFAULT NULL,
   `disponibile` enum('Y','N','P') DEFAULT 'Y' COMMENT 'P=Pausa - Utenti non contattabili ora',
   `curriculum` varchar(100) DEFAULT NULL,
@@ -1041,9 +1036,10 @@ CREATE TABLE IF NOT EXISTS `studente` (
   CONSTRAINT `FK_studente_articolazione` FOREIGN KEY (`idarticolazione`) REFERENCES `articolazione` (`idarticolazione`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Dump dei dati della tabella network.studente: ~1 rows (circa)
-INSERT INTO `studente` (`email`, `emailpersonale`, `password`, `cognome`, `nome`, `pronomi`, `telefono`, `indirizzo`, `datanascita`, `disponibile`, `curriculum`, `dataregistrazione`, `ultimoaccesso`, `idarticolazione`, `note`, `ruolo`) VALUES
-	('po@iisbadoni.edu.it', NULL, '{bcrypt}$2a$10$GMAiI.0k.SeVyJ29bwSyNOXPWudUFFjnucLH0srAv733NWro/RnQm', ' A', 'A', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'USER');
+-- Dump dei dati della tabella network.studente: ~2 rows (circa)
+INSERT INTO `studente` (`email`, `emailpersonale`, `password`, `cognome`, `nome`, `pronomi`, `telefono`, `indirizzo`, `citta`, `cap`, `datanascita`, `disponibile`, `curriculum`, `dataregistrazione`, `ultimoaccesso`, `idarticolazione`, `note`, `ruolo`) VALUES
+	('po@iisbadoni.edu.it', NULL, '{bcrypt}$2a$10$GMAiI.0k.SeVyJ29bwSyNOXPWudUFFjnucLH0srAv733NWro/RnQm', ' A', 'A', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'USER'),
+	('srmndr06p13e507g@iisbadoni.edu.it', NULL, '{bcrypt}$2a$10$bqnyIgrFVUEUi0rG38y3wO/NVQVHIov7CrDUsPU9UYpaErTo0I4FC', 'Sormani', 'Andrea', 'he_him', '3342260991', 'Via Valassina 140, 22021 Bellagio', NULL, NULL, '2000-06-08', 'Y', NULL, '2024-06-14 13:31:21', '2024-06-14 13:31:21', NULL, NULL, 'USER');
 
 -- Dump della struttura di tabella network.verificaemail_studenti
 CREATE TABLE IF NOT EXISTS `verificaemail_studenti` (
@@ -1053,9 +1049,7 @@ CREATE TABLE IF NOT EXISTS `verificaemail_studenti` (
   PRIMARY KEY (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Dump dei dati della tabella network.verificaemail_studenti: ~1 rows (circa)
-INSERT INTO `verificaemail_studenti` (`email`, `codice`, `verificato`) VALUES
-	('srmndr06p13e507g@iisbadoni.edu.it', '199132', 'Y');
+-- Dump dei dati della tabella network.verificaemail_studenti: ~0 rows (circa)
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
