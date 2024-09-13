@@ -1,15 +1,15 @@
 package dp.esempi.security.controller;
 
 import dp.esempi.security.model.Azienda;
-import dp.esempi.security.model.CambioPassword;
 import dp.esempi.security.model.TipoAzienda;
 import dp.esempi.security.model.Utente;
 import dp.esempi.security.repository.AziendaRepository;
-import dp.esempi.security.repository.CambioPasswordRepository;
 import dp.esempi.security.repository.UtenteRepository;
 import dp.esempi.security.service.EmailService;
 import dp.esempi.security.service.Methods;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,28 +22,19 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 
 @RestController
 public class MainController {
 
     @Autowired
     private EmailService emailService;
-
     @Autowired
     private AziendaRepository aziendaRepository;
-
-
     @Autowired
     private UtenteRepository utenteRepository;
 
     @Autowired
-    private CambioPasswordRepository cambioPasswordRepository;
-
-    @Autowired
     private Methods methods;
-    private Random random = new Random();
-
 
     @GetMapping("/accept-request/{email}")
     public ResponseEntity<String> acceptRequest(@PathVariable String email) throws MessagingException, IOException {
@@ -103,44 +94,65 @@ public class MainController {
     @PostMapping("/password-recovery")
     public ResponseEntity<String> passwordRecovery(@RequestBody Map<String, String> payload) throws MessagingException, IOException {
         String email = payload.get("email");
+
         Map<String, Object> templateModel = new HashMap<>();
+        templateModel.put("email", email);
 
         Optional<Azienda> azienda = aziendaRepository.findByEmail(email);
         Optional<Utente> studente = utenteRepository.findByEmail(email);
-        Optional<CambioPassword> utente = cambioPasswordRepository.findByEmail(email);
 
         if (azienda.isEmpty() && studente.isEmpty()){
             return ResponseEntity.badRequest().body("{\"message\": \"Account non trovato\"}");
         }
-        if(utente.isPresent()){
-            return ResponseEntity.badRequest().body("{\"message\": \"Richiesta già inviata\"}");
-        }
+
         emailService.sendHtmlMessage(email, "Recupero Password", templateModel, "password-recovery-template");
-
-        String codice;
-
-        do{
-            int min = 100000;
-            int max = 999999;
-            int randomNumber = min + random.nextInt(max - min + 1);
-            codice = String.valueOf(randomNumber);
-            utente = cambioPasswordRepository.findByCodice(codice);
-        } while(!utente.isEmpty());
-
-        CambioPassword cp = new CambioPassword();
-
-        cp.setEmail(email);
-        cp.setCodice(codice);
-
-        cambioPasswordRepository.save(cp);
 
         return ResponseEntity.ok().body("{\"message\": \"Controlla la casella di posta\"}");
     }
 
-    /*@PostMapping("/change-password")
-    public ResponseEntity<String> changePassword(@RequestBody Map<String, String> payload) {
+    @GetMapping("/password-recovery/{email}")
+    public void passwordRecoveryRedirect(@PathVariable String email, HttpServletResponse response) throws IOException {
+        // Costruisci l'URL del frontend con il parametro email
+        String frontendUrl = "http://127.0.0.1:3001/recoveryPassword/" + email;  //!DA CAMBIARE CON IL SITO UFFICIALE
 
-        //Optional<CambioPassword> utente = cambioPasswordRepository.findByCodice();
-    }*/
+        // Fai il redirect verso il frontend
+        response.sendRedirect(frontendUrl);
+    }
+
+    @PostMapping("/change-password-recovery")
+    public ResponseEntity<String> passwordRecoveryChange(@RequestBody Map<String, String> payload) {
+        String email = payload.get("email");
+        String password = payload.get("password");
+
+        Optional<Azienda> azienda = aziendaRepository.findByEmail(email);
+        Optional<Utente> studente = utenteRepository.findByEmail(email);
+
+        if (azienda.isEmpty() && studente.isEmpty()){
+            return ResponseEntity.badRequest().body("{\"message\": \"Account non trovato\"}");
+        }
+
+        if (studente.isPresent()) {
+            Utente utente = studente.get();
+            utente.setPassword(password);
+            utenteRepository.save(utente);
+        }
+        if (azienda.isPresent()) {
+            Azienda utente = azienda.get();
+            utente.setPassword(password);
+            aziendaRepository.save(utente);
+        }
+        
+        return ResponseEntity.ok().body("{\"message\": \"Password cambiata\"}");
+    }
+    
+
+    // @PostMapping("/change-password")
+    // public ResponseEntity<String> changePassword(@RequestBody Map<String, String> payload) {
+    //     String old_password = payload.get("email");
+    //     String new_password = payload.get("email");
+    //     String email = payload.get("email");
+
+    //     return ResponseEntity.ok().body("{\"message\": \"Password cambiata\"}");
+    // }
 }
 
