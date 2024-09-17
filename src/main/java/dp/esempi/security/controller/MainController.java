@@ -7,8 +7,10 @@ import dp.esempi.security.repository.AziendaRepository;
 import dp.esempi.security.repository.UtenteRepository;
 import dp.esempi.security.service.EmailService;
 import dp.esempi.security.service.Methods;
+import dp.esempi.security.validation.UserRegisterValidation;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ConstraintValidatorContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +34,8 @@ public class MainController {
     private AziendaRepository aziendaRepository;
     @Autowired
     private UtenteRepository utenteRepository;
+    @Autowired
+    private UserRegisterValidation userRegisterValidation;
 
     @Autowired
     private Methods methods;
@@ -146,13 +150,38 @@ public class MainController {
     }
     
 
-    // @PostMapping("/change-password")
-    // public ResponseEntity<String> changePassword(@RequestBody Map<String, String> payload) {
-    //     String old_password = payload.get("email");
-    //     String new_password = payload.get("email");
-    //     String email = payload.get("email");
+    @PostMapping("/change-password")
+    public ResponseEntity<String> changePassword(@RequestBody Map<String, String> payload) {
+        String old_password = payload.get("old_password");
+        String new_password = payload.get("new_password");
+        String email = payload.get("email");
 
-    //     return ResponseEntity.ok().body("{\"message\": \"Password cambiata\"}");
-    // }
+        Optional<Utente> user = utenteRepository.findByEmail(email);
+
+        if (user.isEmpty()) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Account inesistente\"}");
+        }
+
+        Utente account = user.get();
+
+        String account_password = account.getPassword();
+
+        if (old_password.equals(account_password)) {
+            account.setPassword(new_password);
+
+            ConstraintValidatorContext context = null;
+
+            if (userRegisterValidation.isValid(account, context)) {
+                utenteRepository.save(account);
+            } else {
+                return ResponseEntity.badRequest().body("{\"message\": \"Le nuove credenziali non sono valide\"}"); 
+            }
+            
+        } else {
+            return ResponseEntity.badRequest().body("{\"message\": \"Credenziali errate\"}"); 
+        }
+
+        return ResponseEntity.ok().body("{\"message\": \"Password cambiata\"}");
+    }
 }
 
