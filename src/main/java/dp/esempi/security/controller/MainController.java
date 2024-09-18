@@ -116,7 +116,7 @@ public class MainController {
     @GetMapping("/password-recovery/{email}")
     public void passwordRecoveryRedirect(@PathVariable String email, HttpServletResponse response) throws IOException {
         // Costruisci l'URL del frontend con il parametro email
-        String frontendUrl = "http://127.0.0.1:3001/recoveryPassword/" + email;  //!DA CAMBIARE CON IL SITO UFFICIALE
+        String frontendUrl = "http://127.0.0.1:3001/changePassword/" + email;  //!DA CAMBIARE CON IL SITO UFFICIALE
 
         // Fai il redirect verso il frontend
         response.sendRedirect(frontendUrl);
@@ -126,6 +126,11 @@ public class MainController {
     public ResponseEntity<String> passwordRecoveryChange(@RequestBody Map<String, String> payload) {
         String email = payload.get("email");
         String password = payload.get("password");
+        String confirmPassword = payload.get("confirmPassword");
+
+        if (!password.equals(confirmPassword)) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Le password non corrispondono\"}");
+        }
 
         Optional<Azienda> azienda = aziendaRepository.findByEmail(email);
         Optional<Utente> studente = utenteRepository.findByEmail(email);
