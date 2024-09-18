@@ -7,13 +7,12 @@ import dp.esempi.security.repository.AziendaRepository;
 import dp.esempi.security.repository.UtenteRepository;
 import dp.esempi.security.service.EmailService;
 import dp.esempi.security.service.Methods;
-import dp.esempi.security.validation.UserRegisterValidation;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.ConstraintValidatorContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,7 +34,7 @@ public class MainController {
     @Autowired
     private UtenteRepository utenteRepository;
     @Autowired
-    private UserRegisterValidation userRegisterValidation;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private Methods methods;
@@ -137,12 +136,12 @@ public class MainController {
 
         if (studente.isPresent()) {
             Utente utente = studente.get();
-            utente.setPassword(password);
+            utente.setPassword(passwordEncoder.encode(password));
             utenteRepository.save(utente);
         }
         if (azienda.isPresent()) {
             Azienda utente = azienda.get();
-            utente.setPassword(password);
+            utente.setPassword(passwordEncoder.encode(password));
             aziendaRepository.save(utente);
         }
         
@@ -157,31 +156,47 @@ public class MainController {
         String email = payload.get("email");
 
         Optional<Utente> user = utenteRepository.findByEmail(email);
+        Optional<Azienda> azienda = aziendaRepository.findByEmail(email);
 
-        if (user.isEmpty()) {
+        if (user.isEmpty() && azienda.isEmpty()) {
             return ResponseEntity.badRequest().body("{\"message\": \"Account inesistente\"}");
         }
 
-        Utente account = user.get();
+        String account_password;
+        String regex = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).{8,}$";
 
-        String account_password = account.getPassword();
+        if (user.isPresent()) {
+            account_password = user.get().getPassword();
 
-        if (old_password.equals(account_password)) {
-            account.setPassword(new_password);
-
-            ConstraintValidatorContext context = null;
-
-            if (userRegisterValidation.isValid(account, context)) {
-                utenteRepository.save(account);
+            if (passwordEncoder.matches(old_password, account_password)) {
+    
+                if (!new_password.matches(regex)) {
+                    return ResponseEntity.badRequest().body("{\"message\": \"Le nuove credenziali non sono valide\"}"); 
+                }
+    
+                user.get().setPassword(passwordEncoder.encode(new_password));
+                utenteRepository.save(user.get());
             } else {
-                return ResponseEntity.badRequest().body("{\"message\": \"Le nuove credenziali non sono valide\"}"); 
+                return ResponseEntity.badRequest().body("{\"message\": \"Credenziali errate\"}"); 
             }
-            
-        } else {
-            return ResponseEntity.badRequest().body("{\"message\": \"Credenziali errate\"}"); 
+        }
+
+        if (azienda.isPresent()) {
+            account_password = azienda.get().getPassword();
+
+            if (passwordEncoder.matches(old_password, account_password)) {
+    
+                if (!new_password.matches(regex)) {
+                    return ResponseEntity.badRequest().body("{\"message\": \"Le nuove credenziali non sono valide\"}"); 
+                }
+
+                azienda.get().setPassword(passwordEncoder.encode(new_password));
+                aziendaRepository.save(azienda.get());
+            } else {
+                return ResponseEntity.badRequest().body("{\"message\": \"Credenziali errate\"}"); 
+            }
         }
 
         return ResponseEntity.ok().body("{\"message\": \"Password cambiata\"}");
     }
 }
-
