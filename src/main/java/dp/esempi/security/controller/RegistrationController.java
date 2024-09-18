@@ -50,7 +50,7 @@ public class RegistrationController {
 
         if (a.isPresent()) {
             if (a.get().getType().equals(TipoAzienda.A))
-            response.sendRedirect("http://localhost:8080/accept-request/"+azienda.getEmail());
+            response.sendRedirect("http://localhost:8080/accept-request/"+azienda.getEmail());   //! VA BENE???? IDK
             return ResponseEntity.ok(null);
         }
 
@@ -66,7 +66,7 @@ public class RegistrationController {
         templateModel.put("id", azienda.getEmail());
 
         emailService.sendHtmlMessage("srmndr06p13e507g@iisbadoni.edu.it", "Richiesta account Badoni NetWork", templateModel, "account-request-template");
-        
+        //!DA CAMBIARE CON LA MAIL UFFICIALE
         return ResponseEntity.ok("{\"message\": \"Email inviata\"}");
     }
 
@@ -89,7 +89,7 @@ public class RegistrationController {
 
     @GetMapping("/validate-otp")
     public void validateOTP(HttpServletResponse response) throws IOException {
-        response.sendRedirect("http://localhost:3001/otp");
+        response.sendRedirect("http://localhost:3001/otp");             //!DA CAMBIARE CON IL SITO UFFICIALE
     }
 
     @PostMapping("/validate-otp")
