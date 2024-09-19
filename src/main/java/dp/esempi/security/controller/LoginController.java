@@ -4,6 +4,7 @@ import dp.esempi.security.model.Utente;
 import dp.esempi.security.model.Azienda;
 import dp.esempi.security.service.AziendaService;
 import dp.esempi.security.service.UtenteService;
+import jakarta.servlet.http.HttpSession;
 
 import java.util.Map;
 import java.util.Optional;
@@ -26,7 +27,7 @@ public class LoginController {
     private PasswordEncoder passwordEncoder;
     
     @PostMapping()
-    public ResponseEntity<?> loginEntity(@RequestBody Map<String, String> payload, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public ResponseEntity<?> loginEntity(@RequestBody Map<String, String> payload, HttpSession httpSession, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         String email = payload.get("email");
         String password = payload.get("password");
@@ -35,10 +36,12 @@ public class LoginController {
         Optional<Azienda> company = aziendaService.findByEmailAndPassword(email, password, passwordEncoder);
 
         if(user.isPresent()) {
+            httpSession.setAttribute("user-account", user.get());
             return ResponseEntity.ok().body(user.get());
         }
 
         if (company.isPresent()) {
+            httpSession.setAttribute("user-account", company.get());
             return ResponseEntity.ok().body(company.get());
         }
 
