@@ -10,5 +10,5 @@ import java.util.Optional;
 @Repository
 public interface AnnuncioRepository extends JpaRepository<Annuncio, Integer> {
 
-    Optional<Annuncio> findById(String id);
+    Optional<Annuncio> findById(int id);
 }

@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="lingue")
+@Table(name="lingua")
 public class Lingua {
 
     @Id

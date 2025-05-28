@@ -9,8 +9,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="livellocompetenze")
-public class LivelloCompetenze {
+@Table(name="livellocompetenza")
+public class LivelloCompetenza {
 
     @Id
     private String idlivello;

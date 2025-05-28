@@ -33,7 +33,10 @@ public class Utente {
     private String curriculum;
     private LocalDateTime dataregistrazione;
     private LocalDateTime ultimoaccesso;
-    private String idarticolazione;
     private String note;
     private String ruolo;
+
+    @ManyToOne
+    @JoinColumn(name = "idarticolazione")
+    private Articolazione articolazione;
 }

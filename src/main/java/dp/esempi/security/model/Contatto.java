@@ -11,18 +11,23 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="contatti")
-public class Contatti{
+@Table(name="contatto")
+public class Contatto{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idcontatto;
-    private String emailstudente;
-    private String emailazienda;
     @Enumerated(EnumType.STRING)
-    private Tipo tipo;
+    private TipoContatto tipo;
     private LocalDateTime dataora;
     @Enumerated(EnumType.STRING)
     private Booleano visualizzato;
     private String messaggio;
+
+    @ManyToOne
+    @JoinColumn(name = "emailstudente")
+    private Utente studente;
+    @ManyToOne
+    @JoinColumn(name = "emailazienda")
+    private Azienda azienda;
 }

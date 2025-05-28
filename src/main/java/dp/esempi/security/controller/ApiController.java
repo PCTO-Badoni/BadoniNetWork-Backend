@@ -12,33 +12,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import dp.esempi.security.model.AltreSedi;
+import dp.esempi.security.model.AltraSede;
 import dp.esempi.security.model.Area;
 import dp.esempi.security.model.Articolazione;
 import dp.esempi.security.model.Azienda;
 import dp.esempi.security.model.Booleano;
 import dp.esempi.security.model.Competenza;
-import dp.esempi.security.model.CompetenzeStudenti;
-import dp.esempi.security.model.Contatti;
+import dp.esempi.security.model.CompetenzaStudente;
+import dp.esempi.security.model.Contatto;
 import dp.esempi.security.model.Lingua;
-import dp.esempi.security.model.LingueStudenti;
-import dp.esempi.security.model.LivelloCompetenze;
-import dp.esempi.security.model.Tipo;
+import dp.esempi.security.model.LinguaStudente;
+import dp.esempi.security.model.LivelloCompetenza;
+import dp.esempi.security.model.TipoContatto;
 import dp.esempi.security.model.TipoAzienda;
 import dp.esempi.security.model.Utente;
-import dp.esempi.security.model.VerificaEmailStudenti;
-import dp.esempi.security.repository.AltreSediRepository;
+import dp.esempi.security.model.VerificaEmailStudente;
+import dp.esempi.security.repository.AltraSedeRepository;
 import dp.esempi.security.repository.AreaRepository;
 import dp.esempi.security.repository.ArticolazioneRepository;
 import dp.esempi.security.repository.AziendaRepository;
 import dp.esempi.security.repository.CompetenzaRepository;
-import dp.esempi.security.repository.CompetenzeStudentiRepository;
-import dp.esempi.security.repository.ContattiRepository;
+import dp.esempi.security.repository.CompetenzaStudenteRepository;
+import dp.esempi.security.repository.ContattoRepository;
 import dp.esempi.security.repository.LinguaRepository;
-import dp.esempi.security.repository.LingueStudentiRepository;
-import dp.esempi.security.repository.LivelloCompentezeRepository;
+import dp.esempi.security.repository.LinguaStudenteRepository;
+import dp.esempi.security.repository.LivelloCompentezaRepository;
 import dp.esempi.security.repository.UtenteRepository;
-import dp.esempi.security.repository.VerificaEmailStudentiRepository;
+import dp.esempi.security.repository.VerificaEmailStudenteRepository;
 import dp.esempi.security.service.EmailService;
 import dp.esempi.security.service.Methods;
 import jakarta.mail.MessagingException;
@@ -59,19 +59,19 @@ public class ApiController {
     @Autowired
     private LinguaRepository linguaRepository;
     @Autowired
-    private LivelloCompentezeRepository livelloCompentezeRepository;
+    private LivelloCompentezaRepository livelloCompentezeRepository;
     @Autowired
     private AziendaRepository aziendaRepository;
     @Autowired
-    private AltreSediRepository altreSediRepository;
+    private AltraSedeRepository altreSediRepository;
     @Autowired
-    private CompetenzeStudentiRepository competenzeStudentiRepository;
+    private CompetenzaStudenteRepository competenzeStudentiRepository;
     @Autowired
-    private ContattiRepository contattiRepository;
+    private ContattoRepository contattiRepository;
     @Autowired
-    private LingueStudentiRepository lingueStudentiRepository;
+    private LinguaStudenteRepository lingueStudentiRepository;
     @Autowired
-    private VerificaEmailStudentiRepository verificaEmailStudentiRepository;
+    private VerificaEmailStudenteRepository verificaEmailStudentiRepository;
     @Autowired
     private EmailService emailService;
     @Autowired
@@ -105,7 +105,7 @@ public class ApiController {
             return ResponseEntity.badRequest().body("{\"message\": \"Errore nella generazione del codice\"}");
         }
 
-        VerificaEmailStudenti obj = new VerificaEmailStudenti();
+        VerificaEmailStudente obj = new VerificaEmailStudente();
         obj.setEmail(email);
         obj.setCodice(codice);
         obj.setVerificato(Booleano.N);
@@ -137,7 +137,7 @@ public class ApiController {
             return ResponseEntity.badRequest().body("{\"message\": \"Tentativi esauriti\"}");
         }
 
-        VerificaEmailStudenti verifica;
+        VerificaEmailStudente verifica;
 
         verifica = verificaEmailStudentiRepository.findByEmail(requestBody.get("email")).orElse(null);
 
@@ -180,8 +180,8 @@ public class ApiController {
     }
 
     @GetMapping("/get-all-livelli_competenze")
-    public ResponseEntity<List<LivelloCompetenze>> getAllLivelliCompetenze() {
-        List<LivelloCompetenze> livelli_competenza = livelloCompentezeRepository.findAll();
+    public ResponseEntity<List<LivelloCompetenza>> getAllLivelliCompetenze() {
+        List<LivelloCompetenza> livelli_competenza = livelloCompentezeRepository.findAll();
         return ResponseEntity.ok(livelli_competenza);
     }
 
@@ -207,33 +207,39 @@ public class ApiController {
         return ResponseEntity.ok(aziendaApproved);
     }
 
-    @GetMapping("/get-all-aziende")
-    public ResponseEntity<List<Azienda>> getAllAzienda() {
+    @GetMapping("/get-all-aziende_registered")
+    public ResponseEntity<List<Azienda>> getAllAziendaRegistered() {
         List<Azienda> azienda = aziendaRepository.findByType(TipoAzienda.R);
         return ResponseEntity.ok(azienda);
     }
 
+    @GetMapping("/get-all-aziende")
+    public ResponseEntity<List<Azienda>> getAllAzienda() {
+        List<Azienda> azienda = aziendaRepository.findAll();
+        return ResponseEntity.ok(azienda);
+    }
+
     @GetMapping("/get-all-altre_sedi")
-    public ResponseEntity<List<AltreSedi>> getAllAltreSedi() {
-        List<AltreSedi> altre_sedi = altreSediRepository.findAll();
+    public ResponseEntity<List<AltraSede>> getAllAltreSedi() {
+        List<AltraSede> altre_sedi = altreSediRepository.findAll();
         return ResponseEntity.ok(altre_sedi);
     }
     
     @GetMapping("/get-all-competenze_studenti")
-    public ResponseEntity<List<CompetenzeStudenti>> getAllCompetenzeStudenti() {
-        List<CompetenzeStudenti> competenze_studenti = competenzeStudentiRepository.findAll();
+    public ResponseEntity<List<CompetenzaStudente>> getAllCompetenzeStudenti() {
+        List<CompetenzaStudente> competenze_studenti = competenzeStudentiRepository.findAll();
         return ResponseEntity.ok(competenze_studenti);
     }
 
     @GetMapping("/get-all-contatti")
-    public ResponseEntity<List<Contatti>> getAllContatti() {
-        List<Contatti> contatti = contattiRepository.findAll();
+    public ResponseEntity<List<Contatto>> getAllContatti() {
+        List<Contatto> contatti = contattiRepository.findAll();
         return ResponseEntity.ok(contatti);
     }
 
     @GetMapping("/get-all-lingue_studenti")
-    public ResponseEntity<List<LingueStudenti>> getAllLingueStudenti() {
-        List<LingueStudenti> lingue_studenti = lingueStudentiRepository.findAll();
+    public ResponseEntity<List<LinguaStudente>> getAllLingueStudenti() {
+        List<LinguaStudente> lingue_studenti = lingueStudentiRepository.findAll();
         return ResponseEntity.ok(lingue_studenti);
     }
 
@@ -243,12 +249,20 @@ public class ApiController {
             for (Map<String, String> competence : payload) {
                 int idCompetenza = Integer.parseInt(competence.get("idcompetenza"));
                 String email = competence.get("email");
-                String idLivello = competence.get("idlivello");
+                String idlivello = competence.get("idlivello");
 
-                CompetenzeStudenti competenzeStudenti = new CompetenzeStudenti();
-                competenzeStudenti.setEmail(email);
-                competenzeStudenti.setIdcompetenza(idCompetenza);
-                competenzeStudenti.setIdlivello(idLivello);
+                Optional<Utente> studente = utenteRepository.findByEmail(email);
+                Optional<Competenza> competenza = competenzaRepository.findById(idCompetenza);
+                Optional<LivelloCompetenza> livello = livelloCompentezeRepository.findById(idlivello);
+
+                if (!studente.isPresent() || !competenza.isPresent() || !livello.isPresent()) {
+                    return ResponseEntity.ok().body("{\"message\": \"Dati errati\"}");
+                }
+
+                CompetenzaStudente competenzeStudenti = new CompetenzaStudente();
+                competenzeStudenti.setStudente(studente.get());
+                competenzeStudenti.setCompetenza(competenza.get());
+                competenzeStudenti.setLivelloCompetenza(livello.get());
 
                 competenzeStudentiRepository.save(competenzeStudenti);
             }
@@ -263,14 +277,22 @@ public class ApiController {
     public ResponseEntity<String> setUserLanguages(@RequestBody List<Map<String, String>> payload) {
         try {
             for (Map<String, String> language : payload) {
-                int lingua = Integer.parseInt(language.get("idlingua"));
+                int idlingua = Integer.parseInt(language.get("idlingua"));
                 String email = language.get("email");
-                String livello = language.get("idlivello");
+                String idlivello = language.get("idlivello");
 
-                LingueStudenti lingue_studenti = new LingueStudenti();
-                lingue_studenti.setIdlingua(lingua);
-                lingue_studenti.setUsername(email);
-                lingue_studenti.setIdlivello(livello);
+                Optional<Lingua> lingua = linguaRepository.findById(idlingua);
+                Optional<LivelloCompetenza> livello = livelloCompentezeRepository.findById(idlivello);
+                Optional<Utente> studente = utenteRepository.findByEmail(email);
+
+                if (!studente.isPresent() || !lingua.isPresent() || !livello.isPresent()) {
+                    return ResponseEntity.ok().body("{\"message\": \"Dati errati\"}");
+                }
+
+                LinguaStudente lingue_studenti = new LinguaStudente();
+                lingue_studenti.setLingua(lingua.get());
+                lingue_studenti.setStudente(studente.get());
+                lingue_studenti.setLivello(livello.get());
                 lingueStudentiRepository.save(lingue_studenti);
             }
 
@@ -289,8 +311,14 @@ public class ApiController {
                 String cap = altresedi.get("cap");
                 String citta = altresedi.get("citta");
 
-                AltreSedi altre_sedi = new AltreSedi();
-                altre_sedi.setEmail(email);
+                Optional<Azienda> azienda = aziendaRepository.findByEmail(email);
+
+                if (!azienda.isPresent()) {
+                    return ResponseEntity.ok().body("{\"message\": \"Email errata\"}");
+                }
+
+                AltraSede altre_sedi = new AltraSede();
+                altre_sedi.setAzienda(azienda.get());
                 altre_sedi.setIndirizzo(indirizzo);
                 altre_sedi.setCap(cap);
                 altre_sedi.setCitta(citta);
@@ -299,7 +327,7 @@ public class ApiController {
 
             return ResponseEntity.ok().body("{\"message\": \"Sedi salvate\"}");
         } catch (Exception e) {
-            return ResponseEntity.ok().body("{\"message\": \"Errore nel salvataggio\"}");
+            return ResponseEntity.badRequest().body("{\"message\": \"Errore nel salvataggio\"}");
         }
     }
 
@@ -307,7 +335,7 @@ public class ApiController {
     public ResponseEntity<?> getUserCompetences(@RequestBody Map<String, String> payload) {
         try {
             String email = payload.get("email");
-            List<CompetenzeStudenti> competenze = competenzeStudentiRepository.findByEmail(email);
+            List<CompetenzaStudente> competenze = competenzeStudentiRepository.findByStudente_email(email);
             return ResponseEntity.ok().body(competenze);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Errore nel caricamento\"}");
@@ -318,7 +346,7 @@ public class ApiController {
     public ResponseEntity<?> getUserLanguages(@RequestBody Map<String, String> payload) {
         try {
             String email = payload.get("email");
-            List<LingueStudenti> lingue = lingueStudentiRepository.findByUsername(email);
+            List<LinguaStudente> lingue = lingueStudentiRepository.findByStudente_email(email);
             return ResponseEntity.ok().body(lingue);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Errore nel caricamento\"}");
@@ -329,7 +357,7 @@ public class ApiController {
     public ResponseEntity<?> getOtherPlaces(@RequestBody Map<String, String> payload) {
         try {
             String email = payload.get("email");
-            List<AltreSedi> sedi = altreSediRepository.findByEmail(email);
+            List<AltraSede> sedi = altreSediRepository.findByAzienda_email(email);
             return ResponseEntity.ok().body(sedi);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Errore nel caricamento\"}");
@@ -350,20 +378,27 @@ public class ApiController {
                 LocalDateTime dataora = LocalDateTime.parse(dataoraStr, formatter);
 
                 Booleano visualizzatoEnum = Booleano.valueOf(visualizzatoStr);
-                Tipo tipoEnum = Tipo.valueOf(tipoStr);
+                TipoContatto tipoEnum = TipoContatto.valueOf(tipoStr);
 
-                Contatti contatto = new Contatti();
-                contatto.setEmailazienda(emailazienda);
-                contatto.setEmailstudente(emailstudente);
+                Optional<Utente> studente = utenteRepository.findByEmail(emailstudente);
+                Optional<Azienda> azienda = aziendaRepository.findByEmail(emailazienda);
+
+                if (!studente.isPresent() || !azienda.isPresent()) {
+                    return ResponseEntity.badRequest().body("{\"message\": \"Email errate\"}");
+                }
+                
+                Contatto contatto = new Contatto();
+                contatto.setStudente(studente.get());
+                contatto.setAzienda(azienda.get());
                 contatto.setMessaggio(messaggio);
                 contatto.setDataora(dataora);
                 contatto.setTipo(tipoEnum);
                 contatto.setVisualizzato(visualizzatoEnum);
 
-                contattiRepository.save(contatto);
+                contattiRepository.save(contatto);  
             return ResponseEntity.ok().body("{\"message\": \"Contatto salvato\"}");
         } catch (Exception e) {
-            return ResponseEntity.ok().body("{\"message\": \"Errore nel salvataggio\"}");
+            return ResponseEntity.badRequest().body("{\"message\": \"Errore nel salvataggio\"}");
         }
     }
 
@@ -378,7 +413,7 @@ public class ApiController {
                 competenzaRepository.save(competenza);
             return ResponseEntity.ok().body("{\"message\": \"competenza aggiunta\"}");
         } catch (Exception e) {
-            return ResponseEntity.ok().body("{\"message\": \"Errore nel salvataggio\"}");
+            return ResponseEntity.badRequest().body("{\"message\": \"Errore nel salvataggio\"}");
         }
     }
 
@@ -393,7 +428,7 @@ public class ApiController {
                 linguaRepository.save(lingua);
             return ResponseEntity.ok().body("{\"message\": \"lingua aggiunta\"}");
         } catch (Exception e) {
-            return ResponseEntity.ok().body("{\"message\": \"Errore nel salvataggio\"}");
+            return ResponseEntity.badRequest().body("{\"message\": \"Errore nel salvataggio\"}");
         }
     }
 
@@ -402,13 +437,13 @@ public class ApiController {
         try {
                 String descrizione = payload.get("descrizione");
 
-                LivelloCompetenze livello = new LivelloCompetenze();
+                LivelloCompetenza livello = new LivelloCompetenza();
                 livello.setDescrizione(descrizione);
 
                 livelloCompentezeRepository.save(livello);
             return ResponseEntity.ok().body("{\"message\": \"lingua aggiunta\"}");
         } catch (Exception e) {
-            return ResponseEntity.ok().body("{\"message\": \"Errore nel salvataggio\"}");
+            return ResponseEntity.badRequest().body("{\"message\": \"Errore nel salvataggio\"}");
         }
     }
     

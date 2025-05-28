@@ -1,6 +1,6 @@
 package dp.esempi.security.model;
 
-public enum Tipo {
+public enum TipoContatto {
     AS,
     SA
 }

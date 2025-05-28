@@ -1,7 +1,8 @@
 package dp.esempi.security.model;
 
 public enum TipoAzienda {
-    W,
-    A,
-    R
+    W, //waiting
+    A,  //accepted
+    R, //registered
+    V //verified
 }

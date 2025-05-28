@@ -2,9 +2,9 @@ package dp.esempi.security.validation;
 
 import dp.esempi.security.model.Booleano;
 import dp.esempi.security.model.Utente;
-import dp.esempi.security.model.VerificaEmailStudenti;
+import dp.esempi.security.model.VerificaEmailStudente;
 import dp.esempi.security.repository.UtenteRepository;
-import dp.esempi.security.repository.VerificaEmailStudentiRepository;
+import dp.esempi.security.repository.VerificaEmailStudenteRepository;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
@@ -22,7 +22,7 @@ public class UserRegisterValidation implements ConstraintValidator<UtenteValido,
     private UtenteRepository utenteRepository;
 
     @Autowired
-    private VerificaEmailStudentiRepository verificaEmailStudentiRepository;
+    private VerificaEmailStudenteRepository verificaEmailStudentiRepository;
 
     @Bean(name = "user_validator")
     public static UserRegisterValidation bean(UtenteRepository utenteRepository) {
@@ -82,7 +82,7 @@ public class UserRegisterValidation implements ConstraintValidator<UtenteValido,
             valido = false;
         }
 
-        VerificaEmailStudenti verifica = verificaEmailStudentiRepository.findByEmail(u.getEmail()).orElse(null);
+        VerificaEmailStudente verifica = verificaEmailStudentiRepository.findByEmail(u.getEmail()).orElse(null);
 
         if (verifica == null) {
             valido = false;

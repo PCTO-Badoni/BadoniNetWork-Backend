@@ -125,15 +125,32 @@ public class RegistrationController {
 
         Optional<Azienda> azienda = aziendaService.findByCodice(requestBody.get("codice"));
 
-        if (azienda.isPresent()) {
+        if (!azienda.isPresent()) {
             return ResponseEntity.badRequest().body("{\"message\": \"Codice invalido\"}");
         }
+
+        Azienda aziendaget = azienda.get();
+        aziendaget.setType(TipoAzienda.V);
+        aziendaService.saveAzienda(aziendaget);
+
         return ResponseEntity.ok(azienda);
     }
     
 
     @PostMapping("/confirm-azienda")
     public ResponseEntity<String> confirmCompany(@RequestBody Azienda azienda, Errors errors) {
+
+        Optional<Azienda> pending_azienda = aziendaService.findByEmail(azienda.getEmail());
+
+        if (!pending_azienda.isPresent()) {
+            return ResponseEntity.badRequest().body("{\"message\": \"L'azienda non è nelle richieste\"}");
+        }
+
+        Azienda new_azienda = pending_azienda.get();
+
+        if (new_azienda.getType() != TipoAzienda.V) {
+            return ResponseEntity.badRequest().body("{\"message\": \"L'azienda non è ancora stata verificata\"}");
+        }
 
         azienda.setPassword(passwordEncoder.encode(azienda.getPassword()));
         azienda.setType(TipoAzienda.R);

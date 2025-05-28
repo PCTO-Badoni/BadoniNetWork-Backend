@@ -7,9 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import dp.esempi.security.model.Azienda;
-import dp.esempi.security.model.VerificaEmailStudenti;
+import dp.esempi.security.model.VerificaEmailStudente;
 import dp.esempi.security.repository.AziendaRepository;
-import dp.esempi.security.repository.VerificaEmailStudentiRepository;
+import dp.esempi.security.repository.VerificaEmailStudenteRepository;
 
 @Service
 public class Methods {
@@ -17,12 +17,12 @@ public class Methods {
     @Autowired
     private AziendaRepository aziendaRepository;
     @Autowired
-    private VerificaEmailStudentiRepository verificaEmailStudentiRepository;
+    private VerificaEmailStudenteRepository verificaEmailStudentiRepository;
     private Random random = new Random();
 
     public String generateCode() {
         Optional<Azienda> aziendaFind;
-        Optional<VerificaEmailStudenti> verificaEmailStudentiFind;
+        Optional<VerificaEmailStudente> verificaEmailStudentiFind;
         String codice;
         int contatore = 0;
         int max_tentativi = 1000;
