@@ -3,10 +3,10 @@ package dp.esempi.security.controller;
 import dp.esempi.security.model.Azienda;
 import dp.esempi.security.model.TipoAzienda;
 import dp.esempi.security.model.Utente;
-import dp.esempi.security.repository.AziendaRepository;
-import dp.esempi.security.repository.UtenteRepository;
+import dp.esempi.security.service.AziendaService;
 import dp.esempi.security.service.EmailService;
 import dp.esempi.security.service.Methods;
+import dp.esempi.security.service.UtenteService;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -37,9 +37,9 @@ public class MainController {
     @Autowired
     private EmailService emailService;
     @Autowired
-    private AziendaRepository aziendaRepository;
+    private AziendaService aziendaService;
     @Autowired
-    private UtenteRepository utenteRepository;
+    private UtenteService utenteService;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -48,7 +48,7 @@ public class MainController {
 
     @GetMapping("/accept-request/{email}")
     public String acceptRequest(Model model, @PathVariable String email) throws MessagingException, IOException {
-        Optional<Azienda> azienda = aziendaRepository.findByEmail(email);
+        Optional<Azienda> azienda = aziendaService.findByEmail(email);
         String message = "Richiesta accettata";
     
         if (azienda.isEmpty()) {
@@ -70,7 +70,7 @@ public class MainController {
 
         aziendaget.setCodice(codice);
 
-        aziendaRepository.save(aziendaget);
+        aziendaService.saveAzienda(aziendaget);
     
         // Invia la mail di accettazione
         Map<String, Object> templateModel = new HashMap<>();
@@ -87,7 +87,7 @@ public class MainController {
 
     @GetMapping("/deny-request/{email}")
     public String denyRequest(Model model, @PathVariable String email) throws MessagingException, IOException {
-        Optional<Azienda> azienda = aziendaRepository.findByEmail(email);
+        Optional<Azienda> azienda = aziendaService.findByEmail(email);
         String message = "Richiesta rifiutata";
     
         if (azienda.isEmpty()) {
@@ -100,7 +100,7 @@ public class MainController {
             message="Hai già preso provvedimenti per questa richiesta";
         }
 
-        aziendaRepository.delete(aziendadb);
+        aziendaService.removeAzienda(aziendadb);
 
         // Invia la mail di accettazione
         Map<String, Object> templateModel = new HashMap<>();
@@ -121,8 +121,8 @@ public class MainController {
         templateModel.put("email", email);
         templateModel.put("backend_address", backendAddress);
 
-        Optional<Azienda> azienda = aziendaRepository.findByEmail(email);
-        Optional<Utente> studente = utenteRepository.findByEmail(email);
+        Optional<Azienda> azienda = aziendaService.findByEmail(email);
+        Optional<Utente> studente = utenteService.findByEmail(email);
 
         if (azienda.isEmpty() && studente.isEmpty()){
             return ResponseEntity.badRequest().body("{\"message\": \"Account non trovato\"}");
@@ -152,8 +152,8 @@ public class MainController {
             return ResponseEntity.badRequest().body("{\"message\": \"Le password non corrispondono\"}");
         }
 
-        Optional<Azienda> azienda = aziendaRepository.findByEmail(email);
-        Optional<Utente> studente = utenteRepository.findByEmail(email);
+        Optional<Azienda> azienda = aziendaService.findByEmail(email);
+        Optional<Utente> studente = utenteService.findByEmail(email);
 
         if (azienda.isEmpty() && studente.isEmpty()){
             return ResponseEntity.badRequest().body("{\"message\": \"Account non trovato\"}");
@@ -162,12 +162,12 @@ public class MainController {
         if (studente.isPresent()) {
             Utente utente = studente.get();
             utente.setPassword(passwordEncoder.encode(password));
-            utenteRepository.save(utente);
+            utenteService.saveUtente(utente);
         }
         if (azienda.isPresent()) {
             Azienda utente = azienda.get();
             utente.setPassword(passwordEncoder.encode(password));
-            aziendaRepository.save(utente);
+            aziendaService.saveAzienda(utente);
         }
         
         return ResponseEntity.ok().body("{\"message\": \"Password cambiata\"}");
@@ -180,8 +180,8 @@ public class MainController {
         String new_password = payload.get("new_password");
         String email = payload.get("email");
 
-        Optional<Utente> user = utenteRepository.findByEmail(email);
-        Optional<Azienda> azienda = aziendaRepository.findByEmail(email);
+        Optional<Utente> user = utenteService.findByEmail(email);
+        Optional<Azienda> azienda = aziendaService.findByEmail(email);
 
         if (user.isEmpty() && azienda.isEmpty()) {
             return ResponseEntity.badRequest().body("{\"message\": \"Account inesistente\"}");
@@ -200,7 +200,7 @@ public class MainController {
                 }
     
                 user.get().setPassword(passwordEncoder.encode(new_password));
-                utenteRepository.save(user.get());
+                utenteService.saveUtente(user.get());
             } else {
                 return ResponseEntity.badRequest().body("{\"message\": \"Credenziali errate\"}"); 
             }
@@ -216,7 +216,7 @@ public class MainController {
                 }
 
                 azienda.get().setPassword(passwordEncoder.encode(new_password));
-                aziendaRepository.save(azienda.get());
+                aziendaService.saveAzienda(azienda.get());
             } else {
                 return ResponseEntity.badRequest().body("{\"message\": \"Credenziali errate\"}"); 
             }

@@ -42,4 +42,16 @@ public class UtenteService implements UserDetailsService {
         }
         return Optional.empty();
     }
+
+    public Optional<Utente> findByEmail(String email) {
+        Optional<Utente> user = utenteRepository.findByEmail(email);
+        if (user.isPresent()) {
+            return user;
+        }
+        return Optional.empty();
+    }
+
+    public void saveUtente(Utente utente) {
+        utenteRepository.save(utente);
+    }
 }

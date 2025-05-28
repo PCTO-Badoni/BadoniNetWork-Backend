@@ -42,4 +42,28 @@ public class AziendaService implements UserDetailsService {
         }
         return Optional.empty();
     }
+
+    public Optional<Azienda> findByEmail(String email) {
+        Optional<Azienda> azienda = aziendaRepository.findByEmail(email);
+        if (azienda.isPresent()) {
+            return azienda;
+        }
+        return Optional.empty();
+    }
+
+    public Optional<Azienda> findByCodice(String codice) {
+        Optional<Azienda> azienda = aziendaRepository.findByCodice(codice);
+        if (azienda.isPresent()) {
+            return azienda;
+        }
+        return Optional.empty();
+    }
+
+    public void saveAzienda(Azienda azienda) {
+        aziendaRepository.save(azienda);
+    }
+
+    public void removeAzienda(Azienda azienda) {
+        aziendaRepository.delete(azienda);
+    }
 }

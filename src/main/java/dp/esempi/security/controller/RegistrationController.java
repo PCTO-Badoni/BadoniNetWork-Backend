@@ -4,9 +4,9 @@ import dp.esempi.security.model.Azienda;
 import dp.esempi.security.model.Disponibile;
 import dp.esempi.security.model.TipoAzienda;
 import dp.esempi.security.model.Utente;
-import dp.esempi.security.repository.AziendaRepository;
-import dp.esempi.security.repository.UtenteRepository;
+import dp.esempi.security.service.AziendaService;
 import dp.esempi.security.service.EmailService;
+import dp.esempi.security.service.UtenteService;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -40,9 +40,9 @@ public class RegistrationController {
     private String staffEmail;
 
     @Autowired
-    private UtenteRepository utenteRepository;
+    private UtenteService utenteService;
     @Autowired
-    private AziendaRepository aziendaRepository;
+    private AziendaService aziendaService;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
@@ -59,7 +59,7 @@ public class RegistrationController {
         }
 
         //Operazioni per approvare automaticamente l'azienda
-        Optional<Azienda> a = aziendaRepository.findByEmail(azienda.getEmail());
+        Optional<Azienda> a = aziendaService.findByEmail(azienda.getEmail());
 
         if (a.isPresent()) {
             if (a.get().getType().equals(TipoAzienda.A))
@@ -69,7 +69,7 @@ public class RegistrationController {
 
         azienda.setType(TipoAzienda.W);
         //Operazioni per aggiungere l'azienda al waiting
-        aziendaRepository.save(azienda);
+        aziendaService.saveAzienda(azienda);
             
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("ragionesociale", azienda.getRagionesociale());
@@ -96,7 +96,7 @@ public class RegistrationController {
         utente.setPassword(passwordEncoder.encode(utente.getPassword()));
         utente.setRuolo("USER");
         utente.setDisponibile(Disponibile.Y);
-        utenteRepository.save(utente);
+        utenteService.saveUtente(utente);
         
         return ResponseEntity.ok("{\"message\": \"Account creato con successo\"}");
     }
@@ -123,11 +123,9 @@ public class RegistrationController {
             return ResponseEntity.badRequest().body("{\"message\": \"Tentativi esauriti\"}");
         }
 
-        Azienda azienda;
+        Optional<Azienda> azienda = aziendaService.findByCodice(requestBody.get("codice"));
 
-        azienda = aziendaRepository.findByCodice(requestBody.get("codice")).orElse(null);
-
-        if (azienda == null) {
+        if (azienda.isPresent()) {
             return ResponseEntity.badRequest().body("{\"message\": \"Codice invalido\"}");
         }
         return ResponseEntity.ok(azienda);
@@ -139,7 +137,7 @@ public class RegistrationController {
 
         azienda.setPassword(passwordEncoder.encode(azienda.getPassword()));
         azienda.setType(TipoAzienda.R);
-        aziendaRepository.save(azienda);
+        aziendaService.saveAzienda(azienda);
 
         return ResponseEntity.ok("{\"message\": \"Account creato\"}");
     }
