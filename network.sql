@@ -21,6 +21,7 @@ CREATE DATABASE IF NOT EXISTS `network` /*!40100 DEFAULT CHARACTER SET latin1 CO
 USE `network`;
 
 -- Dump della struttura di tabella network.altresedi
+DROP TABLE IF EXISTS `altresedi`;
 CREATE TABLE IF NOT EXISTS `altresedi` (
   `idsedi` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(50) DEFAULT NULL,
@@ -38,7 +39,25 @@ INSERT INTO `altresedi` (`idsedi`, `email`, `indirizzo`, `cap`, `citta`) VALUES
 	(5, 'b@b', 'via plutoni 12', '22021', 'Bellagio'),
 	(6, 'aa@aa', 'adasd', 'asda', 'sdasd');
 
+-- Dump della struttura di tabella network.annuncio
+DROP TABLE IF EXISTS `annuncio`;
+CREATE TABLE IF NOT EXISTS `annuncio` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ruolo` varchar(100) NOT NULL,
+  `contratto` enum('TI','TD','S','F','CDD') NOT NULL,
+  `modalita` enum('S','I','R') NOT NULL,
+  `retribuzione` double NOT NULL DEFAULT 0,
+  `descrizione` text DEFAULT NULL,
+  `email_azienda` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `email_azienda` (`email_azienda`),
+  CONSTRAINT `FK_annuncio_azienda` FOREIGN KEY (`email_azienda`) REFERENCES `azienda` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- Dump dei dati della tabella network.annuncio: ~0 rows (circa)
+
 -- Dump della struttura di tabella network.area
+DROP TABLE IF EXISTS `area`;
 CREATE TABLE IF NOT EXISTS `area` (
   `idarea` int(11) NOT NULL AUTO_INCREMENT,
   `descrizione` varchar(256) DEFAULT NULL,
@@ -53,6 +72,7 @@ INSERT INTO `area` (`idarea`, `descrizione`) VALUES
 	(4, 'Altro');
 
 -- Dump della struttura di tabella network.articolazione
+DROP TABLE IF EXISTS `articolazione`;
 CREATE TABLE IF NOT EXISTS `articolazione` (
   `idarticolazione` varchar(50) NOT NULL,
   `descrizione` varchar(100) DEFAULT NULL,
@@ -71,10 +91,11 @@ INSERT INTO `articolazione` (`idarticolazione`, `descrizione`) VALUES
 	('TEL', 'Telecomunicazioni');
 
 -- Dump della struttura di tabella network.azienda
+DROP TABLE IF EXISTS `azienda`;
 CREATE TABLE IF NOT EXISTS `azienda` (
   `email` varchar(256) NOT NULL,
   `password` varchar(256) DEFAULT NULL,
-  `ragionesociale` varchar(256) DEFAULT NULL,
+  `ragionesociale` varchar(256) NOT NULL,
   `indirizzo` varchar(256) DEFAULT NULL,
   `telefono` varchar(256) DEFAULT NULL,
   `cognomereferente` varchar(255) DEFAULT NULL,
@@ -84,9 +105,10 @@ CREATE TABLE IF NOT EXISTS `azienda` (
   `ultimoaccesso` date DEFAULT NULL,
   `idarea` int(11) DEFAULT NULL,
   `ruolo` varchar(255) DEFAULT NULL,
-  `type` enum('W','A','R') DEFAULT NULL,
+  `type` enum('W','A','R') NOT NULL DEFAULT 'W',
   `codice` varchar(6) DEFAULT NULL,
-  PRIMARY KEY (`email`)
+  PRIMARY KEY (`email`),
+  KEY `idarea` (`idarea`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- Dump dei dati della tabella network.azienda: ~776 rows (circa)
@@ -101,7 +123,7 @@ INSERT INTO `azienda` (`email`, `password`, `ragionesociale`, `indirizzo`, `tele
 	('a.mazza.1900@gmail.com', NULL, 'AM CONSULTING di MAZZA ALESSANDRO', 'VIA ALLA ROVINATA 37 , LECCO 23900', '347 8588281', NULL, NULL, NULL, NULL, NULL, -1, NULL, 'A', NULL),
 	('a.selva@tin.it', NULL, 'SELVA ANTONIO GEOMETRA', 'VIA ROMA 6 , CASARGO 23831', '3484406674', NULL, NULL, NULL, NULL, NULL, -1, NULL, 'A', NULL),
 	('a.stefanoni90@gmail.com', NULL, 'CENTRO FISIOTERAPICO di STEFANONI ALESSIO', 'CORSO EMANUELE FILIBERTO 16 16, LECCO 23900', '339 5605263', NULL, NULL, NULL, NULL, NULL, -1, NULL, 'A', NULL),
-	('aa@aa', '{bcrypt}$2a$10$.ycUyJZlBC8w8dkvt7mY4.LM4vzj4Bvko1EbfL4S4bK8Rrk0/nD9G', 'pippo', 'via pluto 2', '123456', 'pizzo', 'giovanni', '7891011', 'ko@k', NULL, 1, 'AZIENDA', 'R', NULL),
+	('aa@aa', '{bcrypt}$2a$10$imfgMGDyZKB126X7.5QjfOvQkrN9adlz6b49JYt7y27Z4TaYszDpa', 'pippo', 'via pluto 2', '123456', 'pizzo', 'giovanni', '7891011', 'ko@k', NULL, 1, 'AZIENDA', 'W', '256867'),
 	('abalossi@unicalce.it', NULL, 'UNICALCE SPA', 'VIA PONTI 18 , VAL BREMBILLA  24012', '0341 2571', NULL, NULL, NULL, NULL, NULL, -1, NULL, 'A', NULL),
 	('abarini@atvspa.com', NULL, 'ATV SPA', 'VIA OMBRIANO 2, COLICO 23823', '0341 932111', NULL, NULL, NULL, NULL, NULL, -1, NULL, 'A', NULL),
 	('academy@sharebot.it', NULL, 'SHAREBOT SRL', 'VIA MONTELLO 18 , NIBIONNO 23895', '031 692132', NULL, NULL, NULL, NULL, NULL, -1, NULL, 'A', NULL),
@@ -869,6 +891,7 @@ INSERT INTO `azienda` (`email`, `password`, `ragionesociale`, `indirizzo`, `tele
 	('yves.loosen@foehrenbach.be', NULL, 'FOHRENBACH', 'Krijgsbaan 128 ,   Mortsel (Antwerp) 2640', '+32 (0)15 75 36 13', NULL, NULL, NULL, NULL, NULL, -1, NULL, 'A', NULL);
 
 -- Dump della struttura di tabella network.competenze
+DROP TABLE IF EXISTS `competenze`;
 CREATE TABLE IF NOT EXISTS `competenze` (
   `idcompetenza` int(11) NOT NULL AUTO_INCREMENT,
   `descrizione` varchar(256) NOT NULL DEFAULT '0',
@@ -918,6 +941,7 @@ INSERT INTO `competenze` (`idcompetenza`, `descrizione`) VALUES
 	(39, 'Sensori');
 
 -- Dump della struttura di tabella network.competenzestudenti
+DROP TABLE IF EXISTS `competenzestudenti`;
 CREATE TABLE IF NOT EXISTS `competenzestudenti` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(100) DEFAULT NULL,
@@ -940,6 +964,7 @@ INSERT INTO `competenzestudenti` (`id`, `email`, `idcompetenza`, `idlivello`) VA
 	(6, 'po@iisbadoni.edu.it', 2, 'B');
 
 -- Dump della struttura di tabella network.contatti
+DROP TABLE IF EXISTS `contatti`;
 CREATE TABLE IF NOT EXISTS `contatti` (
   `idcontatto` int(11) NOT NULL AUTO_INCREMENT,
   `emailstudente` varchar(50) DEFAULT NULL,
@@ -960,6 +985,7 @@ INSERT INTO `contatti` (`idcontatto`, `emailstudente`, `emailazienda`, `tipo`, `
 	(7, 'po@iisbadoni.edu.it', 'b@b', 'AS', '2023-06-10 12:30:00', 'N', 'Ciao ti va di lavorare per me');
 
 -- Dump della struttura di tabella network.lingue
+DROP TABLE IF EXISTS `lingue`;
 CREATE TABLE IF NOT EXISTS `lingue` (
   `idlingua` int(11) NOT NULL AUTO_INCREMENT,
   `descrizione` varchar(256) NOT NULL DEFAULT '0',
@@ -979,6 +1005,7 @@ INSERT INTO `lingue` (`idlingua`, `descrizione`) VALUES
 	(9, 'Serbo');
 
 -- Dump della struttura di tabella network.linguestudenti
+DROP TABLE IF EXISTS `linguestudenti`;
 CREATE TABLE IF NOT EXISTS `linguestudenti` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `idlingua` int(11) DEFAULT NULL,
@@ -999,6 +1026,7 @@ INSERT INTO `linguestudenti` (`id`, `idlingua`, `username`, `idlivello`) VALUES
 	(4, 2, 'po@iisbadoni.edu.it', 'B');
 
 -- Dump della struttura di tabella network.livellocompetenze
+DROP TABLE IF EXISTS `livellocompetenze`;
 CREATE TABLE IF NOT EXISTS `livellocompetenze` (
   `idlivello` varchar(10) NOT NULL,
   `descrizione` varchar(50) DEFAULT NULL,
@@ -1012,6 +1040,7 @@ INSERT INTO `livellocompetenze` (`idlivello`, `descrizione`) VALUES
 	('I', 'Intermedio');
 
 -- Dump della struttura di tabella network.studente
+DROP TABLE IF EXISTS `studente`;
 CREATE TABLE IF NOT EXISTS `studente` (
   `email` varchar(100) NOT NULL,
   `emailpersonale` varchar(255) DEFAULT NULL,
@@ -1042,6 +1071,7 @@ INSERT INTO `studente` (`email`, `emailpersonale`, `password`, `cognome`, `nome`
 	('srmndr06p13e507g@iisbadoni.edu.it', NULL, '{bcrypt}$2a$10$bqnyIgrFVUEUi0rG38y3wO/NVQVHIov7CrDUsPU9UYpaErTo0I4FC', 'Sormani', 'Andrea', 'he_him', '3342260991', 'Via Valassina 140, 22021 Bellagio', NULL, NULL, '2000-06-08', 'Y', NULL, '2024-06-14 13:31:21', '2024-06-14 13:31:21', NULL, NULL, 'USER');
 
 -- Dump della struttura di tabella network.verificaemail_studenti
+DROP TABLE IF EXISTS `verificaemail_studenti`;
 CREATE TABLE IF NOT EXISTS `verificaemail_studenti` (
   `email` varchar(100) NOT NULL,
   `codice` varchar(6) DEFAULT NULL,
