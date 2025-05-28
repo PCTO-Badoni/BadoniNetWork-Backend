@@ -47,11 +47,11 @@ public class LoginController {
         return ResponseEntity.badRequest().body("{\"message\": \"Credenziali errate\"}");
     }
 
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     public ResponseEntity<?> logout(HttpSession httpSession) {
 
         httpSession.removeAttribute("user-account");
 
-        return ResponseEntity.badRequest().body("{\"message\": \"Logout eseguito\"}");
+        return ResponseEntity.ok().body("{\"message\": \"Logout eseguito\"}");
     }
 }
