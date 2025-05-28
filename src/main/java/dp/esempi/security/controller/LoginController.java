@@ -16,7 +16,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-@RequestMapping("/login")
 @RestController
 public class LoginController {
     @Autowired
@@ -26,7 +25,7 @@ public class LoginController {
     @Autowired
     private PasswordEncoder passwordEncoder;
     
-    @PostMapping()
+    @PostMapping("/login")
     public ResponseEntity<?> loginEntity(@RequestBody Map<String, String> payload, HttpSession httpSession, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         String email = payload.get("email");
@@ -46,5 +45,13 @@ public class LoginController {
         }
 
         return ResponseEntity.badRequest().body("{\"message\": \"Credenziali errate\"}");
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpSession httpSession) {
+
+        httpSession.removeAttribute("user-account");
+
+        return ResponseEntity.badRequest().body("{\"message\": \"Logout eseguito\"}");
     }
 }

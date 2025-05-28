@@ -439,7 +439,7 @@ public class ApiController {
                 annuncio.setAzienda(azienda.get());
 
                 annuncioRepository.save(annuncio);  
-            return ResponseEntity.ok().body("{\"message\": \"Contatto salvato\"}");
+            return ResponseEntity.ok().body("{\"message\": \"Annuncio salvato\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Errore nel salvataggio\"}");
         }
