@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import dp.esempi.security.model.AltraSede;
+import dp.esempi.security.model.Annuncio;
 import dp.esempi.security.model.Area;
 import dp.esempi.security.model.Articolazione;
 import dp.esempi.security.model.Azienda;
@@ -28,6 +29,7 @@ import dp.esempi.security.model.TipoAzienda;
 import dp.esempi.security.model.Utente;
 import dp.esempi.security.model.VerificaEmailStudente;
 import dp.esempi.security.repository.AltraSedeRepository;
+import dp.esempi.security.repository.AnnuncioRepository;
 import dp.esempi.security.repository.AreaRepository;
 import dp.esempi.security.repository.ArticolazioneRepository;
 import dp.esempi.security.repository.AziendaRepository;
@@ -72,6 +74,8 @@ public class ApiController {
     private LinguaStudenteRepository lingueStudentiRepository;
     @Autowired
     private VerificaEmailStudenteRepository verificaEmailStudentiRepository;
+    @Autowired
+    private AnnuncioRepository annuncioRepository;
     @Autowired
     private EmailService emailService;
     @Autowired
@@ -241,6 +245,12 @@ public class ApiController {
     public ResponseEntity<List<LinguaStudente>> getAllLingueStudenti() {
         List<LinguaStudente> lingue_studenti = lingueStudentiRepository.findAll();
         return ResponseEntity.ok(lingue_studenti);
+    }
+
+    @GetMapping("/get-all-annunci")
+    public ResponseEntity<?> getAllAnnunci() {
+        List<Annuncio> annunci = annuncioRepository.findAll();
+        return ResponseEntity.ok(annunci);
     }
 
     @PostMapping("/set-user-competences")
