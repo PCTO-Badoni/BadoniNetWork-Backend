@@ -14,18 +14,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@RestController
+@Controller
 public class MainController {
 
     @Value("${backend_address}")
@@ -47,24 +47,25 @@ public class MainController {
     private Methods methods;
 
     @GetMapping("/accept-request/{email}")
-    public ResponseEntity<String> acceptRequest(@PathVariable String email) throws MessagingException, IOException {
+    public String acceptRequest(Model model, @PathVariable String email) throws MessagingException, IOException {
         Optional<Azienda> azienda = aziendaRepository.findByEmail(email);
+        String message = "Richiesta accettata";
     
         if (azienda.isEmpty()) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Azienda non trovata\"}");
+            message="Azienda non trovata";
         }
     
         Azienda aziendaget = azienda.get();
 
         if (aziendaget.getCodice() != null || aziendaget.getType().equals(TipoAzienda.R)) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Azienda già accettata\"}");
+            message="Azienda già accettata";
         }
     
         // Genera un nuovo codice
         String codice = methods.generateCode();
     
         if (codice.equals("error")) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Errore nella generazione del codice\"}");
+           message="Errore nella generazione del codice";
         }
 
         aziendaget.setCodice(codice);
@@ -77,29 +78,39 @@ public class MainController {
         templateModel.put("backend_address", backendAddress);
         emailService.sendHtmlMessage(aziendaget.getEmail(), "Accettazione account", templateModel, "request-response-template");
     
-        return ResponseEntity.ok().body("{\"message\": \"Richiesta accettata");
+        //Imposta le variabili della pagina dinamica
+        model.addAttribute("ragionesociale", aziendaget.getRagionesociale());
+        model.addAttribute("message", message);
+
+        return "request-feedback-page";
     }
 
     @GetMapping("/deny-request/{email}")
-    public ResponseEntity<String> denyRequest(@PathVariable String email) throws MessagingException, IOException {
+    public String denyRequest(Model model, @PathVariable String email) throws MessagingException, IOException {
         Optional<Azienda> azienda = aziendaRepository.findByEmail(email);
+        String message = "Richiesta rifiutata";
     
         if (azienda.isEmpty()) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Azienda non trovata\"}");
+            message="Azienda non trovata";
         }
 
         Azienda aziendadb = azienda.get();
 
         if (!aziendadb.getType().equals(TipoAzienda.W)) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Hai già preso provvedimenti per questa richiesta\"}");
+            message="Hai già preso provvedimenti per questa richiesta";
         }
 
         aziendaRepository.delete(aziendadb);
 
+        // Invia la mail di accettazione
         Map<String, Object> templateModel = new HashMap<>();
         emailService.sendHtmlMessage(email, "Richiesta account Badoni NetWork", templateModel, "request-deny-template");
         
-        return ResponseEntity.ok().body("{\"message\": \"Richiesta rifiutata");
+        //Imposta le variabili della pagina dinamica
+        model.addAttribute("ragionesociale", aziendadb.getRagionesociale());
+        model.addAttribute("message", message);
+
+        return "request-feedback-page";
     }
 
     @PostMapping("/password-recovery")

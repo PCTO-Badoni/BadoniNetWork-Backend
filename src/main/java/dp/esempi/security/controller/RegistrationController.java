@@ -63,7 +63,7 @@ public class RegistrationController {
 
         if (a.isPresent()) {
             if (a.get().getType().equals(TipoAzienda.A))
-            mainController.acceptRequest(azienda.getEmail());
+            mainController.acceptRequest(null,azienda.getEmail());
             return ResponseEntity.ok(null);
         }
 
@@ -80,7 +80,7 @@ public class RegistrationController {
         templateModel.put("backend_address", backendAddress);
 
         emailService.sendHtmlMessage(staffEmail, "Richiesta account Badoni NetWork", templateModel, "account-request-template");
-        //!DA CAMBIARE CON LA MAIL UFFICIALE
+
         return ResponseEntity.ok("{\"message\": \"Email inviata\"}");
     }
 
@@ -119,7 +119,7 @@ public class RegistrationController {
 
         if (tries>=5) {
             httpSession.removeAttribute("tries");
-            //! Implementare un meccanismo
+            //! Implementare un meccanismo di blocco
             return ResponseEntity.badRequest().body("{\"message\": \"Tentativi esauriti\"}");
         }
 
