@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS `azienda` (
   `ultimoaccesso` date DEFAULT NULL,
   `idarea` int(11) DEFAULT NULL,
   `ruolo` varchar(255) DEFAULT NULL,
-  `type` enum('W','A','R') NOT NULL DEFAULT 'W',
+  `type` enum('W','A','R','V') NOT NULL DEFAULT 'W',
   `codice` varchar(6) DEFAULT NULL,
   PRIMARY KEY (`email`),
   KEY `idarea` (`idarea`)
@@ -123,7 +123,6 @@ INSERT INTO `azienda` (`email`, `password`, `ragionesociale`, `indirizzo`, `tele
 	('a.mazza.1900@gmail.com', NULL, 'AM CONSULTING di MAZZA ALESSANDRO', 'VIA ALLA ROVINATA 37 , LECCO 23900', '347 8588281', NULL, NULL, NULL, NULL, NULL, 0, NULL, 'A', NULL),
 	('a.selva@tin.it', NULL, 'SELVA ANTONIO GEOMETRA', 'VIA ROMA 6 , CASARGO 23831', '3484406674', NULL, NULL, NULL, NULL, NULL, 0, NULL, 'A', NULL),
 	('a.stefanoni90@gmail.com', NULL, 'CENTRO FISIOTERAPICO di STEFANONI ALESSIO', 'CORSO EMANUELE FILIBERTO 16 16, LECCO 23900', '339 5605263', NULL, NULL, NULL, NULL, NULL, 0, NULL, 'A', NULL),
-	('aa@aa', '{bcrypt}$2a$10$imfgMGDyZKB126X7.5QjfOvQkrN9adlz6b49JYt7y27Z4TaYszDpa', 'pippo', 'via pluto 2', '123456', 'pizzo', 'giovanni', '7891011', 'ko@k', NULL, 1, 'AZIENDA', 'W', '256867'),
 	('abalossi@unicalce.it', NULL, 'UNICALCE SPA', 'VIA PONTI 18 , VAL BREMBILLA  24012', '0341 2571', NULL, NULL, NULL, NULL, NULL, 0, NULL, 'A', NULL),
 	('abarini@atvspa.com', NULL, 'ATV SPA', 'VIA OMBRIANO 2, COLICO 23823', '0341 932111', NULL, NULL, NULL, NULL, NULL, 0, NULL, 'A', NULL),
 	('academy@sharebot.it', NULL, 'SHAREBOT SRL', 'VIA MONTELLO 18 , NIBIONNO 23895', '031 692132', NULL, NULL, NULL, NULL, NULL, 0, NULL, 'A', NULL),
@@ -442,6 +441,7 @@ INSERT INTO `azienda` (`email`, `password`, `ragionesociale`, `indirizzo`, `tele
 	('hr@tesmec.com', NULL, 'TESMEC SPA', 'PIAZZA S. AMBROGIO 16, MILANO 20123', '031 858311', NULL, NULL, NULL, NULL, NULL, 0, NULL, 'A', NULL),
 	('idealstampsrl@gmail.com', NULL, 'IDEALSTAMP SRL', 'VIA ZINIGA 10 , VALBRONA 22039', '031 660204', NULL, NULL, NULL, NULL, NULL, 0, NULL, 'A', NULL),
 	('idraulicauggetti@alice.itit', NULL, 'TERMOIDRAULICA UGGETTI ALBERTO', 'VIA CINTURINO 25 , BALLABIO 23811', '0341 530207', NULL, NULL, NULL, NULL, NULL, 0, NULL, 'A', NULL),
+	('iii@iaa', NULL, 'pipo', 'aaaaaaaa', '23113213', NULL, NULL, NULL, NULL, NULL, 0, NULL, 'W', NULL),
 	('ilab.rusconi@gmail.com', NULL, 'ILAB di RUSCONI ANGELO', 'VIA SAN ROCCO 4 , VALMADRERA 23868', '0341 581316', NULL, NULL, NULL, NULL, NULL, 0, NULL, 'A', NULL),
 	('imperatori@federfarma.lecco.it', NULL, 'FARMACIA IMPERATORI SAS', 'PIAZZA MONS. CITTERIO 14 , VALMADRERA 23868', '0341 581555', NULL, NULL, NULL, NULL, NULL, 0, NULL, 'A', NULL),
 	('impianto@nespolisas.it', NULL, 'NESPOLI ADRIANO SAS DI NESPOLI ELIO', 'VIA SAN CARLO 1 , AROSIO 22060', '031797058', NULL, NULL, NULL, NULL, NULL, 0, NULL, 'A', NULL),
@@ -955,14 +955,16 @@ CREATE TABLE IF NOT EXISTS `competenzastudente` (
   CONSTRAINT `FK_competenzestudenti_competenze` FOREIGN KEY (`idcompetenza`) REFERENCES `competenza` (`idcompetenza`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_competenzestudenti_livellocompetenze` FOREIGN KEY (`idlivello`) REFERENCES `livellocompetenza` (`idlivello`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_competenzestudenti_studente` FOREIGN KEY (`email`) REFERENCES `studente` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Dump dei dati della tabella network.competenzastudente: ~4 rows (circa)
+-- Dump dei dati della tabella network.competenzastudente: ~6 rows (circa)
 INSERT INTO `competenzastudente` (`id`, `email`, `idcompetenza`, `idlivello`) VALUES
 	(3, 'po@iisbadoni.edu.it', 1, 'A'),
 	(4, 'po@iisbadoni.edu.it', 2, 'B'),
 	(5, 'po@iisbadoni.edu.it', 1, 'A'),
-	(6, 'po@iisbadoni.edu.it', 2, 'B');
+	(6, 'po@iisbadoni.edu.it', 2, 'B'),
+	(7, 'po@iisbadoni.edu.it', 1, 'A'),
+	(8, 'po@iisbadoni.edu.it', 2, 'B');
 
 -- Dump della struttura di tabella network.contatto
 DROP TABLE IF EXISTS `contatto`;
@@ -1019,12 +1021,14 @@ CREATE TABLE IF NOT EXISTS `linguastudente` (
   CONSTRAINT `FK_linguestudenti_lingue` FOREIGN KEY (`idlingua`) REFERENCES `lingua` (`idlingua`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_linguestudenti_livellocompetenze` FOREIGN KEY (`idlivello`) REFERENCES `livellocompetenza` (`idlivello`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_linguestudenti_studente` FOREIGN KEY (`username`) REFERENCES `studente` (`email`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Dump dei dati della tabella network.linguastudente: ~2 rows (circa)
+-- Dump dei dati della tabella network.linguastudente: ~4 rows (circa)
 INSERT INTO `linguastudente` (`id`, `idlingua`, `username`, `idlivello`) VALUES
 	(3, 1, 'po@iisbadoni.edu.it', 'A'),
-	(4, 2, 'po@iisbadoni.edu.it', 'B');
+	(4, 2, 'po@iisbadoni.edu.it', 'B'),
+	(5, 1, 'po@iisbadoni.edu.it', 'A'),
+	(6, 2, 'po@iisbadoni.edu.it', 'B');
 
 -- Dump della struttura di tabella network.livellocompetenza
 DROP TABLE IF EXISTS `livellocompetenza`;
@@ -1080,7 +1084,9 @@ CREATE TABLE IF NOT EXISTS `verificaemail_studente` (
   PRIMARY KEY (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Dump dei dati della tabella network.verificaemail_studente: ~0 rows (circa)
+-- Dump dei dati della tabella network.verificaemail_studente: ~1 rows (circa)
+INSERT INTO `verificaemail_studente` (`email`, `codice`, `verificato`) VALUES
+	('srmndr06p13e507g@iisbadoni.edu.it', '634907', 'N');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
