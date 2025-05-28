@@ -11,6 +11,7 @@ import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,12 @@ import java.util.Optional;
 
 @RestController
 public class MainController {
+
+    @Value("${backend_address}")
+    private String backendAddress;
+
+    @Value("${frontend_address}")
+    private String frontendAddress;
 
     @Autowired
     private EmailService emailService;
@@ -67,6 +74,7 @@ public class MainController {
         // Invia la mail di accettazione
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("codice", codice);
+        templateModel.put("backend_address", backendAddress);
         emailService.sendHtmlMessage(aziendaget.getEmail(), "Accettazione account", templateModel, "request-response-template");
     
         return ResponseEntity.ok().body("{\"message\": \"Richiesta accettata");
@@ -100,6 +108,7 @@ public class MainController {
 
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("email", email);
+        templateModel.put("backend_address", backendAddress);
 
         Optional<Azienda> azienda = aziendaRepository.findByEmail(email);
         Optional<Utente> studente = utenteRepository.findByEmail(email);
@@ -116,7 +125,7 @@ public class MainController {
     @GetMapping("/password-recovery/{email}")
     public void passwordRecoveryRedirect(@PathVariable String email, HttpServletResponse response) throws IOException {
         // Costruisci l'URL del frontend con il parametro email
-        String frontendUrl = "http://127.0.0.1:3001/changePassword/" + email;  //!DA CAMBIARE CON IL SITO UFFICIALE
+        String frontendUrl = "http://localhost:3001/changePassword/" + email;  //!frontendAddress + "/changePassword/" + email
 
         // Fai il redirect verso il frontend
         response.sendRedirect(frontendUrl);

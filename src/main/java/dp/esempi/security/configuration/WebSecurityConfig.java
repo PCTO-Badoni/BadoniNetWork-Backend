@@ -2,6 +2,7 @@ package dp.esempi.security.configuration;
 
 import dp.esempi.security.service.UtenteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -25,13 +26,16 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
+    @Value("${frontend_address}")
+    private String frontendAddress;
+
     @Autowired
     private UtenteService utenteService;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://10.10.250.67","http://127.0.0.1:3001","http://localhost","https://network.iisbadoni.it","http://network.iisbadoni.it"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3001","https://network.iisbadoni.it","http://network.iisbadoni.it", frontendAddress));
         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("origin", "content-type", "accept", "x-requested-with"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

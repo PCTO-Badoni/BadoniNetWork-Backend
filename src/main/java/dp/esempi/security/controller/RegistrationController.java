@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.Errors;
@@ -28,6 +29,13 @@ import java.util.Optional;
 @RequestMapping("/register")
 @RestController
 public class RegistrationController {
+
+    @Value("${backend_address}")
+    private String backendAddress;
+
+    @Value("${frontend_address}")
+    private String frontendAddress;
+
     @Autowired
     private UtenteRepository utenteRepository;
     @Autowired
@@ -50,7 +58,7 @@ public class RegistrationController {
 
         if (a.isPresent()) {
             if (a.get().getType().equals(TipoAzienda.A))
-            response.sendRedirect("http://localhost:8080/accept-request/"+azienda.getEmail());   //! VA BENE???? IDK
+            response.sendRedirect(frontendAddress+"/accept-request/"+azienda.getEmail());   //! VA BENE???? IDK
             return ResponseEntity.ok(null);
         }
 
@@ -64,6 +72,7 @@ public class RegistrationController {
         templateModel.put("telefono", azienda.getTelefono());
         templateModel.put("indirizzo", azienda.getIndirizzo());
         templateModel.put("id", azienda.getEmail());
+        templateModel.put("backend_address", backendAddress);
 
         emailService.sendHtmlMessage("srmndr06p13e507g@iisbadoni.edu.it", "Richiesta account Badoni NetWork", templateModel, "account-request-template");
         //!DA CAMBIARE CON LA MAIL UFFICIALE
@@ -89,7 +98,7 @@ public class RegistrationController {
 
     @GetMapping("/validate-otp")
     public void validateOTP(HttpServletResponse response) throws IOException {
-        response.sendRedirect("http://localhost:3001/otp");             //!DA CAMBIARE CON IL SITO UFFICIALE
+        response.sendRedirect(frontendAddress+"/otp");             //!DA CAMBIARE CON IL SITO UFFICIALE
     }
 
     @PostMapping("/validate-otp")

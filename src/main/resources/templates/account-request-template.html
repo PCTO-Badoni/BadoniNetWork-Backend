@@ -251,7 +251,7 @@
                                                         <v:textbox inset="0px,0px,0px,0px">
                                                             <center dir="false" style="color:#ffffff;font-family:'Trebuchet MS', Tahoma, sans-serif;font-size:20px">
                                                     <![endif]-->
-                                                    <a th:href="@{'http://localhost:8080/accept-request/'+${id}}">
+                                                    <a th:href="@{${backend_address}+'/accept-request/'+${id}}">
                                                     <div style="background-color:#55d398;border-bottom:0px solid transparent;border-left:0px solid transparent;border-radius:15px;border-right:0px solid transparent;border-top:0px solid transparent;color:#ffffff;display:block;font-family:'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;font-size:20px;font-weight:700;mso-border-alt:none;padding-bottom:5px;padding-top:5px;text-align:center;text-decoration:none;width:85%;word-break:keep-all;"><span style="padding-left:20px;padding-right:20px;font-size:20px;display:inline-block;letter-spacing:1px;"><span style="margin: 0; word-break: break-word; line-height: 40px;">Approva</span></span></div><!--[if mso]></center></v:textbox></v:roundrect><![endif]-->
                                                     </a>
                                                 </div>
@@ -270,7 +270,7 @@
                                                         <v:textbox inset="0px,0px,0px,0px">
                                                             <center dir="false" style="color:#ffffff;font-family:'Trebuchet MS', Tahoma, sans-serif;font-size:20px">
                                                     <![endif]-->
-                                                    <a th:href="@{'http://localhost:8080/deny-request/'+${id}}">
+                                                    <a th:href="@{${backend_address}+'/deny-request/'+${id}}">
                                                     <div style="background-color:#ec5f5f;border-bottom:0px solid transparent;border-left:0px solid transparent;border-radius:15px;border-right:0px solid transparent;border-top:0px solid transparent;color:#ffffff;display:block;font-family:'Montserrat', 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;font-size:20px;font-weight:700;mso-border-alt:none;padding-bottom:5px;padding-top:5px;text-align:center;text-decoration:none;width:85%;word-break:keep-all;"><span style="padding-left:20px;padding-right:20px;font-size:20px;display:inline-block;letter-spacing:1px;"><span style="margin: 0; word-break: break-word; line-height: 40px;">Rifiuta</span></span></div><!--[if mso]></center></v:textbox></v:roundrect><![endif]-->
                                                     </a>
                                                 </div>

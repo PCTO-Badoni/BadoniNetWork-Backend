@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="verificaemailstudenti")
+@Table(name="verificaemail_studenti")
 public class VerificaEmailStudenti {
 
     @Id
