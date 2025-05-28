@@ -24,7 +24,9 @@ import dp.esempi.security.model.Contatto;
 import dp.esempi.security.model.Lingua;
 import dp.esempi.security.model.LinguaStudente;
 import dp.esempi.security.model.LivelloCompetenza;
+import dp.esempi.security.model.ModalitaContratto;
 import dp.esempi.security.model.TipoContatto;
+import dp.esempi.security.model.TipoContratto;
 import dp.esempi.security.model.TipoAzienda;
 import dp.esempi.security.model.Utente;
 import dp.esempi.security.model.VerificaEmailStudente;
@@ -406,6 +408,37 @@ public class ApiController {
                 contatto.setVisualizzato(visualizzatoEnum);
 
                 contattiRepository.save(contatto);  
+            return ResponseEntity.ok().body("{\"message\": \"Contatto salvato\"}");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Errore nel salvataggio\"}");
+        }
+    }
+
+    @PostMapping("/add-annuncio")
+    public ResponseEntity<String> addAnnuncio(@RequestBody Map<String, String> payload) {
+        try {
+                String ruolo = payload.get("ruolo");
+                TipoContratto contratto = TipoContratto.valueOf(payload.get("contratto"));
+                ModalitaContratto modalita = ModalitaContratto.valueOf(payload.get("modalita"));
+                float retribuzione = Float.parseFloat(payload.get("retribuzione"));
+                String descrizione = payload.get("descrizione");
+                String emailazienda = payload.get("email_azienda");
+
+                Optional<Azienda> azienda = aziendaRepository.findByEmail(emailazienda);
+
+                if (!azienda.isPresent()) {
+                    return ResponseEntity.badRequest().body("{\"message\": \"Azienda inesistente\"}");
+                }
+                
+                Annuncio annuncio = new Annuncio();
+                annuncio.setRuolo(ruolo);
+                annuncio.setContratto(contratto);
+                annuncio.setModalita(modalita);
+                annuncio.setRetribuzione(retribuzione);
+                annuncio.setDescrizione(descrizione);
+                annuncio.setAzienda(azienda.get());
+
+                annuncioRepository.save(annuncio);  
             return ResponseEntity.ok().body("{\"message\": \"Contatto salvato\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"message\": \"Errore nel salvataggio\"}");
