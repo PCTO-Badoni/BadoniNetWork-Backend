@@ -265,6 +265,19 @@ public class ApiController {
         return ResponseEntity.ok(annunci);
     }
 
+    @DeleteMapping("/remove-annuncio")
+    public ResponseEntity<?> removeAnnuncio(@RequestParam String id) {
+        Optional<Annuncio> annuncio = annuncioRepository.findById(Integer.parseInt(id));
+
+        if (!annuncio.isPresent()) {
+            return ResponseEntity.badRequest().body("{\"message\": \"Id inesistente\"}");
+        }
+
+        annuncioRepository.delete(annuncio.get());
+
+        return ResponseEntity.ok().body("{\"message\": \"Annuncio rimosso\"}");
+    }
+
     @PostMapping("/set-user-competences")
     public ResponseEntity<String> setUserCompetences(@RequestBody List<Map<String, String>> payload) {
         try {
