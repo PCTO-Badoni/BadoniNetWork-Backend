@@ -36,6 +36,9 @@ public class RegistrationController {
     @Value("${frontend_address}")
     private String frontendAddress;
 
+    @Value("${staff_email}")
+    private String staffEmail;
+
     @Autowired
     private UtenteRepository utenteRepository;
     @Autowired
@@ -76,7 +79,7 @@ public class RegistrationController {
         templateModel.put("id", azienda.getEmail());
         templateModel.put("backend_address", backendAddress);
 
-        emailService.sendHtmlMessage("srmndr06p13e507g@iisbadoni.edu.it", "Richiesta account Badoni NetWork", templateModel, "account-request-template");
+        emailService.sendHtmlMessage(staffEmail, "Richiesta account Badoni NetWork", templateModel, "account-request-template");
         //!DA CAMBIARE CON LA MAIL UFFICIALE
         return ResponseEntity.ok("{\"message\": \"Email inviata\"}");
     }
