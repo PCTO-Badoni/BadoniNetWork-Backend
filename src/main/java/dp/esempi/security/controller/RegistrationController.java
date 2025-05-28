@@ -44,6 +44,8 @@ public class RegistrationController {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private MainController mainController;
 
     @PostMapping("/azienda")
     public ResponseEntity<?> createCompany(@RequestBody @Valid Azienda azienda, Errors errors, HttpServletResponse response) throws MessagingException, IOException {
@@ -58,7 +60,7 @@ public class RegistrationController {
 
         if (a.isPresent()) {
             if (a.get().getType().equals(TipoAzienda.A))
-            response.sendRedirect(frontendAddress+"/accept-request/"+azienda.getEmail());   //! VA BENE???? IDK
+            mainController.acceptRequest(azienda.getEmail());
             return ResponseEntity.ok(null);
         }
 
@@ -98,7 +100,7 @@ public class RegistrationController {
 
     @GetMapping("/validate-otp")
     public void validateOTP(HttpServletResponse response) throws IOException {
-        response.sendRedirect(frontendAddress+"/otp");             //!DA CAMBIARE CON IL SITO UFFICIALE
+        response.sendRedirect(frontendAddress+"/otp");
     }
 
     @PostMapping("/validate-otp")
