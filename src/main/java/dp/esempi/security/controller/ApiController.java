@@ -253,6 +253,12 @@ public class ApiController {
         return ResponseEntity.ok(lingue_studenti);
     }
 
+    @GetMapping("/get-annuncio")
+    public ResponseEntity<?> getAnnuncioByEmail(@RequestParam String email) {
+        List<Annuncio> annunci = annuncioRepository.findByAzienda_email(email);
+        return ResponseEntity.ok(annunci);
+    }
+
     @GetMapping("/get-all-annunci")
     public ResponseEntity<?> getAllAnnunci() {
         List<Annuncio> annunci = annuncioRepository.findAll();
@@ -445,7 +451,8 @@ public class ApiController {
                 annuncioRepository.save(annuncio);  
             return ResponseEntity.ok().body("{\"message\": \"Annuncio salvato\"}");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("{\"message\": \"Errore nel salvataggio\"}");
+            String message = "{\"message\": \"" + e.getMessage().replace("\"", "\\\"") + "\"}";
+            return ResponseEntity.badRequest().body(message);
         }
     }
 
