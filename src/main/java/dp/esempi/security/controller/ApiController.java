@@ -1,6 +1,7 @@
 package dp.esempi.security.controller;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,10 +23,12 @@ import dp.esempi.security.model.Booleano;
 import dp.esempi.security.model.Competenza;
 import dp.esempi.security.model.CompetenzaStudente;
 import dp.esempi.security.model.Contatto;
+import dp.esempi.security.model.Disponibile;
 import dp.esempi.security.model.Lingua;
 import dp.esempi.security.model.LinguaStudente;
 import dp.esempi.security.model.LivelloCompetenza;
 import dp.esempi.security.model.ModalitaContratto;
+import dp.esempi.security.model.Pronome;
 import dp.esempi.security.model.TipoContatto;
 import dp.esempi.security.model.TipoContratto;
 import dp.esempi.security.model.TipoAzienda;
@@ -489,5 +493,62 @@ public class ApiController {
             return ResponseEntity.badRequest().body("{\"message\": \"Errore nel salvataggio\"}");
         }
     }
+
+    @PutMapping("/update-profile")
+    public ResponseEntity<?> updateAccount(@RequestBody Map<String, String> updates, HttpSession session) {
+        Object account = session.getAttribute("user-account");
+
+        if (account == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("{\"message\": \"Utente non autenticato\"}");
+        }
+
+        // Aggiornamento per Azienda
+        if (account instanceof Azienda azienda) {
+
+            updates.forEach((key, value) -> {
+                switch (key) {
+                    case "ragionesociale" -> azienda.setRagionesociale(value);
+                    case "telefono" -> azienda.setTelefono(value);
+                    case "indirizzo" -> azienda.setIndirizzo(value);
+                    case "cognomereferente" -> azienda.setCognomereferente(value);
+                    case "nomereferente" -> azienda.setNomereferente(value);
+                    case "telreferente" -> azienda.setTelreferente(value);
+                    case "emailreferente" -> azienda.setEmailreferente(value);
+                }
+            });
+
+            aziendaRepository.save(azienda);
+            session.setAttribute("user-account", azienda);
+            return ResponseEntity.ok(azienda);
+        }
+
+        // Aggiornamento per Studente
+        if (account instanceof Utente studente) {
+
+            updates.forEach((key, value) -> {
+                switch (key) {
+                    case "emailpersonale" -> studente.setEmailpersonale(value);
+                    case "nome" -> studente.setNome(value);
+                    case "cognome" -> studente.setCognome(value);
+                    case "pronomi" -> studente.setPronomi(Pronome.valueOf(value));
+                    case "telefono" -> studente.setTelefono(value);
+                    case "indirizzo" -> studente.setIndirizzo(value);
+                    case "datanascita" -> studente.setDatanascita(LocalDate.parse(value));
+                    case "disponibile" -> studente.setDisponibile(Disponibile.valueOf(value));
+                    case "curriculum" -> studente.setCurriculum(value);
+                    case "note" -> studente.setNote(value);
+                }
+            });
+
+            utenteRepository.save(studente);
+            session.setAttribute("user-account", studente);
+            return ResponseEntity.ok(studente);
+        }
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("{\"message\": \"Tipo utente non riconosciuto\"}");
+    }
+
     
 }
