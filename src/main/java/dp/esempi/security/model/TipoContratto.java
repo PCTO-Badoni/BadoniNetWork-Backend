@@ -1,9 +1,9 @@
 package dp.esempi.security.model;
 
 public enum TipoContratto {
-    TI,
-    TD,
-    S,
-    F,
-    CDD
+    TI, //Tempo Indeterminato
+    TD, //Tempo Determinato
+    S, //Stage
+    F, //Freelancer
+    CDD //Contratto Da Definire
 }
