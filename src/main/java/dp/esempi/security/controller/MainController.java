@@ -80,8 +80,8 @@ public class MainController {
     
         //Imposta le variabili della pagina dinamica
         model.addAttribute("ragionesociale", aziendaget.getRagionesociale());
-        model.addAttribute("telefono", aziendaget.getTelreferente());
-        model.addAttribute("email", aziendaget.getEmailreferente());
+        model.addAttribute("telefono", aziendaget.getTelefono());
+        model.addAttribute("email", aziendaget.getEmail());
         model.addAttribute("message", message);
 
         return "request-feedback-page";
