@@ -1,9 +1,9 @@
 package dp.esempi.security.controller;
 
+import dp.esempi.security.model.Utente;
 import dp.esempi.security.model.Azienda;
 import dp.esempi.security.model.Disponibile;
 import dp.esempi.security.model.TipoAzienda;
-import dp.esempi.security.model.Utente;
 import dp.esempi.security.service.AziendaService;
 import dp.esempi.security.service.EmailService;
 import dp.esempi.security.service.UtenteService;
@@ -11,24 +11,24 @@ import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.validation.Errors;
-import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
-@RequestMapping("/register")
 @RestController
-public class RegistrationController {
+public class AuthController {
 
     @Value("${backend_address}")
     private String backendAddress;
@@ -49,8 +49,30 @@ public class RegistrationController {
     private EmailService emailService;
     @Autowired
     private MainController mainController;
+    
+    @PostMapping("/login")
+    public ResponseEntity<?> loginEntity(@RequestBody Map<String, String> payload, HttpSession httpSession, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
-    @PostMapping("/azienda")
+        String email = payload.get("email");
+        String password = payload.get("password");
+
+        Optional<Utente> user = utenteService.findByEmailAndPassword(email, password, passwordEncoder);
+        Optional<Azienda> company = aziendaService.findByEmailAndPassword(email, password, passwordEncoder);
+
+        if(user.isPresent()) {
+            httpSession.setAttribute("user-account", user.get());
+            return ResponseEntity.ok().body(user.get());
+        }
+
+        if (company.isPresent()) {
+            httpSession.setAttribute("user-account", company.get());
+            return ResponseEntity.ok().body(company.get());
+        }
+
+        return ResponseEntity.badRequest().body("{\"message\": \"Credenziali errate\"}");
+    }
+
+    @PostMapping("/register/azienda")
     public ResponseEntity<?> createCompany(@RequestBody @Valid Azienda azienda, Errors errors, HttpServletResponse response) throws MessagingException, IOException {
         if(errors.hasErrors()) {
             for (ObjectError error : errors.getAllErrors()) {
@@ -84,7 +106,7 @@ public class RegistrationController {
         return ResponseEntity.ok("{\"message\": \"Email inviata\"}");
     }
 
-    @PostMapping("/utente")
+    @PostMapping("/register/utente")
     public ResponseEntity<String> createUser(@RequestBody @Valid Utente utente, Errors errors) {
         if(errors.hasErrors()) {
             for (ObjectError error : errors.getAllErrors()) {
@@ -101,12 +123,12 @@ public class RegistrationController {
         return ResponseEntity.ok("{\"message\": \"Account creato con successo\"}");
     }
 
-    @GetMapping("/validate-otp")
+    @GetMapping("/register/validate-otp")
     public void validateOTP(HttpServletResponse response) throws IOException {
         response.sendRedirect(frontendAddress+"/otp");
     }
 
-    @PostMapping("/validate-otp")
+    @PostMapping("/register/validate-otp")
     public ResponseEntity<?> validateOTP(HttpSession httpSession, @RequestBody Map<String, String> requestBody) {
         int tries=-1;
 
@@ -137,7 +159,7 @@ public class RegistrationController {
     }
     
 
-    @PostMapping("/confirm-azienda")
+    @PostMapping("/register/confirm-azienda")
     public ResponseEntity<String> confirmCompany(@RequestBody Azienda azienda, Errors errors) {
 
         Optional<Azienda> pending_azienda = aziendaService.findByEmail(azienda.getEmail());
@@ -157,5 +179,13 @@ public class RegistrationController {
         aziendaService.saveAzienda(azienda);
 
         return ResponseEntity.ok("{\"message\": \"Account creato\"}");
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<?> logout(HttpSession httpSession) {
+
+        httpSession.removeAttribute("user-account");
+
+        return ResponseEntity.ok().body("{\"message\": \"Logout eseguito\"}");
     }
 }
