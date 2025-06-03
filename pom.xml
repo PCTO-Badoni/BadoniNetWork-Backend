@@ -8,11 +8,11 @@
 		<version>3.3.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>dp.esempi</groupId>
-	<artifactId>security</artifactId>
+	<groupId>iis.badoni</groupId>
+	<artifactId>badoninetwork</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>security</name>
-	<description>security</description>
+	<name>badoninetwork</name>
+	<description>badoninetwork</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
